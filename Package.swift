@@ -16,6 +16,9 @@ let package = Package(
             dependencies: [
 				.target(name: "SwiftStructureKit"),
 			],
+			resources: [
+				.copy("Resources"),
+			],
         ),
     ]
 )

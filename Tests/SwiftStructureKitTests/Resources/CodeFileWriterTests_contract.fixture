@@ -1,0 +1,16 @@
+import Foundation
+
+public func hello() {
+                print("Hello, world 1!")
+    print("Hello, world 2!")
+
+    func hello() {
+        print("Hello, world 3!")
+#if DEBUG
+        print("Hello, world 4!")
+#endif
+        print("Hello, world 5!")
+        print("Hello, world 6!")
+        print("Hello, world 7!")
+    }
+}
