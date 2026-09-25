@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,xcode
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,xcode
+# Created by https://www.toptal.com/developers/gitignore/api/macos,xcode,swiftpm
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,xcode,swiftpm
 
 ### macOS ###
 # General
@@ -33,6 +33,14 @@ Temporary Items
 # iCloud generated files
 *.icloud
 
+### SwiftPM ###
+Packages
+.build/
+xcuserdata
+DerivedData/
+*.xcodeproj
+
+
 ### Xcode ###
 ## User settings
 xcuserdata/
@@ -50,4 +58,4 @@ xcuserdata/
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,xcode
+# End of https://www.toptal.com/developers/gitignore/api/macos,xcode,swiftpm
