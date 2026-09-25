@@ -8,9 +8,10 @@ import Testing
 enum Fixtures {
 	static func url(
 		_ name: String,
+		in bundle: Bundle = .module,
 		sourceLocation: SourceLocation = #_sourceLocation,
 	) throws -> URL {
-		let url = Bundle.module.url(
+		let url = bundle.url(
 			forResource: name,
 			withExtension: "fixture",
 			subdirectory: "Resources",
