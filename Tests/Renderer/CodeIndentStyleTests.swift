@@ -6,7 +6,7 @@ import Foundation
 import Testing
 @testable import SwiftStructureKit
 
-@Suite struct CodeIndentStyleTests {
+@Suite(.tags(.renderer)) struct CodeIndentStyleTests {
 	struct SpaceParam {
 		let perLevel: UInt
 		let renderedLevel: UInt

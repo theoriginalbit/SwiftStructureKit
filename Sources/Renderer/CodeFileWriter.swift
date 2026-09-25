@@ -37,20 +37,27 @@ struct CodeFileWriter: ~Copyable {
 		buffer.append(Self.newLine)
 	}
 
-	mutating func writeLine(_ line: String, indent: Bool = true) {
-		_writeLine(line.utf8, indent: indent)
+	mutating func writeLine(
+		_ line: String,
+		prefix: String = "",
+		indent: Bool = true
+	) {
+		_writeLine(line.utf8, prefix: prefix.utf8, indent: indent)
 	}
 
-	mutating func writeLine(_ work: (_ line: inout LineWriter) -> Void) {
+	mutating func writeLine(
+		prefix: String = "",
+		_ work: (_ line: inout LineWriter) -> Void
+	) {
 		var lineWriter = LineWriter()
 		work(&lineWriter)
 		let line = lineWriter.finish()
-		_writeLine(line)
+		_writeLine(line, prefix: prefix.utf8)
 	}
 
 	private mutating func _writeLine(
 		_ bytes: some Collection<UInt8>,
-		prefix: some Collection<UInt8> = EmptyCollection<UInt8>(),
+		prefix: some Collection<UInt8>,
 		indent: Bool = true
 	) {
 		func writeStartOfLine() {

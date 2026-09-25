@@ -1,7 +1,7 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite struct CodeFileWriterTests {
+@Suite(.tags(.renderer)) struct CodeFileWriterTests {
 	@Test("Test all major functions of the writer")
 	func wholeContract() async throws {
 		var writer = CodeFileWriter()
