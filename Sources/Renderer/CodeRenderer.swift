@@ -81,8 +81,8 @@ class CodeRenderer {
 		guard !codeBlock.statements.isEmpty else {
 			return
 		}
-		writer.indented { file in
-			renderStatements(codeBlock.statements, to: &file)
+		writer.indented { writer in
+			renderStatements(codeBlock.statements, to: &writer)
 		}
 	}
 
@@ -90,16 +90,32 @@ class CodeRenderer {
 		renderStatements(statements, to: &writer)
 	}
 
-	func renderStatements(_ statements: [StatementDescriptor], to file: inout CodeFileWriter) {
+	func renderStatements(_ statements: [StatementDescriptor], to writer: inout CodeFileWriter) {
 		for statement in statements {
-			renderStatement(statement, to: &file)
+			renderStatement(statement, to: &writer)
 		}
 	}
 
-	func renderStatement(_ statement: StatementDescriptor, to file: inout CodeFileWriter) {
-		switch statement.kind {
-		case let .return(expression):
-			file.writeLine { line in
+	func renderStatement(_ statement: StatementDescriptor) {
+		renderStatement(statement, to: &writer)
+	}
+
+	func renderStatement(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
+		writer.writeLine { line in
+			switch statement.kind {
+			case let .assignment(isMutable, identifier, type, expression):
+				line.token(isMutable ? "var" : "let")
+				line.token(identifier)
+				line.punctuation(":")
+				line.space()
+				line.token(renderedType(type))
+				if let expression {
+					line.space()
+					line.punctuation("=")
+					line.space()
+					line.token(renderedExpression(expression))
+				}
+			case let .return(expression):
 				line.token("return")
 				if let expression {
 					line.token(renderedExpression(expression))
@@ -226,6 +242,8 @@ class CodeRenderer {
 			"Array<\(renderedType(element))>"
 		case let .dictionary(key, value):
 			"Dictionary<\(renderedType(key)), \(renderedType(value))>"
+		case let .optional(value):
+			"Optional<\(renderedType(value))>"
 		}
 	}
 }
