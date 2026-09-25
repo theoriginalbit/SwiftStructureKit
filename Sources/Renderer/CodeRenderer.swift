@@ -17,67 +17,24 @@ class CodeRenderer {
 		return extracted.rendered()
 	}
 
-	// MARK: - Functions that render to the writer
+	// MARK: - Functions that render common types to the writer
 
-	func renderFunction(_ function: FunctionDescriptor) {
-		renderFunctionSignature(function.signature, hasBody: function.body != nil)
-		if let body = function.body {
-			renderCodeBlock(body)
-			writer.writeLine("}")
-		}
+	func renderTypeMember(_ member: TypeMemberDescriptor) {
+		renderTypeMember(member, to: &writer)
 	}
 
-	func renderFunctionSignature(_ signature: FunctionSignatureDescriptor, hasBody: Bool = false) {
-		renderDocComment(for: signature)
-
-		writer.writeLine { line in
-			if let accessModifier = signature.accessModifier {
-				line.token(renderedAccessModifier(accessModifier))
-			}
-
-			switch signature.kind {
-			case let .initializer(failable):
-				if failable {
-					line.token("init?")
-				} else {
-					line.token("init")
-				}
-			case let .function(name, _, isStatic):
-				if isStatic {
-					line.token("static")
-				}
-				line.token("func")
-				line.token(name)
-			}
-
-			renderParametersList(signature.parameters, into: &line)
-
-			if let effects = signature.effects {
-				line.space() // TODO: implementation detail knowing that parameter list renders a token at the end. need to be smarter somehow
-
-				if effects.isAsync {
-					line.token("async")
-				}
-
-				if let throwing = effects.throwingSpecifier {
-					line.token(renderedThrowingSpecifier(throwing))
-				}
-			}
-
-			if case let .function(_, returns, _) = signature.kind, let returns {
-				line.space()
-				line.token("->")
-				line.token(renderedType(returns))
-			}
-
-			if hasBody {
-				line.space()
-				line.punctuation("{")
-			}
+	func renderTypeMember(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
+		switch member {
+		case let .function(function):
+			renderFunction(function, to: &writer)
 		}
 	}
 
 	func renderCodeBlock(_ codeBlock: CodeBlockDescriptor) {
+		renderCodeBlock(codeBlock, to: &writer)
+	}
+
+	func renderCodeBlock(_ codeBlock: CodeBlockDescriptor, to writer: inout CodeFileWriter) {
 		guard !codeBlock.statements.isEmpty else {
 			return
 		}
@@ -86,45 +43,11 @@ class CodeRenderer {
 		}
 	}
 
-	func renderStatements(_ statements: [StatementDescriptor]) {
-		renderStatements(statements, to: &writer)
-	}
-
-	func renderStatements(_ statements: [StatementDescriptor], to writer: inout CodeFileWriter) {
-		for statement in statements {
-			renderStatement(statement, to: &writer)
-		}
-	}
-
-	func renderStatement(_ statement: StatementDescriptor) {
-		renderStatement(statement, to: &writer)
-	}
-
-	func renderStatement(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
-		writer.writeLine { line in
-			switch statement.kind {
-			case let .assignment(isMutable, identifier, type, expression):
-				line.token(isMutable ? "var" : "let")
-				line.token(identifier)
-				line.punctuation(":")
-				line.space()
-				line.token(renderedType(type))
-				if let expression {
-					line.space()
-					line.punctuation("=")
-					line.space()
-					line.token(renderedExpression(expression))
-				}
-			case let .return(expression):
-				line.token("return")
-				if let expression {
-					line.token(renderedExpression(expression))
-				}
-			}
-		}
-	}
-
 	func renderDocComment(for signature: FunctionSignatureDescriptor) {
+		renderDocComment(for: signature, to: &writer)
+	}
+
+	func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeFileWriter) {
 		guard let docComment = signature.comment else { return }
 
 		writer.writeLine(docComment.value, prefix: "/// ")
@@ -142,40 +65,6 @@ class CodeRenderer {
 					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
 				}
 			}
-		}
-	}
-
-	func renderParametersList(_ parametersList: ParametersList) {
-		writer.writeLine { line in
-			renderParametersList(parametersList, into: &line)
-		}
-	}
-
-	func renderParametersList(_ parametersList: ParametersList, into line: inout LineWriter) {
-		line.punctuation("(")
-		for (index, param) in parametersList.parameters.enumerated() {
-			renderParameter(param, into: &line)
-			if index < parametersList.parameters.endIndex - 1 {
-				line.punctuation(",")
-				line.space()
-			}
-		}
-		line.punctuation(")")
-	}
-
-	func renderParameter(_ parameter: ParametersList.Parameter, into writer: inout LineWriter) {
-		if let label = parameter.label, label != parameter.identifier {
-			writer.token(label)
-		}
-		writer.token(parameter.identifier)
-		writer.punctuation(":")
-		writer.space()
-		writer.token(renderedType(parameter.type))
-		if let defaultValue = parameter.defaultValue {
-			writer.space()
-			writer.punctuation("=")
-			writer.space()
-			writer.token(renderedExpression(defaultValue))
 		}
 	}
 

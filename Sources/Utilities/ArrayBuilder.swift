@@ -4,31 +4,33 @@
 
 @resultBuilder
 public enum ArrayBuilder<T> {
-	public static func buildBlock(_ components: [T]...) -> [T] {
+	public typealias Result = [T]
+
+	public static func buildBlock(_ components: Result...) -> Result {
 		Array(components.joined())
 	}
 
-	public static func buildOptional(_ component: [T]?) -> [T] {
+	public static func buildOptional(_ component: Result?) -> Result {
 		component ?? []
 	}
 
-	public static func buildEither(first component: [T]) -> [T] {
+	public static func buildEither(first component: Result) -> Result {
 		component
 	}
 
-	public static func buildEither(second component: [T]) -> [T] {
+	public static func buildEither(second component: Result) -> Result {
 		component
 	}
 
-	public static func buildArray(_ components: [[T]]) -> [T] {
+	public static func buildArray(_ components: [Result]) -> Result {
 		Array(components.joined())
 	}
 
-	public static func buildExpression(_ statement: T) -> [T] {
+	public static func buildExpression(_ statement: T) -> Result {
 		[statement]
 	}
 
-	public static func buildLimitedAvailability(_ component: [T]) -> [T] {
+	public static func buildLimitedAvailability(_ component: Result) -> Result {
 		component
 	}
 }

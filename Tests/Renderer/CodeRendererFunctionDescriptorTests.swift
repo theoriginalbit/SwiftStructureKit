@@ -5,7 +5,9 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.renderer)) struct CodeRendererTests {
+@Suite(.tags(.renderer))
+struct CodeRendererFunctionDescriptorTests {
+
 	@Test("Render basic function without body")
 	func renderBasicFunctionSignature() {
 		let signature = FunctionSignatureDescriptor(
