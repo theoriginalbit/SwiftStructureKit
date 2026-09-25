@@ -5,7 +5,8 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.renderer)) struct StatementDescriptorRenderTests {
+@Suite(.tags(.declaration, .renderer))
+struct CodeRendererStatementDescriptorTests {
 	// MARK: - Assignment
 
 	@Test func varDeclaration() {

@@ -5,7 +5,9 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.declaration, .renderer)) struct ParametersListRenderTests {
+@Suite(.tags(.declaration, .renderer))
+struct CodeRendererParametersListTests {
+
 	@Test("Render empty parameters list")
 	func renderEmptyParametersList() {
 		let list = ParametersList()
