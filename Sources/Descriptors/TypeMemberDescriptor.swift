@@ -25,7 +25,7 @@ public enum TypeMemberDescriptor: Sendable {
 		failable: Bool,
 		parameters: ParametersList = [],
 		effects: EffectSpecifiers? = nil,
-		@CodeBlockBuilder body: () -> [StatementDescriptor],
+		@CodeBlockDescriptor.Builder body: () -> CodeBlockDescriptor.Builder.Result,
 	) -> Self {
 		Self.function(FunctionDescriptor(
 			signature: .init(
@@ -59,7 +59,7 @@ public enum TypeMemberDescriptor: Sendable {
 		isStatic: Bool = false,
 		parameters: ParametersList = [],
 		effects: EffectSpecifiers? = nil,
-		@CodeBlockBuilder body: () -> [StatementDescriptor],
+		@CodeBlockDescriptor.Builder body: () -> CodeBlockDescriptor.Builder.Result,
 	) -> Self {
 		Self.function(FunctionDescriptor(
 			signature: .init(
@@ -75,5 +75,11 @@ public enum TypeMemberDescriptor: Sendable {
 			),
 			body: body,
 		))
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ descriptor: FunctionDescriptor) -> [T] {
+		[.function(descriptor)]
 	}
 }

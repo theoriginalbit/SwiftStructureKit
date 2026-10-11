@@ -4,19 +4,14 @@
 
 /// A code block is an intermediate storage for 0 or more statements.
 public struct CodeBlockDescriptor: Sendable {
-	/// The statements contained within the code block.
-	public let statements: CodeBlockBuilder.Result
+	/// A result builder for constructing code blocks.
+	public typealias Builder = ArrayBuilder<StatementDescriptor>
 
-	/// Creates a code block with an array of statements.
-	public init(statements: CodeBlockBuilder.Result = []) {
-		self.statements = statements
-	}
+	/// The statements contained within the code block.
+	public let statements: Builder.Result
 
 	/// Creates a code block using a result builder.
-	public init(@CodeBlockBuilder _ builder: () -> CodeBlockBuilder.Result) {
+	public init(@Builder _ builder: () -> Builder.Result) {
 		self.statements = builder()
 	}
 }
-
-/// A result builder for constructing code blocks.
-public typealias CodeBlockBuilder = ArrayBuilder<StatementDescriptor>

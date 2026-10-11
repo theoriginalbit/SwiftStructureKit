@@ -13,6 +13,6 @@ public struct DocCommentDescriptor: Sendable {
 
 extension DocCommentDescriptor: ExpressibleByStringLiteral {
 	public init(stringLiteral value: StringLiteralType) {
-		self.value = value
+		self.init(value)
 	}
 }

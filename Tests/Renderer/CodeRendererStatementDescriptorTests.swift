@@ -10,7 +10,7 @@ struct CodeRendererStatementDescriptorTests {
 	// MARK: - Assignment
 
 	@Test func varDeclaration() {
-		let input = StatementDescriptor.var("test", type: .optional(.type("String")))
+		let input = StatementDescriptor.var("test", type: .optional(.string))
 		let output = RenderTest.render { renderer in
 			renderer.renderStatement(input)
 		}
@@ -18,7 +18,7 @@ struct CodeRendererStatementDescriptorTests {
 	}
 
 	@Test func varStatement() {
-		let input = StatementDescriptor.var("test", type: .type("Int"), expression: .literal(.integer(123)))
+		let input = StatementDescriptor.var("test", type: .int, expression: .literal(.integer(123)))
 		let output = RenderTest.render { renderer in
 			renderer.renderStatement(input)
 		}
@@ -26,7 +26,7 @@ struct CodeRendererStatementDescriptorTests {
 	}
 
 	@Test func letDeclaration() {
-		let input = StatementDescriptor.let("test", type: .optional(.type("String")))
+		let input = StatementDescriptor.let("test", type: .optional(.string))
 		let output = RenderTest.render { renderer in
 			renderer.renderStatement(input)
 		}
@@ -34,7 +34,7 @@ struct CodeRendererStatementDescriptorTests {
 	}
 
 	@Test func letStatement() {
-		let input = StatementDescriptor.let("test", type: .type("Int"), expression: .literal(.integer(123)))
+		let input = StatementDescriptor.let("test", type: .int, expression: .literal(.integer(123)))
 		let output = RenderTest.render { renderer in
 			renderer.renderStatement(input)
 		}

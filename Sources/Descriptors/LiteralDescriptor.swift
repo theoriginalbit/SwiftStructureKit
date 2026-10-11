@@ -3,7 +3,7 @@
 //
 
 /// A descriptor representing a literal value in Swift source code.
-public enum LiteralDescriptor: Sendable {
+public enum LiteralDescriptor: Equatable, Sendable {
 	/// A string literal value.
 	case string(String)
 

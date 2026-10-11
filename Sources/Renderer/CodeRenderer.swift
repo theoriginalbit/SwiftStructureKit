@@ -19,8 +19,67 @@ class CodeRenderer {
 
 	// MARK: - Functions that render common types to the writer
 
-	func renderTypeMember(_ member: TypeMemberDescriptor) {
-		renderTypeMember(member, to: &writer)
+	func renderTypeSignature(
+		comment: DocCommentDescriptor?,
+		accessModifier: AccessModifierDescriptor?,
+		typeKeyword: String,
+		identifier: String,
+		genericTypes: [TypeReference],
+		conformances: [TypeReference],
+		to writer: inout CodeFileWriter,
+	) {
+		if let comment = comment {
+			writer.writeLine(comment.value, prefix: "/// ")
+		}
+
+		writer.writeLine { line in
+			if let accessModifier = accessModifier {
+				line.token(renderedAccessModifier(accessModifier))
+			}
+
+			line.token(typeKeyword)
+
+			line.token(identifier)
+
+			if !genericTypes.isEmpty {
+				line.punctuation("<")
+				for (index, genericType) in genericTypes.enumerated() {
+					line.token(renderedType(genericType))
+					if index < genericTypes.count - 1 {
+						line.punctuation(",")
+						line.space()
+					}
+				}
+				line.punctuation(">")
+			}
+
+			if !conformances.isEmpty {
+				line.punctuation(":")
+				line.space()
+				for (index, conformance) in conformances.enumerated() {
+					line.token(renderedType(conformance))
+					if index < conformances.count - 1 {
+						line.punctuation(",")
+						line.space()
+					}
+				}
+			}
+
+			line.space()
+			line.punctuation("{")
+		}
+	}
+
+	func renderTypeMembers(_ members: TypeMembersBuilder.Result, to writer: inout CodeFileWriter) {
+		guard !members.isEmpty else { return }
+		writer.indented { writer in
+			for (index, member) in members.enumerated() {
+				renderTypeMember(member, to: &writer)
+				if index < members.count - 1 {
+					writer.writeNewLine()
+				}
+			}
+		}
 	}
 
 	func renderTypeMember(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
@@ -30,10 +89,6 @@ class CodeRenderer {
 		}
 	}
 
-	func renderCodeBlock(_ codeBlock: CodeBlockDescriptor) {
-		renderCodeBlock(codeBlock, to: &writer)
-	}
-
 	func renderCodeBlock(_ codeBlock: CodeBlockDescriptor, to writer: inout CodeFileWriter) {
 		guard !codeBlock.statements.isEmpty else {
 			return
@@ -41,10 +96,6 @@ class CodeRenderer {
 		writer.indented { writer in
 			renderStatements(codeBlock.statements, to: &writer)
 		}
-	}
-
-	func renderDocComment(for signature: FunctionSignatureDescriptor) {
-		renderDocComment(for: signature, to: &writer)
 	}
 
 	func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeFileWriter) {
@@ -124,15 +175,6 @@ class CodeRenderer {
 	}
 
 	func renderedType(_ type: TypeReference) -> String {
-		return switch type {
-		case let .type(value):
-			value
-		case let .array(element):
-			"Array<\(renderedType(element))>"
-		case let .dictionary(key, value):
-			"Dictionary<\(renderedType(key)), \(renderedType(value))>"
-		case let .optional(value):
-			"Optional<\(renderedType(value))>"
-		}
+		type.sourceIdentifier
 	}
 }

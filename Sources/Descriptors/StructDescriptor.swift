@@ -20,7 +20,7 @@ public struct StructDescriptor: Sendable {
 	public let conformances: [TypeReference]
 
 	/// The member declarations contained within the struct.
-	public let members: StructMembersBuilder.Result
+	public let members: TypeMembersBuilder.Result
 
 	/// Creates a struct descriptor with an explicit array of member descriptors.
 	///
@@ -37,7 +37,7 @@ public struct StructDescriptor: Sendable {
 		accessModifier: AccessModifierDescriptor? = nil,
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
-		members: StructMembersBuilder.Result,
+		members: TypeMembersBuilder.Result,
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -63,7 +63,7 @@ public struct StructDescriptor: Sendable {
 		accessModifier: AccessModifierDescriptor? = nil,
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
-		@StructMembersBuilder members: () -> StructMembersBuilder.Result,
+		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result,
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -71,13 +71,5 @@ public struct StructDescriptor: Sendable {
 		self.genericTypes = genericTypes
 		self.conformances = conformances
 		self.members = members()
-	}
-}
-
-public typealias StructMembersBuilder = ArrayBuilder<TypeMemberDescriptor>
-
-public extension StructMembersBuilder {
-	static func buildExpression(_ descriptor: FunctionDescriptor) -> [T] {
-		[.function(descriptor)]
 	}
 }

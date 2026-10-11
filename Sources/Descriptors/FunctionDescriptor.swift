@@ -10,19 +10,10 @@ public struct FunctionDescriptor: Sendable {
 	/// The body definition of the function.
 	public let body: CodeBlockDescriptor?
 
-	/// Creates a function descriptor with a signature and optional body code block.
-	public init(
-		signature: FunctionSignatureDescriptor,
-		body: CodeBlockDescriptor? = nil
-	) {
-		self.signature = signature
-		self.body = body
-	}
-
 	/// Creates a function descriptor with a signature and result builder body.
 	public init(
 		signature: FunctionSignatureDescriptor,
-		@CodeBlockBuilder body: () -> [StatementDescriptor]
+		@CodeBlockDescriptor.Builder body: () -> CodeBlockDescriptor.Builder.Result,
 	) {
 		self.signature = signature
 		self.body = CodeBlockDescriptor(body)

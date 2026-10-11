@@ -20,7 +20,7 @@ struct CodeFileWriter: ~Copyable {
 		indentStyle = style
 	}
 
-	mutating func indented(_ work: (_ file: inout Self) -> Void) {
+	mutating func indented(_ work: (_ writer: inout Self) -> Void) {
 		indentLevel += 1
 		defer { indentLevel -= 1 }
 		work(&self)

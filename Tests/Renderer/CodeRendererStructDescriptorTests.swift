@@ -30,8 +30,8 @@ struct CodeRendererStructDescriptorTests {
 		let structDescriptor = StructDescriptor(
 			"GenericContainer",
 			accessModifier: .public,
-			genericTypes: [.type("T"), .type("U")],
-			conformances: [.type("Sendable"), .type("Equatable")],
+			genericTypes: [.identifier("T"), .identifier("U")],
+			conformances: [.sendable, .equatable],
 			members: []
 		)
 		let output = RenderTest.render { renderer in
@@ -72,14 +72,14 @@ struct CodeRendererStructDescriptorTests {
 			TypeMemberDescriptor.initializer(
 				accessModifier: .public,
 				failable: false,
-				parameters: [.init("id", type: "String")],
+				parameters: [.init("id", type: .string)],
 				body: {},
 			)
 			TypeMemberDescriptor.function(
 				comment: "Gets the identifier.",
 				accessModifier: .public,
 				name: "getIdentifier",
-				returns: .type("String")
+				returns: .string,
 			) {
 				StatementDescriptor.return(.literal(.string("123")))
 			}

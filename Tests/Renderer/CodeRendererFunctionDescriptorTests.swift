@@ -24,10 +24,10 @@ struct CodeRendererFunctionDescriptorTests {
 	func renderComplexFunctionSignature() {
 		let signature = FunctionSignatureDescriptor(
 			accessModifier: .public,
-			kind: .function("calculate", returns: "Int", isStatic: true),
+			kind: .function("calculate", returns: .int, isStatic: true),
 			parameters: [
-				.init(label: "for", "key", type: "String"),
-				.init("count", type: "Int", defaultValue: .literal(.integer(10)))
+				.init(label: "for", "key", type: .string),
+				.init("count", type: .int, defaultValue: .literal(.integer(10)))
 			]
 		)
 		let output = RenderTest.render { renderer in
@@ -67,7 +67,7 @@ struct CodeRendererFunctionDescriptorTests {
 		let signature = FunctionSignatureDescriptor(
 			kind: .function("validate"),
 			parameters: [],
-			effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .typed("ValidationError"))
+			effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .typed(.identifier("ValidationError")))
 		)
 		let output = RenderTest.render { renderer in
 			renderer.renderFunctionSignature(signature)
@@ -80,7 +80,7 @@ struct CodeRendererFunctionDescriptorTests {
 		let initSignature = FunctionSignatureDescriptor(
 			accessModifier: .public,
 			kind: .initializer(failable: false),
-			parameters: [.init("name", type: "String")]
+			parameters: [.init("name", type: .string)]
 		)
 		let initOutput = RenderTest.render { renderer in
 			renderer.renderFunctionSignature(initSignature)
@@ -90,7 +90,7 @@ struct CodeRendererFunctionDescriptorTests {
 		let failableInitSignature = FunctionSignatureDescriptor(
 			accessModifier: .fileprivate,
 			kind: .initializer(failable: true),
-			parameters: [.init(label: "_", "raw", type: "Int")]
+			parameters: [.init(label: "_", "raw", type: .int)]
 		)
 		let failableInitOutput = RenderTest.render { renderer in
 			renderer.renderFunctionSignature(failableInitSignature)
@@ -103,8 +103,8 @@ struct CodeRendererFunctionDescriptorTests {
 		let function = FunctionDescriptor(
 			signature: FunctionSignatureDescriptor(
 				accessModifier: .internal,
-				kind: .function("greet", returns: "String"),
-				parameters: [.init("name", type: "String")]
+				kind: .function("greet", returns: .string),
+				parameters: [.init("name", type: .string)]
 			)
 		) {
 			StatementDescriptor.return(.literal(.string("Hello!")))
@@ -127,7 +127,7 @@ struct CodeRendererFunctionDescriptorTests {
 			comment: "Performs process.",
 			kind: .function("process"),
 			parameters: [
-				.init("input", type: "Data", comment: "The input data to process.")
+				.init("input", type: .data, comment: "The input data to process.")
 			]
 		)
 		let output = RenderTest.render { renderer in
@@ -149,8 +149,8 @@ struct CodeRendererFunctionDescriptorTests {
 			comment: DocCommentDescriptor("Configures the item.\nAdditional details line."),
 			kind: .function("configure"),
 			parameters: [
-				.init(label: "with", "name", type: "String", comment: "The item name."),
-				.init("count", type: "Int", comment: "The total count.")
+				.init(label: "with", "name", type: .string, comment: "The item name."),
+				.init("count", type: .int, comment: "The total count.")
 			]
 		)
 		let output = RenderTest.render { renderer in
@@ -175,7 +175,7 @@ struct CodeRendererFunctionDescriptorTests {
 			comment: nil,
 			kind: .function("run"),
 			parameters: [
-				.init("step", type: "Int", comment: "Step count")
+				.init("step", type: .int, comment: "Step count")
 			]
 		)
 		let output = RenderTest.render { renderer in
