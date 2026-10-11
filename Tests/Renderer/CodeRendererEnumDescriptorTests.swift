@@ -10,10 +10,8 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render uninhabited enum")
 	func renderUninhabitedEnum() {
-		let enumDescriptor = EnumDescriptor<PlainEnumMode>(
-			identifier: "Direction",
-			cases: {}
-		)
+		let enumDescriptor = PlainEnumDescriptor("Direction")
+
 		let output = RenderTest.render { renderer in
 			renderer.renderEnum(enumDescriptor)
 		}
@@ -27,12 +25,11 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render complex enum header with access modifier, generic types, and conformances")
 	func renderComplexEnumHeader() {
-		let enumDescriptor = EnumDescriptor<PlainEnumMode>(
+		let enumDescriptor = PlainEnumDescriptor(
+			"Result",
 			accessModifier: .public,
-			identifier: "Result",
 			genericTypes: [.identifier("Success"), .identifier("Failure")],
 			conformances: [.sendable],
-			cases: {}
 		)
 		let output = RenderTest.render { renderer in
 			renderer.renderEnum(enumDescriptor)
@@ -47,14 +44,14 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render plain enum with cases and doc comments")
 	func renderPlainEnumWithCases() {
-		let enumDescriptor = PlainEnum(
+		let enumDescriptor = PlainEnumDescriptor(
+			"CompassDirection",
 			comment: "A compass direction.",
-			identifier: "CompassDirection"
 		) {
-			PlainEnumCase("north", comment: "Heading north.")
-			PlainEnumCase("south")
-			PlainEnumCase("east")
-			"west"
+			PlainEnumCaseDescriptor("north", comment: "Heading north.")
+			PlainEnumCaseDescriptor("south")
+			PlainEnumCaseDescriptor("east")
+			PlainEnumCaseDescriptor("west")
 		}
 		let output = RenderTest.render { renderer in
 			renderer.renderEnum(enumDescriptor)
@@ -75,14 +72,14 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render raw value enum with explicit and implicit raw values")
 	func renderRawValueEnum() {
-		let enumDescriptor = RawValueEnum<String>(
+		let enumDescriptor = RawValueEnumDescriptor<String>(
+			"HTTPMethod",
 			accessModifier: .public,
-			identifier: "HTTPMethod",
 			conformances: [.string]
 		) {
-			RawValueEnumCase("get", rawValue: .string("GET"))
-			RawValueEnumCase("post", rawValue: .string("POST"))
-			RawValueEnumCase("custom")
+			RawValueEnumCaseDescriptor("get", rawValue: "GET")
+			RawValueEnumCaseDescriptor("post", rawValue: .string("POST"))
+			RawValueEnumCaseDescriptor("custom")
 		}
 		let output = RenderTest.render { renderer in
 			renderer.renderEnum(enumDescriptor)
@@ -100,12 +97,12 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render raw value enum with integer raw values")
 	func renderIntegerRawValueEnum() {
-		let enumDescriptor = RawValueEnum<Int>(
-			identifier: "StatusCode",
+		let enumDescriptor = RawValueEnumDescriptor(
+			"StatusCode",
 			conformances: [.int]
 		) {
-			RawValueEnumCase("ok", rawValue: .integer(200))
-			RawValueEnumCase("notFound", rawValue: .integer(404))
+			RawValueEnumCaseDescriptor("ok", rawValue: 200)
+			RawValueEnumCaseDescriptor("notFound", rawValue: .integer(404))
 		}
 		let output = RenderTest.render { renderer in
 			renderer.renderEnum(enumDescriptor)
@@ -120,21 +117,19 @@ struct CodeRendererEnumDescriptorTests {
 		#expect(output == expected)
 	}
 
-	@Test("Render associated value enum with labeled and unlabeled values")
+	@Test("Render associated value enum with labeled and unlabelled values")
 	func renderAssociatedValueEnum() {
-		let enumDescriptor = AssociatedValueEnum(
-			identifier: "NetworkState"
-		) {
-			"idle"
-			AssociatedValueEnumCase(
+		let enumDescriptor = AssociatedValueEnumDescriptor("NetworkState") {
+			AssociatedValueEnumCaseDescriptor("idle")
+			AssociatedValueEnumCaseDescriptor(
 				"loading",
 				associatedValues: [.init(label: "progress", type: .double)]
 			)
-			AssociatedValueEnumCase(
+			AssociatedValueEnumCaseDescriptor(
 				"success",
 				associatedValues: [.init(label: "data", type: .identifier("Data")), .init(type: .string)]
 			)
-			AssociatedValueEnumCase(
+			AssociatedValueEnumCaseDescriptor(
 				"failure",
 				associatedValues: [.init(type: .identifier("Error"))]
 			)
@@ -156,12 +151,12 @@ struct CodeRendererEnumDescriptorTests {
 
 	@Test("Render enum with cases and members")
 	func renderEnumWithCasesAndMembers() {
-		let enumDescriptor = PlainEnum(
+		let enumDescriptor = PlainEnumDescriptor(
+			"State",
 			accessModifier: .public,
-			identifier: "State",
 			cases: {
-				PlainEnumCase("active")
-				PlainEnumCase("inactive")
+				PlainEnumCaseDescriptor("active")
+				PlainEnumCaseDescriptor("inactive")
 			},
 			members: {
 				TypeMemberDescriptor.function(
@@ -191,26 +186,24 @@ struct CodeRendererEnumDescriptorTests {
 	}
 
 	@Test("Render associated value enum with labeled and unlabelled values")
-	func renderAssociatedValueEnumWithDefaultValues() throws {
-		let enumDescriptor = AssociatedValueEnum(
-			identifier: "NetworkResult"
-		) {
-			AssociatedValueEnumCase(
+	func renderAssociatedValueEnumWithDefaultValues() {
+		let enumDescriptor = AssociatedValueEnumDescriptor("NetworkResult") {
+			AssociatedValueEnumCaseDescriptor(
 				"success",
 				associatedValues: [
-					AssociatedValueDescriptor(type: .data),
-					AssociatedValueDescriptor(type: .string, defaultValue: .literal(.string(""))),
+					EnumCaseAssociatedValueDescriptor(type: .data),
+					EnumCaseAssociatedValueDescriptor(type: .string, defaultValue: .literal(.string(""))),
 				],
 			)
-			AssociatedValueEnumCase(
+			AssociatedValueEnumCaseDescriptor(
 				"failure",
 				associatedValues: [
-					AssociatedValueDescriptor(
+					EnumCaseAssociatedValueDescriptor(
 						label: "afterAttempts",
 						type: .int,
 						defaultValue: .literal(.integer(1)),
 					),
-					AssociatedValueDescriptor(
+					EnumCaseAssociatedValueDescriptor(
 						type: .optional(.identifier("Error")),
 						defaultValue: .literal(.nil)
 					)
@@ -227,6 +220,69 @@ struct CodeRendererEnumDescriptorTests {
 		}
 		
 		"""
+		#expect(output == expected)
+	}
+
+	@Test("Render namespace enum")
+	func renderNamespaceEnum() throws {
+		let enumDescriptor = PlainEnumDescriptor("L10n") {} members: {
+			TypeMemberDescriptor.mark("Screen-based localization")
+
+			TypeMemberDescriptor.enum("Screen") {} members: {
+				TypeMemberDescriptor.function(
+					name: "okay",
+					returns: .string,
+					isStatic: true,
+				) {
+					StatementDescriptor.return(.literal(.string("Okay")))
+				}
+			}
+
+			TypeMemberDescriptor.mark("Ran out of ideas", sectionBreak: true)
+
+			TypeMemberDescriptor.struct("Foo") {
+				TypeMemberDescriptor.function(
+					name: "bar",
+					returns: .string,
+				) {
+					StatementDescriptor.return(.literal(.string("Hello, world!")))
+				}
+			}
+
+			TypeMemberDescriptor.enum("CodingKeys") {
+				RawValueEnumCaseDescriptor("key")
+				RawValueEnumCaseDescriptor("localizationValue", rawValue: "loc_value")
+			}
+		}
+		let output = RenderTest.render { renderer in
+			renderer.renderEnum(enumDescriptor)
+		}
+		let expected = """
+		enum L10n {
+		    // MARK: Screen-based localization
+		
+		    enum Screen {
+		        static func okay() -> String {
+		            return "Okay"
+		        }
+		    }
+		
+		    // MARK: - Ran out of ideas
+		
+		    struct Foo {
+		        func bar() -> String {
+		            return "Hello, world!"
+		        }
+		    }
+		
+		    enum CodingKeys: String {
+		        case key
+		        case localizationValue = "loc_value"
+		    }
+		}
+
+		"""
+		try ReferenceTest.assert(output, matches: expected)
 		#expect(output == expected)
 	}
 }

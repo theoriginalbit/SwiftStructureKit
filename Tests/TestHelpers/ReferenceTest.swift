@@ -130,7 +130,7 @@ enum ReferenceTest {
 			"diff",
 			"--no-index",
 			"--no-color",     // in case color.ui = always is set globally
-			"--unified=0",    // changed lines only, no surrounding context
+//			"--unified=0",    // changed lines only, no surrounding context
 			"--",
 			expected.path,
 			actual.path,

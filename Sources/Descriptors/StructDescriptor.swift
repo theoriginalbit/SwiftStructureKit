@@ -23,15 +23,7 @@ public struct StructDescriptor: Sendable {
 	public let members: TypeMembersBuilder.Result
 
 	/// Creates a struct descriptor with an explicit array of member descriptors.
-	///
-	/// - Parameters:
-	///   - identifier: The name of the struct.
-	///   - comment: An optional documentation comment for the struct.
-	///   - accessModifier: An optional access level modifier for the struct.
-	///   - genericTypes: The generic type parameters associated with the struct.
-	///   - conformances: The types or protocols the struct conforms to.
-	///   - members: The list of member descriptors contained within the struct.
-	public init(
+	init(
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
@@ -47,7 +39,6 @@ public struct StructDescriptor: Sendable {
 		self.members = members
 	}
 
-	///
 	/// Creates a struct descriptor using a result builder to define member descriptors.
 	///
 	/// - Parameters:

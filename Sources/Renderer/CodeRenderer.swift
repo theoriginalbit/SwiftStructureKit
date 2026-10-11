@@ -84,8 +84,14 @@ class CodeRenderer {
 
 	func renderTypeMember(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
 		switch member {
-		case let .function(function):
-			renderFunction(function, to: &writer)
+		case let .function(descriptor):
+			renderFunction(descriptor, to: &writer)
+		case let .enum(descriptor):
+			renderEnum(descriptor, to: &writer)
+		case let .struct(descriptor):
+			renderStruct(descriptor, to: &writer)
+		case let .mark(descriptor):
+			renderMarkComment(descriptor, to: &writer)
 		}
 	}
 
@@ -115,6 +121,20 @@ class CodeRenderer {
 				if let comment = param.comment {
 					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
 				}
+			}
+		}
+	}
+
+	func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeFileWriter) {
+		writer.writeLine { line in
+			line.token("// MARK:")
+			if descriptor.sectionBreak {
+				line.space()
+				line.punctuation("-")
+				line.space()
+			}
+			if let value = descriptor.value {
+				line.token(value)
 			}
 		}
 	}

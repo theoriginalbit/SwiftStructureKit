@@ -3,11 +3,23 @@
 //
 
 extension CodeRenderer {
-	func renderEnum(_ enumDescriptor: EnumDescriptor<some EnumMode>) {
-		renderEnum(enumDescriptor, to: &writer)
+	func renderEnum(_ descriptor: AnyEnumDescriptor) {
+		renderEnum(descriptor, to: &writer)
 	}
 
-	func renderEnum(_ descriptor: EnumDescriptor<some EnumMode>, to writer: inout CodeFileWriter) {
+	func renderEnum(_ descriptor: PlainEnumDescriptor) {
+		renderEnum(descriptor.descriptor, to: &writer)
+	}
+
+	func renderEnum(_ descriptor: RawValueEnumDescriptor<some RawValueEnumValueType>) {
+		renderEnum(descriptor.descriptor, to: &writer)
+	}
+
+	func renderEnum(_ descriptor: AssociatedValueEnumDescriptor) {
+		renderEnum(descriptor.descriptor, to: &writer)
+	}
+
+	func renderEnum(_ descriptor: AnyEnumDescriptor, to writer: inout CodeFileWriter) {
 		renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
@@ -37,7 +49,7 @@ extension CodeRenderer {
 
 	// MARK: - Enum case rendering
 
-	func renderEnumCase(_ descriptor: EnumCaseDescriptor<some EnumMode>, to writer: inout CodeFileWriter) {
+	func renderEnumCase(_ descriptor: AnyEnumCaseDescriptor, to writer: inout CodeFileWriter) {
 		if let comment = descriptor.comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}

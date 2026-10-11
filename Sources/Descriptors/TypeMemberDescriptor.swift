@@ -7,6 +7,17 @@ public enum TypeMemberDescriptor: Sendable {
 	/// A member that is a function, represented by its ``FunctionDescriptor``.
 	case function(FunctionDescriptor)
 
+	/// A member that is an enum, represented by its ``EnumDescriptor``.
+	case `enum`(AnyEnumDescriptor)
+
+	/// A member that is a struct, represented by its ``StructDescriptor``.
+	case `struct`(StructDescriptor)
+
+	/// A member that is a mark comment, represented by its ``MarkCommentDescriptor``
+	case mark(MarkCommentDescriptor)
+}
+
+public extension TypeMemberDescriptor {
 	// MARK: - Function Conveniences
 
 	/// Creates a member descriptor for an initializer.
@@ -76,10 +87,168 @@ public enum TypeMemberDescriptor: Sendable {
 			body: body,
 		))
 	}
+
+	// MARK: - Enum Conveniences
+
+	/// Creates a plain enum descriptor.
+	///
+	/// - Note: Uninhabited enum creation will go down this path.
+	/// - Parameters:
+	///   - identifier: The name of the enum.
+	///   - comment: An optional documentation comment for the enum.
+	///   - accessModifier: An optional access level modifier for the enum.
+	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - conformances: The types or protocols the enum conforms to.
+	///   - cases: A result builder closure producing the case descriptors for the enum.
+	///   - members: A result builder closure producing the member descriptors contained within the enum.
+	static func `enum`(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
+		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result = { [] },
+	) -> Self {
+		Self.enum(PlainEnumDescriptor(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			cases: cases,
+			members: members,
+		).descriptor)
+	}
+
+	/// Creates an enum with raw values descriptor.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the enum.
+	///   - comment: An optional documentation comment for the enum.
+	///   - accessModifier: An optional access level modifier for the enum.
+	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - conformances: The types or protocols the enum conforms to.
+	///   - cases: A result builder closure producing the case descriptors for the enum.
+	///   - members: A result builder closure producing the member descriptors contained within the enum.
+	@_disfavoredOverload static func `enum`<RawValueType: RawValueEnumValueType>(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@ArrayBuilder<RawValueEnumCaseDescriptor<RawValueType>> rawValueCases cases: () -> [RawValueEnumCaseDescriptor<RawValueType>],
+		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result = { [] },
+	) -> Self {
+		Self.enum(RawValueEnumDescriptor<RawValueType>(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			cases: cases,
+			members: members,
+		).descriptor)
+	}
+
+	/// Creates an enum with associated values descriptor.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the enum.
+	///   - comment: An optional documentation comment for the enum.
+	///   - accessModifier: An optional access level modifier for the enum.
+	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - conformances: The types or protocols the enum conforms to.
+	///   - cases: A result builder closure producing the case descriptors for the enum.
+	///   - members: A result builder closure producing the member descriptors contained within the enum.
+	@_disfavoredOverload static func `enum`(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> associatedValueCases cases: () -> [AssociatedValueEnumCaseDescriptor],
+		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result = { [] },
+	) -> Self {
+		Self.enum(AssociatedValueEnumDescriptor(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			cases: cases,
+			members: members,
+		).descriptor)
+	}
+
+	// MARK: - Struct Conveniences
+
+	/// Creates a member descriptor for a struct.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the struct.
+	///   - comment: An optional documentation comment for the struct.
+	///   - accessModifier: An optional access level modifier for the struct.
+	///   - genericTypes: The generic type parameters associated with the struct.
+	///   - conformances: The types or protocols the struct conforms to.
+	///   - members: A result builder closure producing the member descriptors contained within the struct.
+	static func `struct`(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result,
+	) -> Self {
+		Self.struct(StructDescriptor(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			members: members(),
+		))
+	}
+
+	// MARK: - Mark Conveniences
+
+	static func mark(
+		_ value: String?,
+		sectionBreak: Bool = false
+	) -> Self {
+		Self.mark(MarkCommentDescriptor(
+			value,
+			sectionBreak: sectionBreak,
+		))
+	}
 }
 
 public extension ArrayBuilder<TypeMemberDescriptor> {
-	static func buildExpression(_ descriptor: FunctionDescriptor) -> [T] {
-		[.function(descriptor)]
+	static func buildExpression(_ expression: FunctionDescriptor) -> [T] {
+		[.function(expression)]
+	}
+
+	static func buildExpression(_ expression: AnyEnumDescriptor) -> [T] {
+		[.enum(expression)]
+	}
+
+	static func buildExpression(_ expression: PlainEnumDescriptor) -> [T] {
+		[.enum(expression.descriptor)]
+	}
+
+	static func buildExpression(_ expression: RawValueEnumDescriptor<some RawValueEnumValueType>) -> [T] {
+		[.enum(expression.descriptor)]
+	}
+
+	static func buildExpression(_ expression: AssociatedValueEnumDescriptor) -> [T] {
+		[.enum(expression.descriptor)]
+	}
+
+	static func buildExpression(_ expression: StructDescriptor) -> [T] {
+		[.struct(expression)]
+	}
+
+	static func buildExpression(_ expression: MarkCommentDescriptor) -> [T] {
+		[.mark(expression)]
 	}
 }
