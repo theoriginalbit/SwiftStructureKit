@@ -86,6 +86,8 @@ class CodeRenderer {
 			renderStruct(descriptor, to: &writer)
 		case let .mark(descriptor):
 			renderMarkComment(descriptor, to: &writer)
+		case let .diagnostic(descriptor):
+			renderDiagnosticDirective(descriptor, to: &writer)
 		}
 	}
 

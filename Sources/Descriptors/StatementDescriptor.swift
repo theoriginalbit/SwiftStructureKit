@@ -18,6 +18,8 @@ public struct StatementDescriptor: Sendable {
 		/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 		case comment(InlineCommentDescriptor)
 
+		case diagnostic(DiagnosticDirectiveDescriptor)
+
 		/// A return statement with an optional return expression.
 		case `return`(ExpressionDescriptor?)
 	}
@@ -40,6 +42,14 @@ public extension StatementDescriptor {
 
 	static func comment(_ value: String) -> Self {
 		Self(.comment(InlineCommentDescriptor(value)))
+	}
+
+	static func warning(_ message: String) -> Self {
+		Self(.diagnostic(DiagnosticDirectiveDescriptor(.warning, message: message)))
+	}
+
+	static func error(_ message: String) -> Self {
+		Self(.diagnostic(DiagnosticDirectiveDescriptor(.error, message: message)))
 	}
 
 	static func `var`(_ identifier: String, type: TypeReference, expression: ExpressionDescriptor? = nil) -> Self {

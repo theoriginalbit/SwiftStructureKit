@@ -15,6 +15,8 @@ public enum TypeMemberDescriptor: Sendable {
 
 	/// A member that is a mark comment, represented by its ``MarkCommentDescriptor``
 	case mark(MarkCommentDescriptor)
+
+	case diagnostic(DiagnosticDirectiveDescriptor)
 }
 
 public extension TypeMemberDescriptor {
@@ -221,6 +223,16 @@ public extension TypeMemberDescriptor {
 			sectionBreak: sectionBreak,
 		))
 	}
+
+	// MARK: - Diagnostic Conveniences
+
+	static func warning(_ message: String) -> Self {
+		Self.diagnostic(DiagnosticDirectiveDescriptor(.warning, message: message))
+	}
+
+	static func error(_ message: String) -> Self {
+		Self.diagnostic(DiagnosticDirectiveDescriptor(.error, message: message))
+	}
 }
 
 public extension ArrayBuilder<TypeMemberDescriptor> {
@@ -250,5 +262,9 @@ public extension ArrayBuilder<TypeMemberDescriptor> {
 
 	static func buildExpression(_ expression: MarkCommentDescriptor) -> [T] {
 		[.mark(expression)]
+	}
+
+	static func buildExpression(_ expression: DiagnosticDirectiveDescriptor) -> [T] {
+		[.diagnostic(expression)]
 	}
 }

@@ -37,6 +37,9 @@ extension CodeRenderer {
 		case let .comment(descriptor):
 			renderInlineComment(descriptor, to: &writer)
 
+		case let .diagnostic(descriptor):
+			renderDiagnosticDirective(descriptor, to: &writer)
+
 		case let .return(expression):
 			writer.writeLine { line in
 				line.token("return")
