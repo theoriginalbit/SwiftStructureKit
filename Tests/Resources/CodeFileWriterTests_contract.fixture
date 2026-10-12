@@ -7,9 +7,12 @@ public func hello() {
     func hello() {
         print("Hello, world 3!")
 #if DEBUG
+        // Only needed
+        // in debug
         print("Hello, world 4!")
 #endif
         print("Hello, world 5!")
+        // Incorrect  multiline
         print("Hello, world 6!")
         print("Hello, world 7!")
     }

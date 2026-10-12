@@ -39,9 +39,14 @@ import Testing
 			writer.indented { writer in
 				writer.writeLine("print(\"Hello, world 3!\")")
 				writer.writeLine("#if DEBUG", indent: false)
+				writer.writeLine("Only needed\nin debug", prefix: "// ")
 				writer.writeLine("print(\"Hello, world 4!\")")
 				writer.writeLine("#endif", indent: false)
 				writer.writeLine("print(\"Hello, world 5!\")")
+				writer.writeLine { line in
+					line.token("//")
+					line.token("Incorrect \n multiline")
+				}
 				writer.writeLine(#"""
 				print("Hello, world 6!")
 				print("Hello, world 7!")

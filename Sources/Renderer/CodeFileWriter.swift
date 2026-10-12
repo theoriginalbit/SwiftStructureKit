@@ -114,7 +114,9 @@ struct LineWriter: ~Copyable {
 		if shouldSeparateNextToken {
 			buffer.append(UInt8(ascii: " "))
 		}
-		buffer.append(contentsOf: value.utf8)
+		// line writer should not respect newlines in the token
+		let sanitised = value.filter { !$0.isNewline }.utf8
+		buffer.append(contentsOf: sanitised)
 		shouldSeparateNextToken = separating
 	}
 

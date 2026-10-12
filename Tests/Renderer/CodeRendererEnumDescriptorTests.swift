@@ -251,7 +251,7 @@ struct CodeRendererEnumDescriptorTests {
 			}
 
 			TypeMemberDescriptor.enum("CodingKeys") {
-				RawValueEnumCaseDescriptor("key")
+				"key"
 				RawValueEnumCaseDescriptor("localizationValue", rawValue: "loc_value")
 			}
 		}
@@ -285,7 +285,6 @@ struct CodeRendererEnumDescriptorTests {
 		}
 
 		"""
-		try ReferenceTest.assert(output, matches: expected)
 		#expect(output == expected)
 	}
 }

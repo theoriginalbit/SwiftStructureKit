@@ -19,6 +19,16 @@ class CodeRenderer {
 
 	// MARK: - Functions that render common types to the writer
 
+	func renderGenericSignature(
+		_ genericTypes: [TypeReference],
+		to line: inout LineWriter,
+	) {
+		guard !genericTypes.isEmpty else { return }
+		line.punctuation("<")
+		line.token(renderedTypesList(genericTypes))
+		line.punctuation(">")
+	}
+
 	func renderTypeSignature(
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
@@ -41,28 +51,12 @@ class CodeRenderer {
 
 			line.token(identifier)
 
-			if !genericTypes.isEmpty {
-				line.punctuation("<")
-				for (index, genericType) in genericTypes.enumerated() {
-					line.token(renderedType(genericType))
-					if index < genericTypes.count - 1 {
-						line.punctuation(",")
-						line.space()
-					}
-				}
-				line.punctuation(">")
-			}
+			renderGenericSignature(genericTypes, to: &line)
 
 			if !conformances.isEmpty {
 				line.punctuation(":")
 				line.space()
-				for (index, conformance) in conformances.enumerated() {
-					line.token(renderedType(conformance))
-					if index < conformances.count - 1 {
-						line.punctuation(",")
-						line.space()
-					}
-				}
+				line.token(renderedTypesList(conformances))
 			}
 
 			line.space()
@@ -198,7 +192,13 @@ class CodeRenderer {
 		}
 	}
 
-	func renderedType(_ type: TypeReference) -> String {
+	@inlinable func renderedType(_ type: TypeReference) -> String {
 		type.sourceIdentifier
+	}
+
+	func renderedTypesList(_ types: [TypeReference]) -> String {
+		types.lazy
+			.map(renderedType(_:))
+			.joined(separator: ", ")
 	}
 }
