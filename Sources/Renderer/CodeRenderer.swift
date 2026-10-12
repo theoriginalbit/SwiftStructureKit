@@ -139,6 +139,10 @@ class CodeRenderer {
 		}
 	}
 
+	func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeFileWriter) {
+		writer.writeLine(descriptor.value, prefix: "// ")
+	}
+
 	// MARK: - Functions that provide values to the render functions
 
 	func renderedThrowingSpecifier(_ specifier: EffectSpecifiers.ThrowingSpecifier) -> String {

@@ -18,9 +18,9 @@ extension CodeRenderer {
 	}
 
 	func renderStatement(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
-		writer.writeLine { line in
-			switch statement.kind {
-			case let .assignment(isMutable, identifier, type, expression):
+		switch statement.kind {
+		case let .assignment(isMutable, identifier, type, expression):
+			writer.writeLine { line in
 				line.token(isMutable ? "var" : "let")
 				line.token(identifier)
 				line.punctuation(":")
@@ -32,7 +32,13 @@ extension CodeRenderer {
 					line.space()
 					line.token(renderedExpression(expression))
 				}
-			case let .return(expression):
+			}
+
+		case let .comment(descriptor):
+			renderInlineComment(descriptor, to: &writer)
+
+		case let .return(expression):
+			writer.writeLine { line in
 				line.token("return")
 				if let expression {
 					line.token(renderedExpression(expression))

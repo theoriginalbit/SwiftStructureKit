@@ -15,6 +15,9 @@ public struct StatementDescriptor: Sendable {
 		///   - expression: An optional initial value expression assigned to the declaration.
 		case assignment(isMutable: Bool, identifier: String, type: TypeReference, expression: ExpressionDescriptor?)
 
+		/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
+		case comment(InlineCommentDescriptor)
+
 		/// A return statement with an optional return expression.
 		case `return`(ExpressionDescriptor?)
 	}
@@ -35,6 +38,10 @@ public extension StatementDescriptor {
 		Self(.assignment(isMutable: isMutable, identifier: identifier, type: type, expression: expression))
 	}
 
+	static func comment(_ value: String) -> Self {
+		Self(.comment(InlineCommentDescriptor(value)))
+	}
+
 	static func `var`(_ identifier: String, type: TypeReference, expression: ExpressionDescriptor? = nil) -> Self {
 		Self.assignment(isMutable: true, identifier: identifier, type: type, expression: expression)
 	}
@@ -46,5 +53,11 @@ public extension StatementDescriptor {
 	/// Creates a return statement.
 	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
 		Self(.return(expression))
+	}
+}
+
+extension ArrayBuilder where T == StatementDescriptor {
+	public static func buildExpression(_ expression: InlineCommentDescriptor) -> Result {
+		[StatementDescriptor(.comment(expression))]
 	}
 }

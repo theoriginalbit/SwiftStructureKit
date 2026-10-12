@@ -245,6 +245,7 @@ struct CodeRendererEnumDescriptorTests {
 					name: "bar",
 					returns: .string,
 				) {
+					InlineCommentDescriptor("The first thing\nyou'll ever write")
 					StatementDescriptor.return(.literal(.string("Hello, world!")))
 				}
 			}
@@ -271,6 +272,8 @@ struct CodeRendererEnumDescriptorTests {
 		
 		    struct Foo {
 		        func bar() -> String {
+		            // The first thing
+		            // you'll ever write
 		            return "Hello, world!"
 		        }
 		    }
