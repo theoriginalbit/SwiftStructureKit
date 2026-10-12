@@ -17,3 +17,8 @@ extension InlineCommentDescriptor: ExpressibleByStringLiteral {
 	}
 }
 
+extension ArrayBuilder where T == StatementDescriptor {
+	public static func buildExpression(_ expression: InlineCommentDescriptor) -> Result {
+		[.comment(expression)]
+	}
+}

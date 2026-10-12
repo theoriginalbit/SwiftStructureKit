@@ -20,3 +20,14 @@ extension MarkCommentDescriptor: ExpressibleByStringLiteral {
 	}
 }
 
+public extension TypeMemberDescriptor {
+	static func mark( _ value: String?, sectionBreak: Bool = false) -> Self {
+		Self.mark(MarkCommentDescriptor(value, sectionBreak: sectionBreak))
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: MarkCommentDescriptor) -> [T] {
+		[.mark(expression)]
+	}
+}

@@ -20,7 +20,7 @@ public struct StructDescriptor: Sendable {
 	public let conformances: [TypeReference]
 
 	/// The member declarations contained within the struct.
-	public let members: TypeMembersBuilder.Result
+	public let members: [TypeMemberDescriptor]
 
 	/// Creates a struct descriptor with an explicit array of member descriptors.
 	init(
@@ -29,7 +29,7 @@ public struct StructDescriptor: Sendable {
 		accessModifier: AccessModifierDescriptor? = nil,
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
-		members: TypeMembersBuilder.Result,
+		members: [TypeMemberDescriptor],
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -54,7 +54,7 @@ public struct StructDescriptor: Sendable {
 		accessModifier: AccessModifierDescriptor? = nil,
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
-		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result,
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -62,5 +62,40 @@ public struct StructDescriptor: Sendable {
 		self.genericTypes = genericTypes
 		self.conformances = conformances
 		self.members = members()
+	}
+}
+
+public extension TypeMemberDescriptor {
+	/// Creates a member descriptor for a struct.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the struct.
+	///   - comment: An optional documentation comment for the struct.
+	///   - accessModifier: An optional access level modifier for the struct.
+	///   - genericTypes: The generic type parameters associated with the struct.
+	///   - conformances: The types or protocols the struct conforms to.
+	///   - members: A result builder closure producing the member descriptors contained within the struct.
+	static func `struct`(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
+	) -> Self {
+		Self.struct(StructDescriptor(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			members: members(),
+		))
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: StructDescriptor) -> [T] {
+		[.struct(expression)]
 	}
 }

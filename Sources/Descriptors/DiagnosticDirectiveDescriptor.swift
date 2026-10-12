@@ -14,12 +14,20 @@ public struct DiagnosticDirectiveDescriptor: Sendable {
 		self.kind = kind
 		self.message = message
 	}
+}
 
+public extension DiagnosticDirectiveDescriptor {
 	static func warning(_ message: String) -> Self {
 		Self(.warning, message: message)
 	}
 
 	static func error(_ message: String) -> Self {
 		Self(.error, message: message)
+	}
+}
+
+extension ArrayBuilder where T == StatementDescriptor {
+	public static func buildExpression(_ expression: DiagnosticDirectiveDescriptor) -> Result {
+		[.diagnostic(expression)]
 	}
 }

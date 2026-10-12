@@ -36,7 +36,7 @@ public struct RawValueEnumDescriptor<TypeRef: RawValueEnumValueType>: Sendable {
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<RawValueEnumCaseDescriptor<TypeRef>> cases: () -> [RawValueEnumCaseDescriptor<TypeRef>],
-		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result = { [] },
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
 		// make sure the first conformance is the raw value type
 		var conformances = conformances
@@ -131,6 +131,44 @@ public extension RawValueEnumCaseDescriptor where TypeRef == String {
 public extension ArrayBuilder where T == RawValueEnumCaseDescriptor<String> {
 	static func buildExpression(_ statement: String) -> [T] {
 		[T(statement)]
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: RawValueEnumDescriptor<some RawValueEnumValueType>) -> [T] {
+		[.enum(expression.descriptor)]
+	}
+}
+
+public extension TypeMemberDescriptor {
+	/// Creates an enum with raw values descriptor.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the enum.
+	///   - comment: An optional documentation comment for the enum.
+	///   - accessModifier: An optional access level modifier for the enum.
+	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - conformances: The types or protocols the enum conforms to.
+	///   - cases: A result builder closure producing the case descriptors for the enum.
+	///   - members: A result builder closure producing the member descriptors contained within the enum.
+	@_disfavoredOverload static func `enum`<RawValueType: RawValueEnumValueType>(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@ArrayBuilder<RawValueEnumCaseDescriptor<RawValueType>> rawValueCases cases: () -> [RawValueEnumCaseDescriptor<RawValueType>],
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+	) -> Self {
+		Self.enum(RawValueEnumDescriptor<RawValueType>(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			cases: cases,
+			members: members,
+		).descriptor)
 	}
 }
 

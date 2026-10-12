@@ -3,71 +3,15 @@
 //
 
 /// A descriptor for Swift statements.
-public struct StatementDescriptor: Sendable {
-	/// The kind of statement.
-	public indirect enum Kind: Sendable {
-		/// An assignment statement, declaring a variable or constant.
-		///
-		/// - Parameters:
-		///   - isMutable: A Boolean value indicating whether the declaration is mutable (`var`) or immutable (`let`).
-		///   - identifier: The variable or constant identifier.
-		///   - type: The type reference of the variable or constant.
-		///   - expression: An optional initial value expression assigned to the declaration.
-		case assignment(isMutable: Bool, identifier: String, type: TypeReference, expression: ExpressionDescriptor?)
+public enum StatementDescriptor: Sendable {
+	/// An assignment statement, declaring a variable or constant.
+	case assignment(AssignmentStatementDescriptor)
 
-		/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
-		case comment(InlineCommentDescriptor)
+	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
+	case comment(InlineCommentDescriptor)
 
-		case diagnostic(DiagnosticDirectiveDescriptor)
+	case diagnostic(DiagnosticDirectiveDescriptor)
 
-		/// A return statement with an optional return expression.
-		case `return`(ExpressionDescriptor?)
-	}
-
-	/// The underlying kind of statement.
-	public let kind: Kind
-
-	/// Creates a statement with a given kind.
-	public init(_ kind: Kind) {
-		self.kind = kind
-	}
-}
-
-// MARK: - Convenience
-
-public extension StatementDescriptor {
-	static func assignment(isMutable: Bool = false, identifier: String, type: TypeReference, expression: ExpressionDescriptor? = nil) -> Self {
-		Self(.assignment(isMutable: isMutable, identifier: identifier, type: type, expression: expression))
-	}
-
-	static func comment(_ value: String) -> Self {
-		Self(.comment(InlineCommentDescriptor(value)))
-	}
-
-	static func warning(_ message: String) -> Self {
-		Self(.diagnostic(DiagnosticDirectiveDescriptor(.warning, message: message)))
-	}
-
-	static func error(_ message: String) -> Self {
-		Self(.diagnostic(DiagnosticDirectiveDescriptor(.error, message: message)))
-	}
-
-	static func `var`(_ identifier: String, type: TypeReference, expression: ExpressionDescriptor? = nil) -> Self {
-		Self.assignment(isMutable: true, identifier: identifier, type: type, expression: expression)
-	}
-
-	static func `let`(_ identifier: String, type: TypeReference, expression: ExpressionDescriptor? = nil) -> Self {
-		Self.assignment(isMutable: false, identifier: identifier, type: type, expression: expression)
-	}
-
-	/// Creates a return statement.
-	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
-		Self(.return(expression))
-	}
-}
-
-extension ArrayBuilder where T == StatementDescriptor {
-	public static func buildExpression(_ expression: InlineCommentDescriptor) -> Result {
-		[StatementDescriptor(.comment(expression))]
-	}
+	/// A return statement with an optional return expression.
+	case `return`(ExpressionDescriptor? = nil)
 }

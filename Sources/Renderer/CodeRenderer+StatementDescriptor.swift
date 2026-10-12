@@ -18,15 +18,15 @@ extension CodeRenderer {
 	}
 
 	func renderStatement(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
-		switch statement.kind {
-		case let .assignment(isMutable, identifier, type, expression):
+		switch statement {
+		case let .assignment(descriptor):
 			writer.writeLine { line in
-				line.token(isMutable ? "var" : "let")
-				line.token(identifier)
+				line.token(descriptor.isMutable ? "var" : "let")
+				line.token(descriptor.identifier)
 				line.punctuation(":")
 				line.space()
-				line.token(renderedType(type))
-				if let expression {
+				line.token(renderedType(descriptor.type))
+				if let expression = descriptor.expression {
 					line.space()
 					line.punctuation("=")
 					line.space()

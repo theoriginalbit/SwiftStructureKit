@@ -81,7 +81,6 @@ public struct AnyEnumCaseDescriptor: Sendable {
 	}
 }
 
-
 /// A descriptor representing an associated value attached to an enum case.
 public struct EnumCaseAssociatedValueDescriptor: Sendable {
 	/// The optional label for the associated value.
@@ -108,4 +107,10 @@ public struct EnumCaseAssociatedValueDescriptor: Sendable {
 		self.type = type
 		self.defaultValue = defaultValue
 	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: AnyEnumDescriptor) -> [T] {
+		[.enum(expression)]
 	}
+}

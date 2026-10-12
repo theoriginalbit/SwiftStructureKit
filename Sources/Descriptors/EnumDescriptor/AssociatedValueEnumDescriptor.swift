@@ -28,7 +28,7 @@ public struct AssociatedValueEnumDescriptor: Sendable {
 		genericTypes: [TypeReference] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> cases: () -> [AssociatedValueEnumCaseDescriptor],
-		@TypeMembersBuilder members: () -> TypeMembersBuilder.Result = { [] },
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
 		descriptor = AnyEnumDescriptor(
 			identifier,
@@ -78,5 +78,43 @@ public struct AssociatedValueEnumCaseDescriptor: Sendable {
 public extension ArrayBuilder where T == AssociatedValueEnumCaseDescriptor {
 	static func buildExpression(_ statement: String) -> [T] {
 		[T(statement)]
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: AssociatedValueEnumDescriptor) -> [T] {
+		[.enum(expression.descriptor)]
+	}
+}
+
+public extension TypeMemberDescriptor {
+	/// Creates an enum with associated values descriptor.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the enum.
+	///   - comment: An optional documentation comment for the enum.
+	///   - accessModifier: An optional access level modifier for the enum.
+	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - conformances: The types or protocols the enum conforms to.
+	///   - cases: A result builder closure producing the case descriptors for the enum.
+	///   - members: A result builder closure producing the member descriptors contained within the enum.
+	@_disfavoredOverload static func `enum`(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		genericTypes: [TypeReference] = [],
+		conformances: [TypeReference] = [],
+		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> associatedValueCases cases: () -> [AssociatedValueEnumCaseDescriptor],
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+	) -> Self {
+		Self.enum(AssociatedValueEnumDescriptor(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			cases: cases,
+			members: members,
+		).descriptor)
 	}
 }
