@@ -4,7 +4,7 @@
 
 import Foundation
 
-struct CodeFileWriter: ~Copyable {
+struct CodeWriter: ~Copyable {
 	private static let newLine = UInt8(ascii: "\n")
 	private static let carriageReturn = UInt8(ascii: "\r")
 

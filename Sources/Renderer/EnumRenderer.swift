@@ -3,7 +3,7 @@
 //
 
 enum EnumRenderer {
-	static func render(_ descriptor: AnyEnumDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ descriptor: AnyEnumDescriptor, to writer: inout CodeWriter) {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
@@ -32,7 +32,7 @@ enum EnumRenderer {
 		writer.writeLine("}")
 	}
 
-	private static func render(_ descriptor: AnyEnumCaseDescriptor, to writer: inout CodeFileWriter) {
+	private static func render(_ descriptor: AnyEnumCaseDescriptor, to writer: inout CodeWriter) {
 		if let comment = descriptor.comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}

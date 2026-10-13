@@ -3,7 +3,7 @@
 //
 
 enum DiagnosticDirectiveRenderer {
-	static func render(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			line.punctuation("#")
 			switch descriptor.kind {

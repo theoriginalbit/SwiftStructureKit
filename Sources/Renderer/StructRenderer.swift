@@ -3,7 +3,7 @@
 //
 
 enum StructRenderer {
-	static func render(_ descriptor: StructDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ descriptor: StructDescriptor, to writer: inout CodeWriter) {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,

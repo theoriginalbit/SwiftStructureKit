@@ -27,9 +27,9 @@ public struct FileDescriptor: Sendable {
 
 	/// Renders the file descriptor as UTF-8 source data.
 	public func render(indentUsing style: CodeIndentStyle = .spaces(4)) -> Data {
-		var renderer = CodeRenderer(indentUsing: style)
-		renderer.renderFile(self)
-		return renderer.finish()
+		var writer = CodeWriter(indentUsing: style)
+		FileRenderer.render(self, to: &writer)
+		return writer.rendered()
 	}
 
 	/// Renders the file descriptor directly to the specified file URL.

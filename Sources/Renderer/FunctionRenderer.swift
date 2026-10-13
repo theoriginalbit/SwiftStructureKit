@@ -3,7 +3,7 @@
 //
 
 enum FunctionRenderer {
-	static func render(_ function: FunctionDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ function: FunctionDescriptor, to writer: inout CodeWriter) {
 		CodeRenderingSupport.renderDocComment(for: function.signature, to: &writer)
 
 		writer.writeLine { line in
@@ -17,7 +17,7 @@ enum FunctionRenderer {
 		writer.writeLine("}")
 	}
 
-	static func renderSignature(_ signature: FunctionSignatureDescriptor, to writer: inout CodeFileWriter) {
+	static func renderSignature(_ signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
 		CodeRenderingSupport.renderDocComment(for: signature, to: &writer)
 
 		writer.writeLine { line in

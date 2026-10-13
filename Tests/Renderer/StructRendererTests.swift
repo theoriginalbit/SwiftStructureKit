@@ -9,8 +9,8 @@ import Testing
 	@Test("Render basic empty struct")
 	func renderBasicEmptyStruct() {
 		let structDescriptor = StructDescriptor("SimpleStruct") {}
-		let output = RenderTest.render { renderer in
-			renderer.renderStruct(structDescriptor)
+		let output = RenderTest.render { writer in
+			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
 			struct SimpleStruct {
@@ -28,8 +28,8 @@ import Testing
 			genericTypes: [.identifier("T"), .identifier("U")],
 			conformances: [.sendable, .equatable],
 		) {}
-		let output = RenderTest.render { renderer in
-			renderer.renderStruct(structDescriptor)
+		let output = RenderTest.render { writer in
+			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
 			public struct GenericContainer<T, U>: Sendable, Equatable {
@@ -45,8 +45,8 @@ import Testing
 			"UserModel",
 			comment: "A user model.\n\nReplicates the server model.",
 		) {}
-		let output = RenderTest.render { renderer in
-			renderer.renderStruct(structDescriptor)
+		let output = RenderTest.render { writer in
+			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
 			/// A user model.
@@ -76,8 +76,8 @@ import Testing
 				StatementDescriptor.return(.literal(.string("123")))
 			}
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderStruct(structDescriptor)
+		let output = RenderTest.render { writer in
+			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
 			struct User {

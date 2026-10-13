@@ -10,8 +10,8 @@ import Testing
 	func renderUninhabitedEnum() {
 		let enumDescriptor = PlainEnumDescriptor("Direction")
 
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			enum Direction {
@@ -29,8 +29,8 @@ import Testing
 			genericTypes: [.identifier("Success"), .identifier("Failure")],
 			conformances: [.sendable],
 		)
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			public enum Result<Success, Failure>: Sendable {
@@ -51,8 +51,8 @@ import Testing
 			PlainEnumCaseDescriptor("east")
 			PlainEnumCaseDescriptor("west")
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			/// A compass direction.
@@ -79,8 +79,8 @@ import Testing
 			RawValueEnumCaseDescriptor("post", rawValue: .string("POST"))
 			RawValueEnumCaseDescriptor("custom")
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			public enum HTTPMethod: String {
@@ -102,8 +102,8 @@ import Testing
 			RawValueEnumCaseDescriptor("ok", rawValue: 200)
 			RawValueEnumCaseDescriptor("notFound", rawValue: .integer(404))
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			enum StatusCode: Int {
@@ -132,8 +132,8 @@ import Testing
 				associatedValues: [.init(type: .identifier("Error"))]
 			)
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			enum NetworkState {
@@ -166,8 +166,8 @@ import Testing
 				}
 			}
 		)
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 			public enum State {
@@ -208,8 +208,8 @@ import Testing
 				],
 			)
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 		enum NetworkResult {
@@ -253,8 +253,8 @@ import Testing
 				RawValueEnumCaseDescriptor("localizationValue", rawValue: "loc_value")
 			}
 		}
-		let output = RenderTest.render { renderer in
-			renderer.renderEnum(enumDescriptor)
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
 		enum L10n {

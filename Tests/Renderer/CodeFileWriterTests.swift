@@ -4,7 +4,7 @@ import Testing
 @Suite(.tags(.renderer)) struct CodeFileWriterTests {
 	@Test("Test all major functions of the writer")
 	func wholeContract() async throws {
-		var writer = CodeFileWriter()
+		var writer = CodeWriter()
 
 		writer.writeLine("import Foundation")
 		writer.writeNewLine()
@@ -67,7 +67,7 @@ import Testing
 
 	@Test("indent: false skips indentation even when indent level > 0")
 	func skipsIndentationWhenRequested() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { file in
 			file.writeLine("no indent", indent: false)
 		}
@@ -76,7 +76,7 @@ import Testing
 
 	@Test("indented(_:) restores the previous indent level after the closure returns")
 	func indentedRestoresLevel() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { file in
 			file.writeLine("inner")
 		}
@@ -86,7 +86,7 @@ import Testing
 
 	@Test("indented(to:) sets an absolute level and restores the previous one afterward")
 	func indentedToAbsoluteLevel() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { file in            // level 1
 			file.indented(to: 3) { inner in  // level 3
 				inner.writeLine("deep")
@@ -98,7 +98,7 @@ import Testing
 
 	@Test("Nested indented(_:) calls accumulate indent level")
 	func nestedIndentedAccumulates() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { outer in
 			outer.indented { inner in
 				inner.writeLine("nested")
@@ -111,7 +111,7 @@ import Testing
 
 	@Test("A string with newlines gets indentation re-applied on each embedded line")
 	func newlineContentIndentsEachLine() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { file in
 			file.writeLine("line one\nline two")
 		}
@@ -120,7 +120,7 @@ import Testing
 
 	@Test("A multi-line string gets indentation re-applied on each embedded line")
 	func multilineContentIndentsEachLine() {
-		var writer = CodeFileWriter(indentUsing: .spaces(2))
+		var writer = CodeWriter(indentUsing: .spaces(2))
 		writer.indented { file in
 			file.writeLine("""
 			line one

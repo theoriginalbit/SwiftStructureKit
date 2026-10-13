@@ -3,7 +3,7 @@
 //
 
 enum ParametersListRenderer {
-	static func render(_ parametersList: ParametersList, to writer: inout CodeFileWriter) {
+	static func render(_ parametersList: ParametersList, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			render(parametersList, into: &line)
 		}

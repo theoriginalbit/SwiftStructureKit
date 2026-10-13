@@ -3,7 +3,7 @@
 //
 
 enum ProtocolRenderer {
-	static func render(_ descriptor: ProtocolDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ descriptor: ProtocolDescriptor, to writer: inout CodeWriter) {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
@@ -17,7 +17,7 @@ enum ProtocolRenderer {
 		writer.writeLine("}")
 	}
 
-	private static func render(_ members: [ProtocolMemberDescriptor], to writer: inout CodeFileWriter) {
+	private static func render(_ members: [ProtocolMemberDescriptor], to writer: inout CodeWriter) {
 		guard !members.isEmpty else { return }
 		writer.indented { writer in
 			for (index, member) in members.enumerated() {
@@ -29,7 +29,7 @@ enum ProtocolRenderer {
 		}
 	}
 
-	private static func render(_ member: ProtocolMemberDescriptor, to writer: inout CodeFileWriter) {
+	private static func render(_ member: ProtocolMemberDescriptor, to writer: inout CodeWriter) {
 		switch member {
 		case let .associatedtype(descriptor):
 			render(descriptor, to: &writer)
@@ -42,7 +42,7 @@ enum ProtocolRenderer {
 		}
 	}
 
-	private static func render(_ descriptor: ProtocolAssociatedtypeDescriptor, to writer: inout CodeFileWriter) {
+	private static func render(_ descriptor: ProtocolAssociatedtypeDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			line.token("associatedtype")
 			line.token(CodeRenderingSupport.renderedType(descriptor.identifier))
@@ -60,7 +60,7 @@ enum ProtocolRenderer {
 		}
 	}
 
-	private static func render(_ property: ProtocolPropertyDescriptor, to writer: inout CodeFileWriter) {
+	private static func render(_ property: ProtocolPropertyDescriptor, to writer: inout CodeWriter) {
 		if let comment = property.comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}

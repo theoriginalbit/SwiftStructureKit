@@ -3,13 +3,13 @@
 //
 
 enum StatementRenderer {
-	static func render(_ statements: [StatementDescriptor], to writer: inout CodeFileWriter) {
+	static func render(_ statements: [StatementDescriptor], to writer: inout CodeWriter) {
 		for statement in statements {
 			render(statement, to: &writer)
 		}
 	}
 
-	static func render(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ statement: StatementDescriptor, to writer: inout CodeWriter) {
 		switch statement {
 		case let .assignment(descriptor):
 			writer.writeLine { line in

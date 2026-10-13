@@ -3,7 +3,7 @@
 //
 
 enum TypeMemberRenderer {
-	static func render(_ declarations: [TypeMemberDescriptor], to writer: inout CodeFileWriter) {
+	static func render(_ declarations: [TypeMemberDescriptor], to writer: inout CodeWriter) {
 		guard !declarations.isEmpty else { return }
 		for (index, declaration) in declarations.enumerated() {
 			render(declaration, to: &writer)
@@ -13,7 +13,7 @@ enum TypeMemberRenderer {
 		}
 	}
 
-	static func render(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ member: TypeMemberDescriptor, to writer: inout CodeWriter) {
 		switch member {
 		case let .enum(descriptor):
 			EnumRenderer.render(descriptor, to: &writer)

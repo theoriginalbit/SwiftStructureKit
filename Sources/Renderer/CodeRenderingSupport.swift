@@ -22,7 +22,7 @@ enum CodeRenderingSupport {
 		identifier: String,
 		genericTypes: OrderedSet<TypeReference>,
 		conformances: OrderedSet<TypeReference>,
-		to writer: inout CodeFileWriter,
+		to writer: inout CodeWriter,
 	) {
 		if let comment {
 			writer.writeLine(comment.value, prefix: "/// ")
@@ -48,7 +48,7 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeFileWriter) {
+	static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
 		guard let docComment = signature.comment else { return }
 
 		writer.writeLine(docComment.value, prefix: "/// ")
@@ -69,7 +69,7 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeFileWriter) {
+	static func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			line.token("// MARK:")
 			if descriptor.sectionBreak {
@@ -83,7 +83,7 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeFileWriter) {
+	static func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine(descriptor.value, prefix: "// ")
 	}
 

@@ -3,7 +3,7 @@
 //
 
 enum FileRenderer {
-	static func render(_ descriptor: FileDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ descriptor: FileDescriptor, to writer: inout CodeWriter) {
 		if let headerComment = descriptor.headerComment {
 			writer.writeLine(headerComment.value, prefix: "// ")
 			if !descriptor.declarations.isEmpty {
