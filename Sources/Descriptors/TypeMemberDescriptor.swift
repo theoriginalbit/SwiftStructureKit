@@ -13,6 +13,9 @@ public enum TypeMemberDescriptor: Sendable {
 	/// A member that is a mark comment, represented by its ``MarkCommentDescriptor``
 	case mark(MarkCommentDescriptor)
 
+	/// A member that is a property, represented by its ``PropertyDescriptor``.
+	case property(PropertyDescriptor)
+
 	/// A member that is a protocol, represented by its ``ProtocolDescriptor``.
 	case `protocol`(ProtocolDescriptor)
 

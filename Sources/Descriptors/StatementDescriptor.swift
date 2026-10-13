@@ -4,8 +4,28 @@
 
 /// A descriptor for Swift statements.
 public enum StatementDescriptor: Sendable {
+	/// A stored or computed property declaration.
+	case property(PropertyDescriptor)
+
 	/// An assignment statement, declaring a variable or constant.
-	case assignment(AssignmentStatementDescriptor)
+	static func assignment(_ descriptor: AssignmentStatementDescriptor) -> Self {
+		// syntactically an assignment `var x: Int = 4` or `let y: Bool = false`
+		// is the same as a stored property. This helper allows sharing the renderer.
+		.property(
+			PropertyDescriptor(
+				descriptor.identifier,
+				comment: nil,
+				accessModifier: nil,
+				isStatic: false,
+				type: descriptor.type,
+				kind: .stored(
+					isMutable: descriptor.isMutable,
+					defaultValue: descriptor.expression,
+					observers: []
+				)
+			)
+		)
+	}
 
 	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 	case comment(InlineCommentDescriptor)

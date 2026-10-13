@@ -21,6 +21,8 @@ enum TypeMemberRenderer {
 			FunctionRenderer.render(descriptor, to: &writer)
 		case let .mark(descriptor):
 			CommentRenderer.renderMarkComment(descriptor, to: &writer)
+		case let .property(descriptor):
+			PropertyRenderer.render(descriptor, to: &writer)
 		case let .protocol(descriptor):
 			ProtocolRenderer.render(descriptor, to: &writer)
 		case let .struct(descriptor):

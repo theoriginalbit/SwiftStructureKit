@@ -4,9 +4,6 @@
 
 /// The effect specifiers of a function, such as `async` and throwing behavior.
 public struct EffectSpecifiers: Sendable {
-	/// No effect specifiers.
-	public static var none: Self { Self() }
-
 	/// The throwing behavior of a function.
 	public enum ThrowingSpecifier: Sendable {
 		/// A function that can throw an error (`throws`).
@@ -63,4 +60,21 @@ public struct EffectSpecifiers: Sendable {
 		self.throwingSpecifier = throwingSpecifier
 		self.hasEffects = false
 	}
+}
+
+public extension EffectSpecifiers {
+	/// No effect specifiers.
+	static var none: Self { Self() }
+
+	/// Creates an effect specifier.
+	static var async: Self { Self(isAsync: true) }
+
+	/// Creates an effect specifier.
+	static var `throws`: Self { Self(throwingSpecifier: .throws) }
+
+	/// Creates an effect specifier that declares throws a specific error type (`throws(MyError)`).
+	static func `throws`(_ type: TypeReference) -> Self { Self(throwingSpecifier: .typed(type)) }
+
+	/// Creates an effect specifier.
+	static var `rethrows`: Self { Self(throwingSpecifier: .rethrows) }
 }
