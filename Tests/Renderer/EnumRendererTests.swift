@@ -5,9 +5,7 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.declaration, .renderer))
-struct CodeRendererEnumDescriptorTests {
-
+@Suite(.tags(.renderer)) struct EnumRendererTests {
 	@Test("Render uninhabited enum")
 	func renderUninhabitedEnum() {
 		let enumDescriptor = PlainEnumDescriptor("Direction")

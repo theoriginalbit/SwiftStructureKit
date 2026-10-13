@@ -5,8 +5,7 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.declaration, .renderer))
-struct CodeRendererDiagnosticDirectiveDescriptorTests {
+@Suite(.tags(.renderer)) struct DiagnosticDirectiveRendererTests {
 	@Test("Render warning diagnostic directive")
 	func renderWarningDiagnosticDirective() throws {
 		let descriptor = DiagnosticDirectiveDescriptor.warning("This is my warning")

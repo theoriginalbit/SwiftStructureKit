@@ -2,12 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-extension CodeRenderer {
-	func renderDiagnosticDirective(_ descriptor: DiagnosticDirectiveDescriptor) {
-		renderDiagnosticDirective(descriptor, to: &writer)
-	}
-
-	func renderDiagnosticDirective(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeFileWriter) {
+enum DiagnosticDirectiveRenderer {
+	static func render(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeFileWriter) {
 		writer.writeLine { line in
 			line.punctuation("#")
 			switch descriptor.kind {
@@ -15,7 +11,7 @@ extension CodeRenderer {
 			case .error: line.token("error", separateFromNextToken: false)
 			}
 			line.punctuation("(")
-			line.token(renderedLiteral(.string(descriptor.message)))
+			line.token(CodeRenderingSupport.renderedLiteral(.string(descriptor.message)))
 			line.punctuation(")")
 		}
 	}

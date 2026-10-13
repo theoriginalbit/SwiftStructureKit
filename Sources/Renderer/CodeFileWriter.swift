@@ -12,7 +12,7 @@ struct CodeFileWriter: ~Copyable {
 
 	private var indentLevel: UInt = 0
 
-	private let indentStyle: CodeIndentStyle
+	let indentStyle: CodeIndentStyle
 
 	init(estimatedFinalSizeInBytes size: Int = 12 * 1024 /* 12 KB */, indentUsing style: CodeIndentStyle = .spaces(4)) {
 		// eagerly pre-allocate to minimise impacts of resizing

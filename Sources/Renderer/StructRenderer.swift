@@ -2,13 +2,9 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-extension CodeRenderer {
-	func renderStruct(_ structDescriptor: StructDescriptor) {
-		renderStruct(structDescriptor, to: &writer)
-	}
-
-	func renderStruct(_ descriptor: StructDescriptor, to writer: inout CodeFileWriter) {
-		renderTypeSignature(
+enum StructRenderer {
+	static func render(_ descriptor: StructDescriptor, to writer: inout CodeFileWriter) {
+		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
 			typeKeyword: "struct",
@@ -17,8 +13,7 @@ extension CodeRenderer {
 			conformances: descriptor.conformances,
 			to: &writer
 		)
-		renderTypeMembers(descriptor.members, to: &writer)
-
+		TypeMemberRenderer.render(descriptor.members, to: &writer)
 		writer.writeLine("}")
 	}
 }

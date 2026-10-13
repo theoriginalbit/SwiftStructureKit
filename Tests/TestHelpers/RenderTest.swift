@@ -6,9 +6,9 @@ import Testing
 @testable import SwiftStructureKit
 
 enum RenderTest {
-	static func render(_ block: (borrowing CodeRenderer) -> Void) -> String {
-		let renderer = CodeRenderer()
-		block(renderer)
+	static func render(_ block: (inout CodeRenderer) -> Void) -> String {
+		var renderer = CodeRenderer()
+		block(&renderer)
 		return String(decoding: renderer.finish(), as: UTF8.self)
 	}
 }

@@ -5,13 +5,12 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.declaration, .renderer))
-struct CodeRendererTests {
+@Suite(.tags(.renderer)) struct CodeRenderingSupportTests {
 	@Test("Render inline comment")
 	func renderInlineComment() {
 		let descriptor = InlineCommentDescriptor("You were the Chosen One!\nIt was said that you would destroy the Sith, not join them!\nBring balance to the Force, not leave it in darkness!")
 		let output = RenderTest.render { renderer in
-			renderer.renderInlineComment(descriptor, to: &renderer.writer)
+			renderer.renderInlineComment(descriptor)
 		}
 		let expected = """
 		// You were the Chosen One!
@@ -30,7 +29,7 @@ struct CodeRendererTests {
 		I have brought peace, freedom, justice and security to my new empire!
 		""")
 		let output = RenderTest.render { renderer in
-			renderer.renderInlineComment(descriptor, to: &renderer.writer)
+			renderer.renderInlineComment(descriptor)
 		}
 		let expected = """
 		// I see through the lies of the Jedi.
@@ -45,7 +44,7 @@ struct CodeRendererTests {
 	func renderMarkComment() {
 		let descriptor = MarkCommentDescriptor("It's over Anakin, \nI have the high ground")
 		let output = RenderTest.render { renderer in
-			renderer.renderMarkComment(descriptor, to: &renderer.writer)
+			renderer.renderMarkComment(descriptor)
 		}
 		#expect(output == "// MARK: It's over Anakin, I have the high ground\n")
 	}
@@ -54,7 +53,7 @@ struct CodeRendererTests {
 	func renderMarkCommentWithSectionBreak() {
 		let descriptor = MarkCommentDescriptor("You were my brother, Anakin. \nI loved you!", sectionBreak: true)
 		let output = RenderTest.render { renderer in
-			renderer.renderMarkComment(descriptor, to: &renderer.writer)
+			renderer.renderMarkComment(descriptor)
 		}
 		#expect(output == "// MARK: - You were my brother, Anakin. I loved you!\n")
 	}

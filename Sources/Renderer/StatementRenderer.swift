@@ -1,0 +1,44 @@
+//
+// Copyright © 2026 SwiftStructureKit. All rights reserved.
+//
+
+enum StatementRenderer {
+	static func render(_ statements: [StatementDescriptor], to writer: inout CodeFileWriter) {
+		for statement in statements {
+			render(statement, to: &writer)
+		}
+	}
+
+	static func render(_ statement: StatementDescriptor, to writer: inout CodeFileWriter) {
+		switch statement {
+		case let .assignment(descriptor):
+			writer.writeLine { line in
+				line.token(descriptor.isMutable ? "var" : "let")
+				line.token(descriptor.identifier)
+				line.punctuation(":")
+				line.space()
+				line.token(CodeRenderingSupport.renderedType(descriptor.type))
+				if let expression = descriptor.expression {
+					line.space()
+					line.punctuation("=")
+					line.space()
+					line.token(CodeRenderingSupport.renderedExpression(expression))
+				}
+			}
+
+		case let .comment(descriptor):
+			CodeRenderingSupport.renderInlineComment(descriptor, to: &writer)
+
+		case let .diagnostic(descriptor):
+			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
+
+		case let .return(expression):
+			writer.writeLine { line in
+				line.token("return")
+				if let expression {
+					line.token(CodeRenderingSupport.renderedExpression(expression))
+				}
+			}
+		}
+	}
+}

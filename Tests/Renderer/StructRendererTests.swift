@@ -5,9 +5,7 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.declaration, .renderer))
-struct CodeRendererStructDescriptorTests {
-
+@Suite(.tags(.renderer)) struct StructRendererTests {
 	@Test("Render basic empty struct")
 	func renderBasicEmptyStruct() {
 		let structDescriptor = StructDescriptor("SimpleStruct") {}

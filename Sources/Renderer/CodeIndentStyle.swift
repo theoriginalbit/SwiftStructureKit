@@ -4,7 +4,7 @@
 
 import Foundation
 
-enum CodeIndentStyle: Sendable {
+public enum CodeIndentStyle: Sendable {
 	case spaces(UInt)
 	case tabs
 

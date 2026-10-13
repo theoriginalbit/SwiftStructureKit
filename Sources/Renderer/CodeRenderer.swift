@@ -3,178 +3,75 @@
 //
 
 import Foundation
-import Collections
 
-class CodeRenderer {
-	var writer: CodeFileWriter
+struct CodeRenderer: ~Copyable {
+	private var writer: CodeFileWriter
 
 	init(indentUsing style: CodeIndentStyle = .spaces(4)) {
-		self.writer = CodeFileWriter(indentUsing: style)
+		writer = CodeFileWriter(indentUsing: style)
 	}
 
-	func finish() -> Data {
-		var extracted = CodeFileWriter()
-		swap(&extracted, &writer)
-		return extracted.rendered()
+	consuming func finish() -> Data {
+		writer.rendered()
 	}
 
-	// MARK: - Functions that render common types to the writer
-
-	func renderGenericSignature(
-		_ genericTypes: OrderedSet<TypeReference>,
-		to line: inout LineWriter,
-	) {
-		guard !genericTypes.isEmpty else { return }
-		line.punctuation("<")
-		line.token(renderedTypesList(genericTypes))
-		line.punctuation(">")
+	mutating func renderFunction(_ descriptor: FunctionDescriptor) {
+		FunctionRenderer.render(descriptor, to: &writer)
 	}
 
-	func renderTypeSignature(
-		comment: DocCommentDescriptor?,
-		accessModifier: AccessModifierDescriptor?,
-		typeKeyword: String,
-		identifier: String,
-		genericTypes: OrderedSet<TypeReference>,
-		conformances: OrderedSet<TypeReference>,
-		to writer: inout CodeFileWriter,
-	) {
-		if let comment = comment {
-			writer.writeLine(comment.value, prefix: "/// ")
-		}
-
-		writer.writeLine { line in
-			if let accessModifier = accessModifier {
-				line.token(renderedAccessModifier(accessModifier))
-			}
-
-			line.token(typeKeyword)
-
-			line.token(identifier)
-
-			renderGenericSignature(genericTypes, to: &line)
-
-			if !conformances.isEmpty {
-				line.punctuation(":")
-				line.space()
-				line.token(renderedTypesList(conformances))
-			}
-
-			line.space()
-			line.punctuation("{")
-		}
+	mutating func renderFunctionSignature(_ descriptor: FunctionSignatureDescriptor) {
+		FunctionRenderer.renderSignature(descriptor, to: &writer)
 	}
 
-	func renderCodeBlock(_ codeBlock: CodeBlockDescriptor, to writer: inout CodeFileWriter) {
-		guard !codeBlock.statements.isEmpty else {
-			return
-		}
-		writer.indented { writer in
-			renderStatements(codeBlock.statements, to: &writer)
-		}
+	mutating func renderStruct(_ descriptor: StructDescriptor) {
+		StructRenderer.render(descriptor, to: &writer)
 	}
 
-	func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeFileWriter) {
-		guard let docComment = signature.comment else { return }
-
-		writer.writeLine(docComment.value, prefix: "/// ")
-
-		let paramsWithComments = signature.parameters.filter { $0.comment != nil }
-		guard !paramsWithComments.isEmpty else { return }
-
-		writer.writeLine("///")
-		if paramsWithComments.count == 1, let param = paramsWithComments.first, let comment = param.comment {
-			writer.writeLine("- Parameter \(param.identifier): \(comment.value)", prefix: "/// ")
-		} else {
-			writer.writeLine("/// - Parameters:")
-			for param in paramsWithComments {
-				if let comment = param.comment {
-					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
-				}
-			}
-		}
+	mutating func renderEnum(_ descriptor: AnyEnumDescriptor) {
+		EnumRenderer.render(descriptor, to: &writer)
 	}
 
-	func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeFileWriter) {
-		writer.writeLine { line in
-			line.token("// MARK:")
-			if descriptor.sectionBreak {
-				line.space()
-				line.punctuation("-")
-				line.space()
-			}
-			if let value = descriptor.value {
-				line.token(value)
-			}
-		}
+	mutating func renderEnum(_ descriptor: PlainEnumDescriptor) {
+		renderEnum(descriptor.descriptor)
 	}
 
-	func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeFileWriter) {
-		writer.writeLine(descriptor.value, prefix: "// ")
+	mutating func renderEnum(_ descriptor: RawValueEnumDescriptor<some RawValueEnumValueType>) {
+		renderEnum(descriptor.descriptor)
 	}
 
-	// MARK: - Functions that provide values to the render functions
-
-	func renderedThrowingSpecifier(_ specifier: EffectSpecifiers.ThrowingSpecifier) -> String {
-		switch specifier {
-		case .throws:
-			return "throws"
-		case .rethrows:
-			return "rethrows"
-		case let .typed(type):
-			return "throws(\(renderedType(type)))"
-		}
+	mutating func renderEnum(_ descriptor: AssociatedValueEnumDescriptor) {
+		renderEnum(descriptor.descriptor)
 	}
 
-	func renderedAccessModifier(_ accessModifier: AccessModifierDescriptor) -> String {
-		switch accessModifier {
-		case .open: "open"
-		case .public: "public"
-		case .package: "package"
-		case .internal: "internal" // TODO: config setting to not render explicit internal
-		case .fileprivate: "fileprivate"
-		case .private: "private"
-		}
+	mutating func renderProtocol(_ descriptor: ProtocolDescriptor) {
+		ProtocolRenderer.render(descriptor, to: &writer)
 	}
 
-	func renderedExpression(_ expression: ExpressionDescriptor) -> String {
-		switch expression.kind {
-		case let .literal(literal):
-			return renderedLiteral(literal)
-		}
+	mutating func renderTypealias(_ descriptor: TypealiasDescriptor) {
+		TypealiasRenderer.render(descriptor, to: &writer)
 	}
 
-	func renderedLiteral(_ literal: LiteralDescriptor) -> String {
-		return switch literal {
-		case let .string(value):
-			if value.contains(where: \.isNewline) {
-				// it contains a newline so we should emit a multiline; multiline inception!
-				#"""
-				"""
-				\#(value)
-				"""
-				"""#
-			} else {
-				#""\#(value)""#
-			}
-		case let .integer(value):
-			String(value)
-		case let .boolean(value):
-			String(value)
-		case let .double(value):
-			String(value)
-		case .nil:
-			"nil"
-		}
+	mutating func renderParametersList(_ descriptor: ParametersList) {
+		ParametersListRenderer.render(descriptor, to: &writer)
 	}
 
-	@inlinable func renderedType(_ type: TypeReference) -> String {
-		type.sourceIdentifier
+	mutating func renderStatements(_ descriptors: [StatementDescriptor]) {
+		StatementRenderer.render(descriptors, to: &writer)
 	}
 
-	func renderedTypesList(_ types: OrderedSet<TypeReference>) -> String {
-		types.lazy
-			.map(renderedType(_:))
-			.joined(separator: ", ")
+	mutating func renderStatement(_ descriptor: StatementDescriptor) {
+		StatementRenderer.render(descriptor, to: &writer)
+	}
+
+	mutating func renderDiagnosticDirective(_ descriptor: DiagnosticDirectiveDescriptor) {
+		DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
+	}
+
+	mutating func renderMarkComment(_ descriptor: MarkCommentDescriptor) {
+		CodeRenderingSupport.renderMarkComment(descriptor, to: &writer)
+	}
+
+	mutating func renderInlineComment(_ descriptor: InlineCommentDescriptor) {
+		CodeRenderingSupport.renderInlineComment(descriptor, to: &writer)
 	}
 }
