@@ -1,5 +1,9 @@
 // Generated source.
 
+import Foundation
+@_exported @preconcurrency public import SwiftStructureKit.Descriptors
+import struct Foundation.Date
+
 func greeting() -> String {
     return "Hello"
 }

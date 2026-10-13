@@ -59,8 +59,10 @@ import Testing
 		writer.writeLine("}")
 
 		let actual = writer.rendered()
-		let expected = try Fixtures.url("CodeFileWriterTests_contract")
-		try ReferenceTest.assert(actual, matches: expected)
+		try ReferenceTest.assert(
+			actual,
+			matches: Fixtures.url("CodeFileWriterTests_contract")
+		)
 	}
 
 	// MARK: - Indents

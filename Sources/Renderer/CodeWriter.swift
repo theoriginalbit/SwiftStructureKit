@@ -37,6 +37,10 @@ struct CodeWriter: ~Copyable {
 		buffer.append(Self.newLine)
 	}
 
+	func isLastByteNewLine() -> Bool {
+		buffer.last == Self.newLine
+	}
+
 	mutating func writeLine(
 		_ line: String,
 		prefix: String = "",

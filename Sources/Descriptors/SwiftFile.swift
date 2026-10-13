@@ -9,6 +9,9 @@ public struct SwiftFile: Sendable {
 	/// The comment rendered at the beginning of the file, if any.
 	public let headerComment: FileHeaderCommentDescriptor?
 
+	/// The modules imported by the file.
+	public let imports: [ImportDescriptor]
+
 	/// The top-level declarations contained in the file.
 	public let declarations: [TypeMemberDescriptor]
 
@@ -16,19 +19,22 @@ public struct SwiftFile: Sendable {
 	///
 	/// - Parameters:
 	///   - headerComment: An optional comment rendered at the beginning of the file.
+	///   - imports: The imports rendered before the file's declarations.
 	///   - declarations: A result builder closure producing the declarations contained in the file.
 	public init(
 		headerComment: FileHeaderCommentDescriptor? = nil,
+		imports: [ImportDescriptor] = [],
 		@TypeMembersBuilder declarations: () -> [TypeMemberDescriptor],
 	) {
 		self.headerComment = headerComment
+		self.imports = imports
 		self.declarations = declarations()
 	}
 
 	/// Renders the file descriptor as UTF-8 source data.
 	public func render(indentUsing style: CodeIndentStyle = .spaces(4)) -> Data {
 		var writer = CodeWriter(indentUsing: style)
-		FileRenderer.render(self, to: &writer)
+		SwiftFileRenderer.render(self, to: &writer)
 		return writer.rendered()
 	}
 
