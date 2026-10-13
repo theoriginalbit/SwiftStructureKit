@@ -3,19 +3,17 @@
 //
 
 enum TypeMemberRenderer {
-	static func render(_ members: [TypeMemberDescriptor], to writer: inout CodeFileWriter) {
-		guard !members.isEmpty else { return }
-		writer.indented { writer in
-			for (index, member) in members.enumerated() {
-				render(member, to: &writer)
-				if index < members.count - 1 {
-					writer.writeNewLine()
-				}
+	static func render(_ declarations: [TypeMemberDescriptor], to writer: inout CodeFileWriter) {
+		guard !declarations.isEmpty else { return }
+		for (index, declaration) in declarations.enumerated() {
+			render(declaration, to: &writer)
+			if index < declarations.count - 1 {
+				writer.writeNewLine()
 			}
 		}
 	}
 
-	private static func render(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
+	static func render(_ member: TypeMemberDescriptor, to writer: inout CodeFileWriter) {
 		switch member {
 		case let .function(descriptor):
 			FunctionRenderer.render(descriptor, to: &writer)

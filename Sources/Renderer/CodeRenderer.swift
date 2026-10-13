@@ -11,6 +11,10 @@ struct CodeRenderer: ~Copyable {
 		writer = CodeFileWriter(indentUsing: style)
 	}
 
+	mutating func renderFile(_ descriptor: FileDescriptor) {
+		FileRenderer.render(descriptor, to: &writer)
+	}
+
 	consuming func finish() -> Data {
 		writer.rendered()
 	}

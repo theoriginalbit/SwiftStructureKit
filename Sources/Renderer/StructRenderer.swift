@@ -13,7 +13,9 @@ enum StructRenderer {
 			conformances: descriptor.conformances,
 			to: &writer
 		)
-		TypeMemberRenderer.render(descriptor.members, to: &writer)
+		writer.indented { writer in
+			TypeMemberRenderer.render(descriptor.members, to: &writer)
+		}
 		writer.writeLine("}")
 	}
 }

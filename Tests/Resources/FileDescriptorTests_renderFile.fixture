@@ -1,0 +1,12 @@
+// Generated source.
+
+func greeting() -> String {
+    return "Hello"
+}
+
+struct Person {
+}
+
+enum Status {
+    case active
+}
