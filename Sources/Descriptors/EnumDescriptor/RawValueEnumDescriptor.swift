@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-// MARK: - Construction Conveniences
+public import Collections
 
 /// An enum kind representing enumerations that use raw values of a specific type.
 @dynamicMemberLookup
@@ -33,8 +33,8 @@ public struct RawValueEnumDescriptor<TypeRef: RawValueEnumValueType>: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<RawValueEnumCaseDescriptor<TypeRef>> cases: () -> [RawValueEnumCaseDescriptor<TypeRef>],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
@@ -155,8 +155,8 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<RawValueEnumCaseDescriptor<RawValueType>> rawValueCases cases: () -> [RawValueEnumCaseDescriptor<RawValueType>],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) -> Self {

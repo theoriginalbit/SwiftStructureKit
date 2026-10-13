@@ -10,10 +10,7 @@ struct CodeRendererStructDescriptorTests {
 
 	@Test("Render basic empty struct")
 	func renderBasicEmptyStruct() {
-		let structDescriptor = StructDescriptor(
-			"SimpleStruct",
-			members: []
-		)
+		let structDescriptor = StructDescriptor("SimpleStruct") {}
 		let output = RenderTest.render { renderer in
 			renderer.renderStruct(structDescriptor)
 		}
@@ -32,8 +29,7 @@ struct CodeRendererStructDescriptorTests {
 			accessModifier: .public,
 			genericTypes: [.identifier("T"), .identifier("U")],
 			conformances: [.sendable, .equatable],
-			members: []
-		)
+		) {}
 		let output = RenderTest.render { renderer in
 			renderer.renderStruct(structDescriptor)
 		}
@@ -50,8 +46,7 @@ struct CodeRendererStructDescriptorTests {
 		let structDescriptor = StructDescriptor(
 			"UserModel",
 			comment: "A user model.\n\nReplicates the server model.",
-			members: []
-		)
+		) {}
 		let output = RenderTest.render { renderer in
 			renderer.renderStruct(structDescriptor)
 		}
@@ -72,9 +67,8 @@ struct CodeRendererStructDescriptorTests {
 			TypeMemberDescriptor.initializer(
 				accessModifier: .public,
 				failable: false,
-				parameters: [.init("id", type: .string)],
-				body: {},
-			)
+				parameters: [.init("id", type: .string)]
+			) {}
 			TypeMemberDescriptor.function(
 				comment: "Gets the identifier.",
 				accessModifier: .public,

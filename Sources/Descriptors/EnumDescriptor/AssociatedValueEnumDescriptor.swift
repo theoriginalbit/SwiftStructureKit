@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import Collections
+
 /// An enum kind representing enumerations that use associated values.
 @dynamicMemberLookup
 public struct AssociatedValueEnumDescriptor: Sendable {
@@ -25,8 +27,8 @@ public struct AssociatedValueEnumDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> cases: () -> [AssociatedValueEnumCaseDescriptor],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
@@ -102,8 +104,8 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> associatedValueCases cases: () -> [AssociatedValueEnumCaseDescriptor],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) -> Self {

@@ -13,6 +13,9 @@ public enum TypeMemberDescriptor: Sendable {
 	/// A member that is a struct, represented by its ``StructDescriptor``.
 	case `struct`(StructDescriptor)
 
+	/// A member that is a protocol, represented by its ``ProtocolDescriptor``.
+	case `protocol`(ProtocolDescriptor)
+
 	/// A member that is a mark comment, represented by its ``MarkCommentDescriptor``
 	case mark(MarkCommentDescriptor)
 }

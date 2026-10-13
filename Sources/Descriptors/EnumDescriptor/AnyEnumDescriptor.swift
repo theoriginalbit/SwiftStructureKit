@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import Collections
+
 /// Type-erased representation of any enumeration declaration.
 public struct AnyEnumDescriptor: Sendable {
 	/// The documentation comment attached to the enum definition, if any.
@@ -14,10 +16,10 @@ public struct AnyEnumDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the enum.
-	public let genericTypes: [TypeReference]
+	public let genericTypes: OrderedSet<TypeReference>
 
 	/// The type and protocol conformances of the enum.
-	public let conformances: [TypeReference]
+	public let conformances: OrderedSet<TypeReference>
 
 	/// The cases of the enum.
 	public let cases: [AnyEnumCaseDescriptor]
@@ -39,8 +41,8 @@ public struct AnyEnumDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		cases: [AnyEnumCaseDescriptor] = [],
 		members: [TypeMemberDescriptor] = [],
 	) {

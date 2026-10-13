@@ -10,6 +10,7 @@ public enum StatementDescriptor: Sendable {
 	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 	case comment(InlineCommentDescriptor)
 
+	/// A `#warning` or `#error` compiler diagnostic directive.
 	case diagnostic(DiagnosticDirectiveDescriptor)
 
 	/// A return statement with an optional return expression.

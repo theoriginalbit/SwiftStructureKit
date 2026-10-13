@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import Collections
+
 /// A descriptor representing a Swift structure declaration.
 public struct StructDescriptor: Sendable {
 	/// The documentation comment attached to the struct definition, if any.
@@ -14,10 +16,10 @@ public struct StructDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the struct.
-	public let genericTypes: [TypeReference]
+	public let genericTypes: OrderedSet<TypeReference>
 
 	/// The type and protocol conformances of the struct.
-	public let conformances: [TypeReference]
+	public let conformances: OrderedSet<TypeReference>
 
 	/// The member declarations contained within the struct.
 	public let members: [TypeMemberDescriptor]
@@ -25,10 +27,10 @@ public struct StructDescriptor: Sendable {
 	/// Creates a struct descriptor with an explicit array of member descriptors.
 	init(
 		_ identifier: String,
-		comment: DocCommentDescriptor? = nil,
-		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		comment: DocCommentDescriptor?,
+		accessModifier: AccessModifierDescriptor?,
+		genericTypes: OrderedSet<TypeReference>,
+		conformances: OrderedSet<TypeReference>,
 		members: [TypeMemberDescriptor],
 	) {
 		self.comment = comment
@@ -52,16 +54,18 @@ public struct StructDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
 	) {
-		self.comment = comment
-		self.accessModifier = accessModifier
-		self.identifier = identifier
-		self.genericTypes = genericTypes
-		self.conformances = conformances
-		self.members = members()
+		self.init(
+			identifier,
+			comment: comment,
+			accessModifier: accessModifier,
+			genericTypes: genericTypes,
+			conformances: conformances,
+			members: members()
+		)
 	}
 }
 
@@ -79,8 +83,8 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
 	) -> Self {
 		Self.struct(StructDescriptor(

@@ -3,6 +3,7 @@
 //
 
 import Foundation
+import Collections
 
 class CodeRenderer {
 	var writer: CodeFileWriter
@@ -20,7 +21,7 @@ class CodeRenderer {
 	// MARK: - Functions that render common types to the writer
 
 	func renderGenericSignature(
-		_ genericTypes: [TypeReference],
+		_ genericTypes: OrderedSet<TypeReference>,
 		to line: inout LineWriter,
 	) {
 		guard !genericTypes.isEmpty else { return }
@@ -34,8 +35,8 @@ class CodeRenderer {
 		accessModifier: AccessModifierDescriptor?,
 		typeKeyword: String,
 		identifier: String,
-		genericTypes: [TypeReference],
-		conformances: [TypeReference],
+		genericTypes: OrderedSet<TypeReference>,
+		conformances: OrderedSet<TypeReference>,
 		to writer: inout CodeFileWriter,
 	) {
 		if let comment = comment {
@@ -171,7 +172,7 @@ class CodeRenderer {
 		type.sourceIdentifier
 	}
 
-	func renderedTypesList(_ types: [TypeReference]) -> String {
+	func renderedTypesList(_ types: OrderedSet<TypeReference>) -> String {
 		types.lazy
 			.map(renderedType(_:))
 			.joined(separator: ", ")

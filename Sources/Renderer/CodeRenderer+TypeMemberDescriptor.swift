@@ -23,6 +23,8 @@ extension CodeRenderer {
 			renderEnum(descriptor, to: &writer)
 		case let .struct(descriptor):
 			renderStruct(descriptor, to: &writer)
+		case let .protocol(descriptor):
+			renderProtocol(descriptor, to: &writer)
 		case let .mark(descriptor):
 			renderMarkComment(descriptor, to: &writer)
 		}

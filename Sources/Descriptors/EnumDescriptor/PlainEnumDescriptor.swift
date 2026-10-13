@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import Collections
+
 /// An enum kind representing plain enumerations that have neither raw values nor associated values.
 @dynamicMemberLookup
 public struct PlainEnumDescriptor: Sendable {
@@ -25,8 +27,8 @@ public struct PlainEnumDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
@@ -101,8 +103,8 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		genericTypes: [TypeReference] = [],
-		conformances: [TypeReference] = [],
+		genericTypes: OrderedSet<TypeReference> = [],
+		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) -> Self {

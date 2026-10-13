@@ -3,7 +3,7 @@
 //
 
 /// A reference to a type representation in Swift.
-public struct TypeReference: Equatable, Sendable {
+public struct TypeReference: Hashable, Sendable {
 	public let sourceIdentifier: String
 
 	init(sourceIdentifier: String) {
