@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import OrderedCollections
 
 @Suite(.tags(.renderer)) struct CodeRenderingSupportTests {
 	@Test("Sanitize Swift identifiers defensively", arguments: [
@@ -23,7 +24,7 @@ import Testing
 
 	@Test("Render structured type references")
 	func renderTypeReferences() {
-		let types: [TypeReference] = [
+		let types: OrderedSet<TypeReference> = [
 			.string,
 			.array(.identifier("Element")),
 			.dictionary(key: .string, value: .optional(.int)),

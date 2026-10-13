@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import Collections
+public import OrderedCollections
 
 /// Type-erased representation of any enumeration declaration.
 public struct AnyEnumDescriptor: Sendable {

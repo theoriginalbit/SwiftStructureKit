@@ -11,7 +11,7 @@ enum TypealiasRenderer {
 			line.token("typealias")
 			line.token(CodeRenderingSupport.renderedType(descriptor.identifier))
 			line.token("=")
-			line.token(CodeRenderingSupport.renderedType(descriptor.assignedType))
+			line.token(CodeRenderingSupport.renderedComposedTypes(descriptor.assignedType))
 		}
 	}
 }

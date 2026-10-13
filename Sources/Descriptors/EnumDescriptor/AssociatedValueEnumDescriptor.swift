@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import Collections
+public import OrderedCollections
 
 /// An enum kind representing enumerations that use associated values.
 @dynamicMemberLookup

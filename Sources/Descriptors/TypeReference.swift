@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import OrderedCollections
+
 /// A reference to a type representation in Swift.
 public indirect enum TypeReference: Hashable, Sendable {
 	/// Creates a type reference from a source identifier.
@@ -26,10 +28,10 @@ public indirect enum TypeReference: Hashable, Sendable {
 	case tuple([TupleElementDescriptor])
 
 	/// A type reference representing a closure.
-	case closure(parameters: [TypeReference], returns: TypeReference)
+	case closure(parameters: OrderedSet<TypeReference>, returns: TypeReference)
 
 	/// A type reference representing a generic parameter and it's constraints, if any.
-	case genericParameter(name: String, constraints: [TypeReference])
+	case genericParameter(name: String, constraints: OrderedSet<TypeReference>)
 }
 
 /// A component of a tuple type.
@@ -61,7 +63,7 @@ public extension TypeReference {
 	}
 
 	/// Creates a generic parameter with optional type constraints.
-	static func genericParameter(_ name: String, constraints: [Self] = []) -> Self {
+	static func genericParameter(_ name: String, constraints: OrderedSet<Self> = []) -> Self {
 		.genericParameter(name: name, constraints: constraints)
 	}
 }

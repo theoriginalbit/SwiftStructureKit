@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import Collections
+public import OrderedCollections
 
 /// A descriptor representing a Swift protocol declaration.
 ///
@@ -201,10 +201,14 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 	public var identifier: TypeReference { descriptor.identifier }
 
 	/// The type this alias refers to.
-	public var assignedType: TypeReference { descriptor.assignedType }
+	public var assignedType: OrderedSet<TypeReference> { descriptor.assignedType }
 
-	init(_ identifier: TypeReference, assignedType: TypeReference) {
+	public init(_ identifier: TypeReference, assignedType: TypeReference) {
 		self.descriptor = TypealiasDescriptor(identifier, assignedType: assignedType)
+	}
+
+	public init(_ identifier: TypeReference, assignedTypes: OrderedSet<TypeReference>) {
+		self.descriptor = TypealiasDescriptor(identifier, assignedTypes: assignedTypes)
 	}
 }
 

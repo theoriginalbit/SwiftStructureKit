@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import Collections
+public import OrderedCollections
 
 /// A descriptor representing a Swift structure declaration.
 public struct StructDescriptor: Sendable {

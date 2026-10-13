@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-import Collections
+import OrderedCollections
 
 enum CodeRenderingSupport {
 	// MARK: Common rendering
@@ -126,7 +126,7 @@ enum CodeRenderingSupport {
 			if constraints.isEmpty {
 				SwiftIdentifier.sanitized(name)
 			} else {
-				"\(SwiftIdentifier.sanitized(name)): \(constraints.map(renderedType(_:)).joined(separator: " & "))"
+				"\(SwiftIdentifier.sanitized(name)): \(renderedComposedTypes(constraints))"
 			}
 		}
 	}
@@ -141,5 +141,11 @@ enum CodeRenderingSupport {
 		types.lazy
 			.map(renderedType(_:))
 			.joined(separator: ", ")
+	}
+
+	static func renderedComposedTypes(_ types: OrderedSet<TypeReference>) -> String {
+		types.lazy
+			.map(renderedType(_:))
+			.joined(separator: " & ")
 	}
 }

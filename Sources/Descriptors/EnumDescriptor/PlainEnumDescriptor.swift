@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import Collections
+public import OrderedCollections
 
 /// An enum kind representing plain enumerations that have neither raw values nor associated values.
 @dynamicMemberLookup
