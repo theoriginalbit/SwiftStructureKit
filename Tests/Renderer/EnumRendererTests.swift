@@ -118,7 +118,7 @@ import Testing
 	@Test("Render associated value enum with labeled and unlabelled values")
 	func renderAssociatedValueEnum() {
 		let enumDescriptor = AssociatedValueEnumDescriptor("NetworkState") {
-			AssociatedValueEnumCaseDescriptor("idle")
+			"idle"
 			AssociatedValueEnumCaseDescriptor(
 				"loading",
 				associatedValues: [.init(label: "progress", type: .double)]
