@@ -20,6 +20,28 @@ import Testing
 			""")
 	}
 
+	@Test("Sanitize protocol and property identifiers")
+	func sanitizeProtocolAndPropertyIdentifiers() {
+		let descriptor = ProtocolDescriptor("$Readable") {
+			ProtocolPropertyDescriptor(
+				comment: nil,
+				identifier: "class",
+				type: .identifier("$Value"),
+				accessorSpecifier: .get,
+			)
+		}
+		let output = RenderTest.render { writer in
+			ProtocolRenderer.render(descriptor, to: &writer)
+		}
+
+		#expect(output == """
+			protocol $Readable {
+			    var `class`: $Value { get }
+			}
+
+			""")
+	}
+
 	@Test("Render protocol header and documentation comment")
 	func renderProtocolHeader() {
 		let descriptor = ProtocolDescriptor(

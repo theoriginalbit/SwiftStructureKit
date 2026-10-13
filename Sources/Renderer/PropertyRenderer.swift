@@ -13,7 +13,7 @@ enum PropertyRenderer {
 			writer.writeLine { line in
 				renderDeclarationPrefix(property, to: &line)
 				line.token(isMutable ? "var" : "let")
-				line.token(property.identifier)
+				line.token(SwiftIdentifier.sanitized(property.identifier))
 				line.punctuation(":")
 				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
@@ -37,7 +37,7 @@ enum PropertyRenderer {
 			writer.writeLine { line in
 				renderDeclarationPrefix(property, to: &line)
 				line.token("var")
-				line.token(property.identifier)
+				line.token(SwiftIdentifier.sanitized(property.identifier))
 				line.punctuation(":")
 				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
@@ -119,7 +119,7 @@ enum PropertyRenderer {
 		line.token(name, separateFromNextToken: parameterName == nil)
 		if let parameterName {
 			line.punctuation("(")
-			line.token(parameterName)
+			line.token(SwiftIdentifier.sanitized(parameterName))
 			line.punctuation(")")
 		}
 	}

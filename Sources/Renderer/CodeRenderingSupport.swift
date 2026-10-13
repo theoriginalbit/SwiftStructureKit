@@ -36,7 +36,7 @@ enum CodeRenderingSupport {
 			}
 
 			line.token(typeKeyword)
-			line.token(identifier)
+			line.token(SwiftIdentifier.sanitized(identifier))
 			renderGenericSignature(genericTypes, to: &line)
 
 			if !conformances.isEmpty {
@@ -107,7 +107,7 @@ enum CodeRenderingSupport {
 	static func renderedType(_ type: TypeReference) -> String {
 		return switch type {
 		case let .identifier(identifier):
-			identifier
+			SwiftIdentifier.sanitized(identifier)
 		case let .array(element):
 			"Array<\(renderedType(element))>"
 		case let .dictionary(key, value):
@@ -124,9 +124,9 @@ enum CodeRenderingSupport {
 			"(\(parameters.map(renderedType(_:)).joined(separator: ", "))) -> \(renderedType(returns))"
 		case let .genericParameter(name, constraints):
 			if constraints.isEmpty {
-				name
+				SwiftIdentifier.sanitized(name)
 			} else {
-				"\(name): \(constraints.map(renderedType(_:)).joined(separator: " & "))"
+				"\(SwiftIdentifier.sanitized(name)): \(constraints.map(renderedType(_:)).joined(separator: " & "))"
 			}
 		}
 	}
@@ -134,7 +134,7 @@ enum CodeRenderingSupport {
 	static func rendered(_ element: TupleElementDescriptor) -> String {
 		let type = renderedType(element.type)
 		guard let label = element.label else { return type }
-		return "\(label): \(type)"
+		return "\(SwiftIdentifier.sanitized(label)): \(type)"
 	}
 
 	static func renderedTypesList(_ types: OrderedSet<TypeReference>) -> String {

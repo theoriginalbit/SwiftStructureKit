@@ -110,6 +110,31 @@ import Testing
 			""")
 	}
 
+	@Test("Sanitize property and accessor parameter identifiers")
+	func sanitizePropertyAndAccessorIdentifiers() {
+		let property = PropertyDescriptor(
+			"default",
+			type: .string,
+			kind: .computed(
+				getter: PropertyAccessorDescriptor.Getter(),
+				setter: PropertyAccessorDescriptor.Setter(parameterName: "new-value"),
+			),
+		)
+		let output = RenderTest.render { writer in
+			PropertyRenderer.render(property, to: &writer)
+		}
+
+		#expect(output == """
+			var `default`: String {
+			    get {
+			    }
+			    set(new_hyphen_value) {
+			    }
+			}
+
+			""")
+	}
+
 	@Test("Render stored properties with observers")
 	func renderStoredPropertiesWithObservers() {
 		let property = PropertyDescriptor(

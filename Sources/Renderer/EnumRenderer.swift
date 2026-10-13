@@ -39,13 +39,13 @@ enum EnumRenderer {
 
 		writer.writeLine { line in
 			line.token("case")
-			line.token(descriptor.name)
+			line.token(SwiftIdentifier.sanitized(descriptor.name))
 
 			if !descriptor.associatedValues.isEmpty {
 				line.punctuation("(")
 				for (index, associatedValue) in descriptor.associatedValues.enumerated() {
 					if let label = associatedValue.label {
-						line.token(label)
+						line.token(SwiftIdentifier.sanitized(label))
 						line.punctuation(":")
 						line.space()
 					}

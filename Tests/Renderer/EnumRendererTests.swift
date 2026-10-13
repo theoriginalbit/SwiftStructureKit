@@ -21,6 +21,29 @@ import Testing
 		#expect(output == expected)
 	}
 
+	@Test("Sanitize enum, case, and associated value identifiers")
+	func sanitizeEnumIdentifiers() {
+		let descriptor = AssociatedValueEnumDescriptor("$Response") {
+			AssociatedValueEnumCaseDescriptor(
+				"class",
+				associatedValues: [
+					.init(label: "1-value", type: .identifier("try")),
+					.init(label: "_", type: .string),
+				]
+			)
+		}
+		let output = RenderTest.render { writer in
+			EnumRenderer.render(descriptor.descriptor, to: &writer)
+		}
+		let expected = """
+		enum $Response {
+		    case `class`(_1_hyphen_value: `try`, _: String)
+		}
+
+		"""
+		#expect(output == expected)
+	}
+
 	@Test("Render complex enum header with access modifier, generic types, and conformances")
 	func renderComplexEnumHeader() {
 		let enumDescriptor = PlainEnumDescriptor(

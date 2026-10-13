@@ -18,6 +18,29 @@ import Testing
 		#expect(output == "func doSomething()\n")
 	}
 
+	@Test("Sanitize function and parameter identifiers")
+	func sanitizeFunctionAndParameterIdentifiers() {
+		let signature = FunctionSignatureDescriptor(
+			comment: "Uses a sanitized parameter.",
+			kind: .function("default", returns: .identifier("9-Result")),
+			parameters: [
+				.init(label: "try", "1value", type: .identifier("$Payload"), comment: "The payload."),
+				.init(label: "_", "raw-value", type: .string),
+			]
+		)
+		let output = RenderTest.render { writer in
+			FunctionRenderer.renderSignature(signature, to: &writer)
+		}
+
+		#expect(output == """
+			/// Uses a sanitized parameter.
+			///
+			/// - Parameter _1value: The payload.
+			func `default`(`try` _1value: $Payload, _ raw_hyphen_value: String) -> _9_hyphen_Result
+
+			""")
+	}
+
 	@Test("Render static public function with parameters and return type")
 	func renderComplexFunctionSignature() {
 		let signature = FunctionSignatureDescriptor(
@@ -31,7 +54,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "public static func calculate(for key: String, count: Int = 10) -> Int\n")
+		#expect(output == "public static func calculate(`for` key: String, count: Int = 10) -> Int\n")
 	}
 
 	@Test("Render function with async and throwing effect specifiers")

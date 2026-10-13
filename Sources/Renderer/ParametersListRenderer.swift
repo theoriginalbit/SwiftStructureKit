@@ -23,9 +23,9 @@ enum ParametersListRenderer {
 
 	private static func render(_ parameter: ParametersList.Parameter, into line: inout LineWriter) {
 		if let label = parameter.label, label != parameter.identifier {
-			line.token(label)
+			line.token(SwiftIdentifier.sanitized(label))
 		}
-		line.token(parameter.identifier)
+		line.token(SwiftIdentifier.sanitized(parameter.identifier))
 		line.punctuation(":")
 		line.space()
 		line.token(CodeRenderingSupport.renderedType(parameter.type))

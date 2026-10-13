@@ -68,7 +68,7 @@ enum ProtocolRenderer {
 
 		writer.writeLine { line in
 			line.token("var")
-			line.token(property.identifier)
+			line.token(SwiftIdentifier.sanitized(property.identifier))
 			line.punctuation(":")
 			line.space()
 			line.token(CodeRenderingSupport.renderedType(property.type))

@@ -35,12 +35,12 @@ enum FunctionRenderer {
 
 		writer.writeLine("///")
 		if paramsWithComments.count == 1, let param = paramsWithComments.first, let comment = param.comment {
-			writer.writeLine("- Parameter \(param.identifier): \(comment.value)", prefix: "/// ")
+			writer.writeLine("- Parameter \(SwiftIdentifier.sanitized(param.identifier)): \(comment.value)", prefix: "/// ")
 		} else {
 			writer.writeLine("/// - Parameters:")
 			for param in paramsWithComments {
 				if let comment = param.comment {
-					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
+					writer.writeLine("- \(SwiftIdentifier.sanitized(param.identifier)): \(comment.value)", prefix: "///   ")
 				}
 			}
 		}
@@ -62,7 +62,7 @@ enum FunctionRenderer {
 				line.token("static")
 			}
 			line.token("func")
-			line.token(name)
+			line.token(SwiftIdentifier.sanitized(name))
 		}
 
 		ParametersListRenderer.render(signature.parameters, into: &line)
