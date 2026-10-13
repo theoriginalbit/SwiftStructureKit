@@ -14,5 +14,10 @@ public enum StatementDescriptor: Sendable {
 	case diagnostic(DiagnosticDirectiveDescriptor)
 
 	/// A return statement with an optional return expression.
-	case `return`(ExpressionDescriptor? = nil)
+	case `return`(ReturnStatementDescriptor)
+
+	/// A return statement with an optional return expression.
+	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
+		.return(ReturnStatementDescriptor(expression))
+	}
 }

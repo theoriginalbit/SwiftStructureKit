@@ -3,7 +3,7 @@
 //
 
 /// A return statement with an optional expression.
-public struct ReturnStatementDescriptor {
+public struct ReturnStatementDescriptor: Sendable {
 	public let expression: ExpressionDescriptor?
 
 	public init(_ expression: ExpressionDescriptor? = nil) {

@@ -32,10 +32,10 @@ enum StatementRenderer {
 		case let .diagnostic(descriptor):
 			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
 
-		case let .return(expression):
+		case let .return(descriptor):
 			writer.writeLine { line in
 				line.token("return")
-				if let expression {
+				if let expression = descriptor.expression {
 					line.token(CodeRenderingSupport.renderedExpression(expression))
 				}
 			}
