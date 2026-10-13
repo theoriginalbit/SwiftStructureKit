@@ -4,7 +4,7 @@
 
 enum FunctionRenderer {
 	static func render(_ function: FunctionDescriptor, to writer: inout CodeWriter) {
-		CodeRenderingSupport.renderDocComment(for: function.signature, to: &writer)
+		renderDocComment(for: function.signature, to: &writer)
 
 		writer.writeLine { line in
 			renderSignature(function.signature, to: &line)
@@ -18,10 +18,31 @@ enum FunctionRenderer {
 	}
 
 	static func renderSignature(_ signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
-		CodeRenderingSupport.renderDocComment(for: signature, to: &writer)
+		renderDocComment(for: signature, to: &writer)
 
 		writer.writeLine { line in
 			renderSignature(signature, to: &line)
+		}
+	}
+
+	private static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
+		guard let docComment = signature.comment else { return }
+
+		writer.writeLine(docComment.value, prefix: "/// ")
+
+		let paramsWithComments = signature.parameters.filter { $0.comment != nil }
+		guard !paramsWithComments.isEmpty else { return }
+
+		writer.writeLine("///")
+		if paramsWithComments.count == 1, let param = paramsWithComments.first, let comment = param.comment {
+			writer.writeLine("- Parameter \(param.identifier): \(comment.value)", prefix: "/// ")
+		} else {
+			writer.writeLine("/// - Parameters:")
+			for param in paramsWithComments {
+				if let comment = param.comment {
+					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
+				}
+			}
 		}
 	}
 

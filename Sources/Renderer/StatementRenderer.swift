@@ -27,7 +27,7 @@ enum StatementRenderer {
 			}
 
 		case let .comment(descriptor):
-			CodeRenderingSupport.renderInlineComment(descriptor, to: &writer)
+			CommentRenderer.renderInlineComment(descriptor, to: &writer)
 
 		case let .diagnostic(descriptor):
 			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)

@@ -5,6 +5,8 @@
 import Collections
 
 enum CodeRenderingSupport {
+	// MARK: Common rendering
+
 	static func renderGenericSignature(
 		_ genericTypes: OrderedSet<TypeReference>,
 		to line: inout LineWriter,
@@ -48,44 +50,7 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
-		guard let docComment = signature.comment else { return }
-
-		writer.writeLine(docComment.value, prefix: "/// ")
-
-		let paramsWithComments = signature.parameters.filter { $0.comment != nil }
-		guard !paramsWithComments.isEmpty else { return }
-
-		writer.writeLine("///")
-		if paramsWithComments.count == 1, let param = paramsWithComments.first, let comment = param.comment {
-			writer.writeLine("- Parameter \(param.identifier): \(comment.value)", prefix: "/// ")
-		} else {
-			writer.writeLine("/// - Parameters:")
-			for param in paramsWithComments {
-				if let comment = param.comment {
-					writer.writeLine("- \(param.identifier): \(comment.value)", prefix: "///   ")
-				}
-			}
-		}
-	}
-
-	static func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeWriter) {
-		writer.writeLine { line in
-			line.token("// MARK:")
-			if descriptor.sectionBreak {
-				line.space()
-				line.punctuation("-")
-				line.space()
-			}
-			if let value = descriptor.value {
-				line.token(value)
-			}
-		}
-	}
-
-	static func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeWriter) {
-		writer.writeLine(descriptor.value, prefix: "// ")
-	}
+	// MARK: Rendered to string
 
 	static func renderedThrowingSpecifier(_ specifier: EffectSpecifiers.ThrowingSpecifier) -> String {
 		switch specifier {
@@ -103,7 +68,7 @@ enum CodeRenderingSupport {
 		case .open: "open"
 		case .public: "public"
 		case .package: "package"
-		case .internal: "internal" // TODO: config setting to not render explicit internal
+		case .internal: "internal"
 		case .fileprivate: "fileprivate"
 		case .private: "private"
 		}
