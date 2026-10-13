@@ -3,12 +3,72 @@
 //
 
 /// A reference to a type representation in Swift.
-public struct TypeReference: Hashable, Sendable {
-	/// The Swift source spelling of the referenced type.
-	public let sourceIdentifier: String
+public indirect enum TypeReference: Hashable, Sendable {
+	/// Creates a type reference from a source identifier.
+	case identifier(String)
 
-	init(sourceIdentifier: String) {
-		self.sourceIdentifier = sourceIdentifier
+	/// A type reference representing an array of the specified element type.
+	case array(TypeReference)
+
+	/// A type reference representing a dictionary of the specified key and value types.
+	case dictionary(key: TypeReference, value: TypeReference)
+
+	/// A type reference representing a type that is optional.
+	case optional(TypeReference)
+
+	/// An existential any type reference.
+	case any(TypeReference)
+
+	/// An existential some type reference, or opaque return type.
+	case some(TypeReference)
+
+	/// Creates a tuple type from its elements.
+	case tuple([TupleElementDescriptor])
+
+	/// A type reference representing a closure.
+	case closure(parameters: [TypeReference], returns: TypeReference)
+
+	/// A type reference representing a generic parameter and it's constraints, if any.
+	case genericParameter(name: String, constraints: [TypeReference])
+}
+
+/// A component of a tuple type.
+public struct TupleElementDescriptor: Hashable, Sendable {
+	/// The optional label of the tuple element.
+	public let label: String?
+
+	/// The type of the tuple element.
+	public let type: TypeReference
+
+	/// Creates a tuple element.
+	public init(label: String? = nil, type: TypeReference) {
+		self.label = label
+		self.type = type
+	}
+}
+
+// MARK: - Construction convenience
+
+public extension TypeReference {
+	/// Creates a tuple type from its element types.
+	static func tuple(_ types: Self...) -> Self {
+		.tuple(types.map { TupleElementDescriptor(type: $0) })
+	}
+
+	/// Creates a tuple type from its element types.
+	static func tuple(@ArrayBuilder<TupleElementDescriptor> _ types: () -> [TupleElementDescriptor]) -> Self {
+		.tuple(types())
+	}
+
+	/// Creates a generic parameter with optional type constraints.
+	static func genericParameter(_ name: String, constraints: [Self] = []) -> Self {
+		.genericParameter(name: name, constraints: constraints)
+	}
+}
+
+extension ArrayBuilder where T == TupleElementDescriptor {
+	public static func buildExpression(_ expression: TypeReference) -> Result {
+		[T(type: expression)]
 	}
 }
 
@@ -17,66 +77,32 @@ public struct TypeReference: Hashable, Sendable {
 public extension TypeReference {
 	/// A type reference to `String`.
 	static var string: Self {
-		Self(sourceIdentifier: "String")
+		.identifier("String")
 	}
 
 	/// A type reference to `Int`.
 	static var int: Self {
-		Self(sourceIdentifier: "Int")
+		.identifier("Int")
 	}
 
 	/// A type reference to `Double`.
 	static var double: Self {
-		Self(sourceIdentifier: "Double")
+		.identifier("Double")
 	}
 
 	/// A type reference to `Bool`.
 	static var bool: Self {
-		Self(sourceIdentifier: "Bool")
-	}
-
-	/// A type reference representing an array of the specified element type.
-	///
-	/// - Parameter element: The type of each array element.
-	/// - Returns: A reference to `Array<Element>`.
-	static func array(_ element: Self) -> Self {
-		Self(sourceIdentifier: "Array<\(element.sourceIdentifier)>")
-	}
-
-	/// A type reference representing a dictionary of the specified key and value types.
-	///
-	/// - Parameters:
-	///   - key: The dictionary key type.
-	///   - value: The dictionary value type.
-	/// - Returns: A reference to `Dictionary<Key, Value>`.
-	static func dictionary(key: Self, value: Self) -> Self {
-		Self(sourceIdentifier: "Dictionary<\(key.sourceIdentifier),\(value.sourceIdentifier)>")
-	}
-
-	/// A type reference representing a type that is optional.
-	///
-	/// - Parameter value: The wrapped type.
-	/// - Returns: A reference to `Optional<Wrapped>`.
-	static func optional(_ value: Self) -> Self {
-		Self(sourceIdentifier: "Optional<\(value.sourceIdentifier)>")
-	}
-
-	/// Creates a type reference from a source identifier.
-	///
-	/// - Parameter value: The type's source spelling.
-	/// - Returns: A reference that renders the identifier verbatim.
-	static func identifier(_ value: String) -> Self {
-		Self(sourceIdentifier: value)
+		.identifier("Bool")
 	}
 
 	/// A type reference to `Sendable`.
 	static var sendable: Self {
-		Self(sourceIdentifier: "Sendable")
+		.identifier("Sendable")
 	}
 
 	/// A type reference to `Equatable`.
 	static var equatable: Self {
-		Self(sourceIdentifier: "Equatable")
+		.identifier("Equatable")
 	}
 }
 
@@ -85,11 +111,11 @@ public extension TypeReference {
 public extension TypeReference {
 	/// A type reference to `Data`.
 	static var data: Self {
-		Self(sourceIdentifier: "Data")
+		.identifier("Data")
 	}
 
 	/// A type reference to `Date`.
 	static var date: Self {
-		Self(sourceIdentifier: "Date")
+		.identifier("Date")
 	}
 }

@@ -104,8 +104,37 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	@inlinable static func renderedType(_ type: TypeReference) -> String {
-		type.sourceIdentifier
+	static func renderedType(_ type: TypeReference) -> String {
+		return switch type {
+		case let .identifier(identifier):
+			identifier
+		case let .array(element):
+			"Array<\(renderedType(element))>"
+		case let .dictionary(key, value):
+			"Dictionary<\(renderedType(key)), \(renderedType(value))>"
+		case let .optional(value):
+			"Optional<\(renderedType(value))>"
+		case let .any(value):
+			"any \(renderedType(value))"
+		case let .some(value):
+			"some \(renderedType(value))"
+		case let .tuple(elements):
+			"(\(elements.map(rendered(_:)).joined(separator: ", ")))"
+		case let .closure(parameters, returns):
+			"(\(parameters.map(renderedType(_:)).joined(separator: ", "))) -> \(renderedType(returns))"
+		case let .genericParameter(name, constraints):
+			if constraints.isEmpty {
+				name
+			} else {
+				"\(name): \(constraints.map(renderedType(_:)).joined(separator: " & "))"
+			}
+		}
+	}
+
+	static func rendered(_ element: TupleElementDescriptor) -> String {
+		let type = renderedType(element.type)
+		guard let label = element.label else { return type }
+		return "\(label): \(type)"
 	}
 
 	static func renderedTypesList(_ types: OrderedSet<TypeReference>) -> String {
