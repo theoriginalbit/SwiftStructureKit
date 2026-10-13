@@ -29,14 +29,14 @@ public struct FunctionSignatureDescriptor: Sendable {
 	public let parameters: ParametersList
 
 	/// The effect specifiers of the function, such as `async` and `throws`.
-	public let effects: EffectSpecifiers?
+	public let effects: EffectSpecifiers
 
 	public init(
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		kind: Kind,
 		parameters: ParametersList = [],
-		effects: EffectSpecifiers? = nil
+		effects: EffectSpecifiers = .none
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier

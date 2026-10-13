@@ -7,11 +7,21 @@ import Testing
 @testable import SwiftStructureKit
 
 @Suite(.tags(.declaration)) struct EffectSpecifiersTests {
-	@Test func cannotCreateInvalidEffects() async throws {
-		let result = try await #require(processExitsWith: .signal(SIGTRAP), observing: [\.standardErrorContent]) {
-			_ = EffectSpecifiers()
-		}
-		let stderr = String(decoding: result.standardErrorContent, as: UTF8.self)
-		#expect(stderr.contains("Effect requires at least one of `async` or a throwing specifier"))
+	@Test func emptyEffects() {
+		let effects = EffectSpecifiers()
+
+		#expect(effects.hasEffects)
+		#expect(EffectSpecifiers.none.hasEffects)
+	}
+
+	@Test(
+		arguments: [
+			EffectSpecifiers(isAsync: true),
+			EffectSpecifiers(throwingSpecifier: .throws),
+			EffectSpecifiers(isAsync: true, throwingSpecifier: .throws),
+		]
+	)
+	func nonemptyEffects(effects: EffectSpecifiers) {
+		#expect(effects.hasEffects == false)
 	}
 }

@@ -53,14 +53,14 @@ extension CodeRenderer {
 
 		renderParametersList(signature.parameters, into: &line)
 
-		if let effects = signature.effects {
+		if !signature.effects.hasEffects {
 			line.space() // TODO: implementation detail knowing that parameter list renders a token at the end. need to be smarter somehow
 
-			if effects.isAsync {
+			if signature.effects.isAsync {
 				line.token("async")
 			}
 
-			if let throwing = effects.throwingSpecifier {
+			if let throwing = signature.effects.throwingSpecifier {
 				line.token(renderedThrowingSpecifier(throwing))
 			}
 		}

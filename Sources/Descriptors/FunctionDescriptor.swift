@@ -28,7 +28,7 @@ public extension TypeMemberDescriptor {
 	///   - accessModifier: An optional access modifier (e.g. `public`, `private`) for the initializer.
 	///   - failable: Whether the initializer is failable (i.e. `init?`).
 	///   - parameters: The list of parameters the initializer accepts. Defaults to an empty list.
-	///   - effects: Optional effect specifiers (e.g. `throws`, `async`) for the initializer.
+	///   - effects: Effect specifiers (e.g. `throws`, `async`) for the initializer.
 	///   - body: A ``CodeBlockBuilder`` closure that produces the statements making up the initializer's body.
 	/// - Returns: A `.function` member descriptor configured as an initializer.
 	static func initializer(
@@ -36,7 +36,7 @@ public extension TypeMemberDescriptor {
 		accessModifier: AccessModifierDescriptor? = nil,
 		failable: Bool,
 		parameters: ParametersList = [],
-		effects: EffectSpecifiers? = nil,
+		effects: EffectSpecifiers = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
 		Self.function(FunctionDescriptor(
@@ -60,7 +60,7 @@ public extension TypeMemberDescriptor {
 	///   - returns: An optional ``TypeReference`` describing the function's return type. Defaults to `nil` (no return value).
 	///   - isStatic: Whether the function is a static member. Defaults to `false`.
 	///   - parameters: The list of parameters the function accepts. Defaults to an empty list.
-	///   - effects: Optional effect specifiers (e.g. `throws`, `async`) for the function.
+	///   - effects: Effect specifiers (e.g. `throws`, `async`) for the function.
 	///   - body: A ``CodeBlockBuilder`` closure that produces the statements making up the function's body.
 	/// - Returns: A `.function` member descriptor configured as a named function.
 	static func function(
@@ -70,7 +70,7 @@ public extension TypeMemberDescriptor {
 		returns: TypeReference? = nil,
 		isStatic: Bool = false,
 		parameters: ParametersList = [],
-		effects: EffectSpecifiers? = nil,
+		effects: EffectSpecifiers = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
 		Self.function(FunctionDescriptor(
