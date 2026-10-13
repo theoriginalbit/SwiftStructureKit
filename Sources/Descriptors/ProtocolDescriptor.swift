@@ -4,6 +4,9 @@
 
 public import Collections
 
+/// A descriptor representing a Swift protocol declaration.
+///
+/// - Note: Associated type members declared as primary associated types are automatically added to `genericTypes`, after explicitly supplied generic types.
 public struct ProtocolDescriptor: Sendable {
 	/// The documentation comment attached to the protocol definition, if any.
 	public let comment: DocCommentDescriptor?
@@ -20,9 +23,18 @@ public struct ProtocolDescriptor: Sendable {
 	/// The type and protocol conformances of the protocol.
 	public let conformances: OrderedSet<TypeReference>
 
-	/// The function member declarations the protocol.
+	/// The member declarations contained within the protocol.
 	public let members: [ProtocolMemberDescriptor]
 
+	/// Creates a protocol descriptor using a result builder to define its members.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the protocol.
+	///   - comment: An optional documentation comment for the protocol.
+	///   - accessModifier: An optional access level modifier for the protocol.
+	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - conformances: The types or protocols the protocol inherits from.
+	///   - members: A result builder closure producing the protocol's member declarations.
 	init(
 		_ identifier: String,
 		comment: DocCommentDescriptor?,
@@ -46,6 +58,19 @@ public struct ProtocolDescriptor: Sendable {
 		self.members = members
 	}
 
+	/// Creates a protocol descriptor using a result builder to define its members.
+	///
+	/// Primary associated types declared by `members` are added to `genericTypes`
+	/// automatically. Explicit generic types retain their order, followed by any
+	/// primary associated types not already present.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the protocol.
+	///   - comment: An optional documentation comment for the protocol.
+	///   - accessModifier: An optional access level modifier for the protocol.
+	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - conformances: The types or protocols the protocol inherits from.
+	///   - members: A result builder closure producing the protocol's member declarations.
 	public init(
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
@@ -65,6 +90,7 @@ public struct ProtocolDescriptor: Sendable {
 	}
 }
 
+/// A property requirement declared by a protocol.
 public struct ProtocolPropertyDescriptor: Sendable {
 	/// The documentation comment attached to the protocol property definition, if any.
 	public let comment: DocCommentDescriptor?
@@ -78,6 +104,13 @@ public struct ProtocolPropertyDescriptor: Sendable {
 	/// The accessor specifiers for the protocol property.
 	public let accessorSpecifier: ProtocolPropertyAccessorSpecifier
 
+	/// Creates a protocol property requirement.
+	///
+	/// - Parameters:
+	///   - comment: An optional documentation comment for the property.
+	///   - identifier: The name of the property.
+	///   - type: The property's type.
+	///   - accessorSpecifier: The required property accessors.
 	public init(
 		comment: DocCommentDescriptor?,
 		identifier: String,
@@ -91,35 +124,68 @@ public struct ProtocolPropertyDescriptor: Sendable {
 	}
 }
 
+/// The accessors required by a protocol property.
 public enum ProtocolPropertyAccessorSpecifier: Sendable {
+	/// The property must be readable.
 	case get
+
+	/// The property must be readable and settable.
 	case getSet
+
+	/// The property must be borrowable.
 	case borrow
+
+	/// The property must support mutable borrowing.
 	case borrowMutate
 }
 
+/// An associated type requirement declared by a protocol.
 public struct ProtocolAssociatedtypeDescriptor: Sendable {
+	/// A constraint applied to an associated type.
 	public enum Kind: Sendable {
+		/// The associated type conforms to the specified type.
 		case conformsTo(TypeReference)
+
+		/// The associated type is the same type as the specified type.
 		case sameType(TypeReference)
 	}
 
+	/// The associated type's identifier.
 	public let identifier: TypeReference
+
+	/// The associated type's conformance or same-type requirement, if any.
 	public let kind: Kind?
+
+	/// Whether this associated type is a primary associated type.
 	public let isPrimary: Bool
 
+	/// Creates an unconstrained associated type requirement.
+	///
+	/// - Parameter identifier: The associated type's identifier.
 	public init(_ identifier: TypeReference) {
 		self.identifier = identifier
 		self.kind = nil
 		self.isPrimary = false
 	}
 
+	/// Creates an associated type requirement constrained to conform to a type.
+	///
+	/// - Parameters:
+	///   - identifier: The associated type's identifier.
+	///   - other: The type the associated type must conform to.
+	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ identifier: TypeReference, conformsTo other: TypeReference, isPrimary: Bool = false) {
 		self.identifier = identifier
 		self.kind = .conformsTo(other)
 		self.isPrimary = isPrimary
 	}
 
+	/// Creates an associated type requirement constrained to be another type.
+	///
+	/// - Parameters:
+	///   - identifier: The associated type's identifier.
+	///   - other: The type the associated type must be identical to.
+	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ identifier: TypeReference, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
 		self.identifier = identifier
 		self.kind = .sameType(other)
@@ -127,6 +193,7 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	}
 }
 
+/// A typealias declaration within a protocol.
 public struct ProtocolTypealiasDescriptor: Sendable {
 	let descriptor: TypealiasDescriptor
 
@@ -141,13 +208,22 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 	}
 }
 
+/// A declaration that can appear as a protocol member.
 public enum ProtocolMemberDescriptor: Sendable {
+	/// An associated type requirement.
 	case `associatedtype`(ProtocolAssociatedtypeDescriptor)
+
+	/// A typealias declaration.
 	case `typealias`(ProtocolTypealiasDescriptor)
+
+	/// A property requirement.
 	case property(ProtocolPropertyDescriptor)
+
+	/// A function requirement.
 	case function(FunctionSignatureDescriptor)
 }
 
+/// A result builder for assembling protocol member declarations.
 public typealias ProtocolMemberBuilder = ArrayBuilder<ProtocolMemberDescriptor>
 
 extension ArrayBuilder where T == ProtocolMemberDescriptor {
@@ -165,6 +241,15 @@ extension ArrayBuilder where T == ProtocolMemberDescriptor {
 }
 
 public extension TypeMemberDescriptor {
+	/// Creates a member descriptor for a protocol.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the protocol.
+	///   - comment: An optional documentation comment for the protocol.
+	///   - accessModifier: An optional access level modifier for the protocol.
+	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - conformances: The types or protocols the protocol inherits from.
+	///   - members: A result builder closure producing the protocol's member declarations.
 	static func `protocol`(
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,

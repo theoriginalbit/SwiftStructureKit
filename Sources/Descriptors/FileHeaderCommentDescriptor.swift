@@ -7,6 +7,9 @@ public struct FileHeaderCommentDescriptor: Sendable {
 	/// The text of the file header comment.
 	public let value: String
 
+	/// Creates a file header comment from its text.
+	///
+	/// - Parameter value: The text to render at the beginning of the file.
 	public init(_ value: String) {
 		self.value = value
 	}

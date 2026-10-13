@@ -64,18 +64,22 @@ public protocol RawValueEnumValueType: Sendable {
 }
 
 extension String: RawValueEnumValueType {
+	/// The type reference for `String`.
 	public static var typeReference: TypeReference { .string }
 }
 
 extension Int: RawValueEnumValueType {
+	/// The type reference for `Int`.
 	public static var typeReference: TypeReference { .int }
 }
 
 extension Double: RawValueEnumValueType {
+	/// The type reference for `Double`.
 	public static var typeReference: TypeReference { .double }
 }
 
 extension Bool: RawValueEnumValueType {
+	/// The type reference for `Bool`.
 	public static var typeReference: TypeReference { .bool }
 }
 
@@ -173,6 +177,12 @@ public extension TypeMemberDescriptor {
 }
 
 public extension RawValueEnumCaseDescriptor where TypeRef == String {
+	/// Creates a string raw-value enum case with an explicit raw value.
+	///
+	/// - Parameters:
+	///   - name: The enum case name.
+	///   - rawValue: The string raw value.
+	///   - comment: An optional documentation comment for the case.
 	init(
 		_ name: String,
 		rawValue: TypeRef,
@@ -188,6 +198,12 @@ public extension RawValueEnumCaseDescriptor where TypeRef == String {
 }
 
 public extension RawValueEnumCaseDescriptor where TypeRef == Int {
+	/// Creates an integer raw-value enum case with an explicit raw value.
+	///
+	/// - Parameters:
+	///   - name: The enum case name.
+	///   - rawValue: The integer raw value.
+	///   - comment: An optional documentation comment for the case.
 	init(
 		_ name: String,
 		rawValue: TypeRef,
@@ -203,6 +219,12 @@ public extension RawValueEnumCaseDescriptor where TypeRef == Int {
 }
 
 public extension RawValueEnumCaseDescriptor where TypeRef == Double {
+	/// Creates a floating-point raw-value enum case with an explicit raw value.
+	///
+	/// - Parameters:
+	///   - name: The enum case name.
+	///   - rawValue: The floating-point raw value.
+	///   - comment: An optional documentation comment for the case.
 	init(
 		_ name: String,
 		rawValue: TypeRef,
@@ -218,6 +240,12 @@ public extension RawValueEnumCaseDescriptor where TypeRef == Double {
 }
 
 public extension RawValueEnumCaseDescriptor where TypeRef == Bool {
+	/// Creates a Boolean raw-value enum case with an explicit raw value.
+	///
+	/// - Parameters:
+	///   - name: The enum case name.
+	///   - rawValue: The Boolean raw value.
+	///   - comment: An optional documentation comment for the case.
 	init(
 		_ name: String,
 		rawValue: TypeRef,

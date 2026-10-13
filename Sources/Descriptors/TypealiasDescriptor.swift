@@ -2,6 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+/// A descriptor representing a Swift typealias declaration.
 public struct TypealiasDescriptor: Sendable {
 	/// The access level modifier specified for the alias, if any.
 	public let accessModifier: AccessModifierDescriptor?

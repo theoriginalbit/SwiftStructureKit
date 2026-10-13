@@ -5,7 +5,7 @@
 public import Foundation
 
 /// A descriptor representing a generated Swift source file.
-public struct FileDescriptor: Sendable {
+public struct SwiftFile: Sendable {
 	/// The comment rendered at the beginning of the file, if any.
 	public let headerComment: FileHeaderCommentDescriptor?
 

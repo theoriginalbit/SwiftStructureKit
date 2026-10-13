@@ -4,8 +4,12 @@
 
 /// An inline comment.
 public struct InlineCommentDescriptor: Sendable {
+	/// The text of the inline comment.
 	public let value: String
 
+	/// Creates an inline comment from its text.
+	///
+	/// - Parameter value: The comment text.
 	public init(_ value: String) {
 		self.value = value
 	}

@@ -31,6 +31,14 @@ public struct FunctionSignatureDescriptor: Sendable {
 	/// The effect specifiers of the function, such as `async` and `throws`.
 	public let effects: EffectSpecifiers
 
+	/// Creates a function signature.
+	///
+	/// - Parameters:
+	///   - comment: An optional documentation comment for the function.
+	///   - accessModifier: An optional access modifier for the function.
+	///   - kind: Whether the declaration is an initializer or named function.
+	///   - parameters: The parameters accepted by the function.
+	///   - effects: The function's `async` and throwing specifiers.
 	public init(
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
