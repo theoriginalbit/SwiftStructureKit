@@ -51,6 +51,7 @@ enum ProtocolRenderer {
 
 			case let .conformsTo(conformingType):
 				line.punctuation(":")
+				line.space()
 				line.token(CodeRenderingSupport.renderedType(conformingType))
 
 			case let .sameType(assignedType):
@@ -69,6 +70,7 @@ enum ProtocolRenderer {
 			line.token("var")
 			line.token(property.identifier)
 			line.punctuation(":")
+			line.space()
 			line.token(CodeRenderingSupport.renderedType(property.type))
 			line.token("{")
 			switch property.accessorSpecifier {
