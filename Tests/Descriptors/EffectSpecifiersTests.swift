@@ -10,8 +10,8 @@ import Testing
 	@Test func emptyEffects() {
 		let effects = EffectSpecifiers()
 
-		#expect(effects.hasEffects)
-		#expect(EffectSpecifiers.none.hasEffects)
+		#expect(effects.hasEffects == false)
+		#expect(EffectSpecifiers.none.hasEffects == false)
 	}
 
 	@Test(
@@ -22,6 +22,6 @@ import Testing
 		]
 	)
 	func nonemptyEffects(effects: EffectSpecifiers) {
-		#expect(effects.hasEffects == false)
+		#expect(effects.hasEffects == true)
 	}
 }

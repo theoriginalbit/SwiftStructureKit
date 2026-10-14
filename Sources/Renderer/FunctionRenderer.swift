@@ -71,7 +71,7 @@ enum FunctionRenderer {
 
 		ParametersListRenderer.render(signature.parameters, into: &line)
 
-		if !signature.effects.hasEffects {
+		if signature.effects.hasEffects {
 			line.space()
 
 			if signature.effects.isAsync {

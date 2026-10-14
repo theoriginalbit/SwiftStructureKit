@@ -23,31 +23,8 @@ public struct EffectSpecifiers: Sendable {
 	public let throwingSpecifier: ThrowingSpecifier?
 
 	/// Whether the function has no effect specifiers.
-	public let hasEffects: Bool
-
-	/// Creates an effect specifier set declaring no effects.
-	public init() {
-		self.isAsync = false
-		self.throwingSpecifier = nil
-		self.hasEffects = true
-	}
-
-	/// Creates an effect specifier.
-	///
-	/// - Parameter isAsync: Whether the function is asynchronous.
-	public init(isAsync: Bool) {
-		self.isAsync = isAsync
-		self.throwingSpecifier = nil
-		self.hasEffects = false
-	}
-
-	/// Creates an effect specifier.
-	///
-	/// - Parameter throwingSpecifier: The throwing behavior of the function.
-	public init(throwingSpecifier: ThrowingSpecifier) {
-		self.isAsync = false
-		self.throwingSpecifier = throwingSpecifier
-		self.hasEffects = false
+	public var hasEffects: Bool {
+		isAsync || throwingSpecifier != nil
 	}
 
 	/// Creates an effect specifier.
@@ -55,10 +32,9 @@ public struct EffectSpecifiers: Sendable {
 	/// - Parameters:
 	///   - isAsync: Whether the function is asynchronous.
 	///   - throwingSpecifier: The throwing behavior of the function.
-	public init(isAsync: Bool, throwingSpecifier: ThrowingSpecifier) {
+	public init(isAsync: Bool = false, throwingSpecifier: ThrowingSpecifier? = nil) {
 		self.isAsync = isAsync
 		self.throwingSpecifier = throwingSpecifier
-		self.hasEffects = false
 	}
 }
 
