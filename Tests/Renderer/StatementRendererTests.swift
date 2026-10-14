@@ -107,4 +107,73 @@ import Testing
 		}
 		#expect(output == "return 123\n")
 	}
+
+	// MARK: - Conditional statements
+
+	@Test func ifElseIfElse() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.if(.raw("value > 0")) {
+				StatementDescriptor.return(.literal(.integer(1)))
+			}
+			.elseIf(.raw("value < 0")) {
+				StatementDescriptor.return(.literal(.integer(-1)))
+			}
+			.else {
+				StatementDescriptor.return(.literal(.integer(0)))
+			}
+		}
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		#expect(output == """
+			if value > 0 {
+			    return 1
+			} else if value < 0 {
+			    return -1
+			} else {
+			    return 0
+			}
+
+			""")
+	}
+
+	@Test func ifWithoutElse() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.if(.raw("isEnabled")) {
+				StatementDescriptor.return()
+			}
+		}
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		#expect(output == """
+			if isEnabled {
+			    return
+			}
+
+			""")
+	}
+
+	@Test func guardWithContinuation() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.guard(.raw("isValid")) {
+				StatementDescriptor.return(.raw("value"))
+			} else: {
+				StatementDescriptor.return()
+			}
+		}
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		#expect(output == """
+			guard isValid else {
+			    return
+			}
+			return value
+
+			""")
+	}
 }

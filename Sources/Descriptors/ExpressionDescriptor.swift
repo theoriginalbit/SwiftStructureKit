@@ -8,6 +8,9 @@ public struct ExpressionDescriptor: Sendable {
 	public enum Kind: Sendable {
 		/// A literal expression.
 		case literal(LiteralDescriptor)
+
+		/// A source expression rendered without modification.
+		case raw(String)
 	}
 
 	/// The underlying kind of expression.
@@ -25,5 +28,10 @@ public extension ExpressionDescriptor {
 	/// Creates a literal expression.
 	static func literal(_ literal: LiteralDescriptor) -> Self {
 		Self(.literal(literal))
+	}
+
+	/// Creates a source expression rendered without modification.
+	static func raw(_ value: String) -> Self {
+		Self(.raw(value))
 	}
 }

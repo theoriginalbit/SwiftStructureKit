@@ -102,6 +102,8 @@ enum CodeRenderingSupport {
 		switch expression.kind {
 		case let .literal(literal):
 			return renderedLiteral(literal)
+		case let .raw(value):
+			return value
 		}
 	}
 
@@ -240,13 +242,13 @@ enum CodeRenderingSupport {
 			.joined(separator: ", ")
 	}
 
-	static func renderedComposedTypes(_ types: some Collection<TypeReference>) -> String {
+	static func renderedComposition(_ types: some Collection<TypeReference>) -> String {
 		types.lazy
 			.map(renderedType(_:))
 			.joined(separator: " & ")
 	}
 
 	static func renderedComposition(_ composition: TypeComposition) -> String {
-		renderedComposedTypes(composition.types)
+		renderedComposition(composition.types)
 	}
 }

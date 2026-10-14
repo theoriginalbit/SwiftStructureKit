@@ -36,6 +36,15 @@ public enum StatementDescriptor: Sendable {
 	/// A return statement with an optional return expression.
 	case `return`(ReturnStatementDescriptor)
 
+	/// An `if` statement with zero or more `else if` branches.
+	case `if`(IfStatementDescriptor)
+
+	/// An `if` statement with an `else` branch.
+	case ifElse(IfElseStatementDescriptor)
+
+	/// A `guard` statement and its continuation.
+	case `guard`(GuardStatementDescriptor)
+
 	/// A return statement with an optional return expression.
 	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
 		.return(ReturnStatementDescriptor(expression))
