@@ -65,4 +65,11 @@ import OrderedCollections
 		#expect(CodeRenderingSupport.renderedGenericParameter(parameter) == "Element: Equatable & Sendable")
 		#expect(CodeRenderingSupport.renderedConstraint(requirement) == "T: Equatable")
 	}
+
+	@Test("Render closure")
+	func renderClosure() {
+		let closure = TypeReference.closure(parameters: [.int, .int], returns: .int)
+
+		#expect(CodeRenderingSupport.renderedType(closure) == "(Int, Int) -> Int")
+	}
 }
