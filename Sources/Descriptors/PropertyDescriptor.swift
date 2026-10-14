@@ -26,6 +26,9 @@ public struct PropertyDescriptor: Sendable {
 	/// The access level modifier specified for the property, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the property.
+	public let attributes: [AttributeDescriptor]
+
 	/// Whether the property is static.
 	public let isStatic: Bool
 
@@ -43,6 +46,7 @@ public struct PropertyDescriptor: Sendable {
 	/// - Parameters:
 	///   - comment: An optional documentation comment for the property.
 	///   - accessModifier: An optional access level modifier for the property.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - identifier: The property's identifier.
 	///   - type: The property's type.
@@ -51,12 +55,14 @@ public struct PropertyDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		kind: Kind,
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.isStatic = isStatic
 		self.identifier = identifier
 		self.type = type
@@ -71,6 +77,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - defaultValue: An optional initial value.
@@ -79,6 +86,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		defaultValue: ExpressionDescriptor? = nil,
@@ -88,6 +96,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			kind: .stored(isMutable: true, defaultValue: defaultValue, observers: observers()),
@@ -100,6 +109,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - defaultValue: An optional initial value.
@@ -107,6 +117,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		defaultValue: ExpressionDescriptor? = nil,
@@ -115,6 +126,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			kind: .stored(isMutable: false, defaultValue: defaultValue),
@@ -127,6 +139,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - getterEffects: The getter's effect specifiers.
@@ -135,6 +148,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		getterEffects: EffectSpecifiers = .none,
@@ -144,6 +158,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			getterEffects: getterEffects,
@@ -157,6 +172,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - getterEffects: The getter's effect specifiers.
@@ -166,6 +182,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		getterEffects: EffectSpecifiers = .none,
@@ -176,6 +193,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			getterEffects: getterEffects,
@@ -190,6 +208,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - getterEffects: The getter's effect specifiers.
@@ -198,6 +217,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		getterEffects: EffectSpecifiers = .none,
@@ -207,6 +227,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			kind: .computed(
@@ -221,6 +242,7 @@ public extension PropertyDescriptor {
 	///   - identifier: The property's identifier.
 	///   - comment: An optional documentation comment.
 	///   - accessModifier: An optional access modifier.
+	///   - attributes: Attributes applied to the property.
 	///   - isStatic: Whether the property is static.
 	///   - type: The property's type.
 	///   - getterEffects: The getter's effect specifiers.
@@ -230,6 +252,7 @@ public extension PropertyDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
 		getterEffects: EffectSpecifiers = .none,
@@ -240,6 +263,7 @@ public extension PropertyDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
 			kind: .computed(

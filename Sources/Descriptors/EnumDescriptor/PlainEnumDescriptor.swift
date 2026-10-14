@@ -19,6 +19,7 @@ public struct PlainEnumDescriptor: Sendable {
 	///   - identifier: The name of the enum.
 	///   - comment: An optional documentation comment for the enum.
 	///   - accessModifier: An optional access level modifier for the enum.
+	///   - attributes: Attributes applied to the enum.
 	///   - genericTypes: The generic type parameters associated with the enum.
 	///   - conformances: The types or protocols the enum conforms to.
 	///   - cases: A result builder closure producing the case descriptors for the enum.
@@ -27,6 +28,7 @@ public struct PlainEnumDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
@@ -36,6 +38,7 @@ public struct PlainEnumDescriptor: Sendable {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			cases: cases().map(\.descriptor),
@@ -95,6 +98,7 @@ public extension TypeMemberDescriptor {
 	///   - identifier: The name of the enum.
 	///   - comment: An optional documentation comment for the enum.
 	///   - accessModifier: An optional access level modifier for the enum.
+	///   - attributes: Attributes applied to the enum.
 	///   - genericTypes: The generic type parameters associated with the enum.
 	///   - conformances: The types or protocols the enum conforms to.
 	///   - cases: A result builder closure producing the case descriptors for the enum.
@@ -103,6 +107,7 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
@@ -112,6 +117,7 @@ public extension TypeMemberDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			cases: cases,

@@ -22,6 +22,9 @@ public struct FunctionSignatureDescriptor: Sendable {
 	/// An access modifier.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the function.
+	public let attributes: [AttributeDescriptor]
+
 	/// The kind of the function, such as `init` or `func`; which requires a name and whether it is static.
 	public let kind: Kind
 
@@ -36,18 +39,21 @@ public struct FunctionSignatureDescriptor: Sendable {
 	/// - Parameters:
 	///   - comment: An optional documentation comment for the function.
 	///   - accessModifier: An optional access modifier for the function.
+	///   - attributes: The attributes applied to the function.
 	///   - kind: Whether the declaration is an initializer or named function.
 	///   - parameters: The parameters accepted by the function.
 	///   - effects: The function's `async` and throwing specifiers.
 	public init(
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		kind: Kind,
 		parameters: ParametersList = [],
 		effects: EffectSpecifiers = .none
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.kind = kind
 		self.parameters = parameters
 		self.effects = effects

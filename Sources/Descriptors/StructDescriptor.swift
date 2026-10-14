@@ -12,6 +12,9 @@ public struct StructDescriptor: Sendable {
 	/// The access level modifier specified for the struct, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the struct.
+	public let attributes: [AttributeDescriptor]
+
 	/// The name identifier of the struct.
 	public let identifier: String
 
@@ -29,12 +32,14 @@ public struct StructDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
+		attributes: [AttributeDescriptor],
 		genericTypes: OrderedSet<TypeReference>,
 		conformances: OrderedSet<TypeReference>,
 		members: [TypeMemberDescriptor],
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.identifier = identifier
 		self.genericTypes = genericTypes
 		self.conformances = conformances
@@ -47,6 +52,7 @@ public struct StructDescriptor: Sendable {
 	///   - identifier: The name of the struct.
 	///   - comment: An optional documentation comment for the struct.
 	///   - accessModifier: An optional access level modifier for the struct.
+	///   - attributes: Attributes applied to the struct.
 	///   - genericTypes: The generic type parameters associated with the struct.
 	///   - conformances: The types or protocols the struct conforms to.
 	///   - members: A result builder closure producing the member descriptors contained within the struct.
@@ -54,6 +60,7 @@ public struct StructDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
@@ -62,6 +69,7 @@ public struct StructDescriptor: Sendable {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			members: members()
@@ -76,6 +84,7 @@ public extension TypeMemberDescriptor {
 	///   - identifier: The name of the struct.
 	///   - comment: An optional documentation comment for the struct.
 	///   - accessModifier: An optional access level modifier for the struct.
+	///   - attributes: Attributes applied to the struct.
 	///   - genericTypes: The generic type parameters associated with the struct.
 	///   - conformances: The types or protocols the struct conforms to.
 	///   - members: A result builder closure producing the member descriptors contained within the struct.
@@ -83,6 +92,7 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
@@ -91,6 +101,7 @@ public extension TypeMemberDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			members: members(),

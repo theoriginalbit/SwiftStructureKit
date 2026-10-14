@@ -49,6 +49,7 @@ import Testing
 		let enumDescriptor = PlainEnumDescriptor(
 			"Result",
 			accessModifier: .public,
+			attributes: [.frozen, .objc(name: "SKResult")],
 			genericTypes: [.identifier("Success"), .identifier("Failure")],
 			conformances: [.sendable],
 		)
@@ -56,6 +57,8 @@ import Testing
 			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
+			@frozen
+			@objc(SKResult)
 			public enum Result<Success, Failure>: Sendable {
 			}
 

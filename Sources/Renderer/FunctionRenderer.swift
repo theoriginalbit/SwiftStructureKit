@@ -47,6 +47,10 @@ enum FunctionRenderer {
 	}
 
 	private static func renderSignature(_ signature: FunctionSignatureDescriptor, to line: inout LineWriter) {
+		for attribute in signature.attributes {
+			AttributeRenderer.render(attribute, to: &line)
+		}
+
 		if let accessModifier = signature.accessModifier {
 			line.token(CodeRenderingSupport.renderedAccessModifier(accessModifier))
 		}

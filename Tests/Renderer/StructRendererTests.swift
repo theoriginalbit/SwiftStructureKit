@@ -25,6 +25,7 @@ import Testing
 		let structDescriptor = StructDescriptor(
 			"GenericContainer",
 			accessModifier: .public,
+			attributes: [.mainActor, .frozen, .available("iOS 17, *")],
 			genericTypes: [.identifier("T"), .identifier("U")],
 			conformances: [.sendable, .equatable],
 		) {}
@@ -32,6 +33,9 @@ import Testing
 			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
+			@MainActor
+			@frozen
+			@available(iOS 17, *)
 			public struct GenericContainer<T, U>: Sendable, Equatable {
 			}
 

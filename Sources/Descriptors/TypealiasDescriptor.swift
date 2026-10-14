@@ -9,6 +9,9 @@ public struct TypealiasDescriptor: Sendable {
 	/// The access level modifier specified for the alias, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the typealias.
+	public let attributes: [AttributeDescriptor]
+
 	/// The alias identifier.
 	public let identifier: TypeReference
 
@@ -18,9 +21,11 @@ public struct TypealiasDescriptor: Sendable {
 	public init(
 		_ identifier: TypeReference,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		assignedType: TypeReference
 	) {
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.identifier = identifier
 		self.assignedType = [assignedType]
 	}
@@ -28,9 +33,11 @@ public struct TypealiasDescriptor: Sendable {
 	public init(
 		_ identifier: TypeReference,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		assignedTypes: OrderedSet<TypeReference>
 	) {
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.identifier = identifier
 		self.assignedType = assignedTypes
 	}

@@ -4,6 +4,7 @@
 
 enum TypealiasRenderer {
 	static func render(_ descriptor: TypealiasDescriptor, to writer: inout CodeWriter) {
+		AttributeRenderer.render(descriptor.attributes, to: &writer)
 		writer.writeLine { line in
 			if let accessModifier = descriptor.accessModifier {
 				line.token(CodeRenderingSupport.renderedAccessModifier(accessModifier))

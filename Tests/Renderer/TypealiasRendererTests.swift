@@ -28,6 +28,7 @@ import Testing
 		let descriptor = TypealiasDescriptor(
 			.identifier("Value"),
 			accessModifier: .public,
+			attributes: [.available("macOS 15, *")],
 			assignedTypes: [.sendable, .equatable],
 		)
 		let output = RenderTest.render { writer in
@@ -35,6 +36,7 @@ import Testing
 		}
 
 		#expect(output == """
+			@available(macOS 15, *)
 			public typealias Value = Sendable & Equatable
 
 			""")

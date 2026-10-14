@@ -26,6 +26,7 @@ public extension TypeMemberDescriptor {
 	/// - Parameters:
 	///   - comment: An optional documentation comment for the initializer.
 	///   - accessModifier: An optional access modifier (e.g. `public`, `private`) for the initializer.
+	///   - attributes: Attributes applied to the initializer.
 	///   - failable: Whether the initializer is failable (i.e. `init?`).
 	///   - parameters: The list of parameters the initializer accepts. Defaults to an empty list.
 	///   - effects: Effect specifiers (e.g. `throws`, `async`) for the initializer.
@@ -34,6 +35,7 @@ public extension TypeMemberDescriptor {
 	static func initializer(
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		failable: Bool,
 		parameters: ParametersList = [],
 		effects: EffectSpecifiers = .none,
@@ -43,6 +45,7 @@ public extension TypeMemberDescriptor {
 			signature: .init(
 				comment: comment,
 				accessModifier: accessModifier,
+				attributes: attributes,
 				kind: .initializer(failable: failable),
 				parameters: parameters,
 				effects: effects,
@@ -56,6 +59,7 @@ public extension TypeMemberDescriptor {
 	/// - Parameters:
 	///   - comment: An optional documentation comment for the function.
 	///   - accessModifier: An optional access modifier (e.g. `public`, `private`) for the function.
+	///   - attributes: Attributes applied to the function.
 	///   - name: The name of the function.
 	///   - returns: An optional ``TypeReference`` describing the function's return type. Defaults to `nil` (no return value).
 	///   - isStatic: Whether the function is a static member. Defaults to `false`.
@@ -66,6 +70,7 @@ public extension TypeMemberDescriptor {
 	static func function(
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		name: String,
 		returns: TypeReference? = nil,
 		isStatic: Bool = false,
@@ -77,6 +82,7 @@ public extension TypeMemberDescriptor {
 			signature: .init(
 				comment: comment,
 				accessModifier: accessModifier,
+				attributes: attributes,
 				kind: .function(
 					name,
 					returns: returns,

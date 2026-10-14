@@ -7,6 +7,7 @@ enum PropertyRenderer {
 		if let comment = property.comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}
+		AttributeRenderer.render(property.attributes, to: &writer)
 
 		switch property.kind {
 		case let .stored(isMutable, defaultValue, observers):

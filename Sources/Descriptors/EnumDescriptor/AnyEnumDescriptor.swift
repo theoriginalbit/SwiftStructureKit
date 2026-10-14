@@ -12,6 +12,9 @@ public struct AnyEnumDescriptor: Sendable {
 	/// The access level modifier specified for the enum, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the enum.
+	public let attributes: [AttributeDescriptor]
+
 	/// The name identifier of the enum.
 	public let identifier: String
 
@@ -41,6 +44,7 @@ public struct AnyEnumDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		cases: [AnyEnumCaseDescriptor] = [],
@@ -48,6 +52,7 @@ public struct AnyEnumDescriptor: Sendable {
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.identifier = identifier
 		self.genericTypes = genericTypes
 		self.conformances = conformances

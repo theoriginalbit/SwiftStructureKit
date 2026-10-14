@@ -57,6 +57,28 @@ import Testing
 		#expect(output == "public static func calculate(`for` key: String, count: Int = 10) -> Int\n")
 	}
 
+	@Test("Render result builders on functions and parameters")
+	func renderResultBuildersOnFunctionAndParameters() {
+		let signature = FunctionSignatureDescriptor(
+			accessModifier: .public,
+			attributes: [.resultBuilder("ViewBuilder"), .inlinable, .discardableResult, .disfavoredOverload, .available("iOS 17, *")],
+			kind: .function("render"),
+			parameters: [
+				.init(
+					label: "content",
+					"content",
+					type: .closure(parameters: [], returns: .string),
+					attributes: [.resultBuilder("@ViewBuilder")],
+				)
+			]
+		)
+		let output = RenderTest.render { writer in
+			FunctionRenderer.renderSignature(signature, to: &writer)
+		}
+
+		#expect(output == "@ViewBuilder @inlinable @discardableResult @_disfavoredOverload @available(iOS 17, *) public func render(@ViewBuilder content: () -> String)\n")
+	}
+
 	@Test("Render function with async and throwing effect specifiers")
 	func renderFunctionWithEffects() {
 		let signature = FunctionSignatureDescriptor(

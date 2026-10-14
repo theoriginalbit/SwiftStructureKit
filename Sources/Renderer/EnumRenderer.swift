@@ -7,6 +7,7 @@ enum EnumRenderer {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
+			attributes: descriptor.attributes,
 			typeKeyword: "enum",
 			identifier: descriptor.identifier,
 			genericTypes: descriptor.genericTypes,

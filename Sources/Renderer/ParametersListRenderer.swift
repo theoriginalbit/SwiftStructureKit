@@ -22,6 +22,9 @@ enum ParametersListRenderer {
 	}
 
 	private static func render(_ parameter: ParametersList.Parameter, into line: inout LineWriter) {
+		for attribute in parameter.attributes {
+			AttributeRenderer.render(attribute, to: &line)
+		}
 		if let label = parameter.label, label != parameter.identifier {
 			line.token(SwiftIdentifier.sanitized(label))
 		}

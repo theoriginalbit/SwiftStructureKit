@@ -48,6 +48,7 @@ import Testing
 			"Sequence",
 			comment: "A sequence of values.",
 			accessModifier: .public,
+			attributes: [.mainActor],
 			genericTypes: [.identifier("Element")],
 			conformances: [.sendable],
 		) {}
@@ -57,6 +58,7 @@ import Testing
 
 		#expect(output == """
 			/// A sequence of values.
+			@MainActor
 			public protocol Sequence<Element>: Sendable {
 			}
 
@@ -133,5 +135,37 @@ import Testing
 
 			"""
 		try ReferenceTest.assert(output, matches: expected)
+	}
+
+	@Test("Render result builders on protocol properties and function parameters")
+	func renderResultBuildersOnProtocolMembers() {
+		let descriptor = ProtocolDescriptor("Renderable") {
+			ProtocolPropertyDescriptor(
+				comment: nil,
+				attributes: [.resultBuilder("ViewBuilder")],
+				identifier: "body",
+				type: .identifier("Content"),
+				accessorSpecifier: .get,
+			)
+			FunctionSignatureDescriptor(
+				kind: .function("render"),
+				parameters: [
+					.init("content", type: .identifier("Content"), attributes: [.resultBuilder("ViewBuilder")])
+				],
+			)
+		}
+		let output = RenderTest.render { writer in
+			ProtocolRenderer.render(descriptor, to: &writer)
+		}
+
+		#expect(output == """
+			protocol Renderable {
+			    @ViewBuilder
+			    var body: Content { get }
+
+			    func render(@ViewBuilder content: Content)
+			}
+
+			""")
 	}
 }

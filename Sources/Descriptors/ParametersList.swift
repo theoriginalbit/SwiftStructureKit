@@ -15,6 +15,9 @@ public struct ParametersList: Sendable {
 		/// The Swift type of the parameter.
 		public let type: TypeReference
 
+		/// The attributes applied to the parameter.
+		public let attributes: [AttributeDescriptor]
+
 		/// An optional default value of the parameter.
 		public let defaultValue: ExpressionDescriptor?
 
@@ -30,18 +33,21 @@ public struct ParametersList: Sendable {
 		///   - label: The optional label used at the call site.
 		///   - identifier: The variable name used within the function body.
 		///   - type: The Swift type of the parameter.
+		///   - attributes: The attributes applied to the parameter.
 		///   - defaultValue: An optional default value expression for the parameter.
 		///   - comment: An optional inline comment describing the parameter.
 		public init(
 			label: String? = nil,
 			_ identifier: String,
 			type: TypeReference,
+			attributes: [AttributeDescriptor] = [],
 			defaultValue: ExpressionDescriptor? = nil,
 			comment: InlineCommentDescriptor? = nil
 		) {
 			self.label = label
 			self.identifier = identifier
 			self.type = type
+			self.attributes = attributes
 			self.defaultValue = defaultValue
 			self.comment = comment
 		}

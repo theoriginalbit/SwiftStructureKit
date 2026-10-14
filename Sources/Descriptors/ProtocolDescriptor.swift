@@ -14,6 +14,9 @@ public struct ProtocolDescriptor: Sendable {
 	/// The access level modifier specified for the protocol, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
+	/// The attributes applied to the protocol.
+	public let attributes: [AttributeDescriptor]
+
 	/// The name identifier of the protocol.
 	public let identifier: String
 
@@ -39,12 +42,14 @@ public struct ProtocolDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
+		attributes: [AttributeDescriptor],
 		genericTypes: OrderedSet<TypeReference>,
 		conformances: OrderedSet<TypeReference>,
 		members: [ProtocolMemberDescriptor],
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
+		self.attributes = attributes
 		self.identifier = identifier
 		// make sure primary associated types appear in the generics list
 		let primaryAssociatedTypes = members.lazy.compactMap {
@@ -68,6 +73,7 @@ public struct ProtocolDescriptor: Sendable {
 	///   - identifier: The name of the protocol.
 	///   - comment: An optional documentation comment for the protocol.
 	///   - accessModifier: An optional access level modifier for the protocol.
+	///   - attributes: Attributes applied to the protocol.
 	///   - genericTypes: The generic type parameters associated with the protocol.
 	///   - conformances: The types or protocols the protocol inherits from.
 	///   - members: A result builder closure producing the protocol's member declarations.
@@ -75,6 +81,7 @@ public struct ProtocolDescriptor: Sendable {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ProtocolMemberBuilder members: () -> [ProtocolMemberDescriptor] = { [] },
@@ -83,6 +90,7 @@ public struct ProtocolDescriptor: Sendable {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			members: members()
@@ -94,6 +102,9 @@ public struct ProtocolDescriptor: Sendable {
 public struct ProtocolPropertyDescriptor: Sendable {
 	/// The documentation comment attached to the protocol property definition, if any.
 	public let comment: DocCommentDescriptor?
+
+	/// The attributes applied to the property.
+	public let attributes: [AttributeDescriptor]
 
 	/// The name identifier of the protocol property.
 	public let identifier: String
@@ -108,16 +119,19 @@ public struct ProtocolPropertyDescriptor: Sendable {
 	///
 	/// - Parameters:
 	///   - comment: An optional documentation comment for the property.
+	///   - attributes: Attributes applied to the property.
 	///   - identifier: The name of the property.
 	///   - type: The property's type.
 	///   - accessorSpecifier: The required property accessors.
 	public init(
 		comment: DocCommentDescriptor?,
+		attributes: [AttributeDescriptor] = [],
 		identifier: String,
 		type: TypeReference,
 		accessorSpecifier: ProtocolPropertyAccessorSpecifier
 	) {
 		self.comment = comment
+		self.attributes = attributes
 		self.identifier = identifier
 		self.type = type
 		self.accessorSpecifier = accessorSpecifier
@@ -203,12 +217,20 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 	/// The type this alias refers to.
 	public var assignedType: OrderedSet<TypeReference> { descriptor.assignedType }
 
-	public init(_ identifier: TypeReference, assignedType: TypeReference) {
-		self.descriptor = TypealiasDescriptor(identifier, assignedType: assignedType)
+	public init(
+		_ identifier: TypeReference,
+		attributes: [AttributeDescriptor] = [],
+		assignedType: TypeReference,
+	) {
+		self.descriptor = TypealiasDescriptor(identifier, attributes: attributes, assignedType: assignedType)
 	}
 
-	public init(_ identifier: TypeReference, assignedTypes: OrderedSet<TypeReference>) {
-		self.descriptor = TypealiasDescriptor(identifier, assignedTypes: assignedTypes)
+	public init(
+		_ identifier: TypeReference,
+		attributes: [AttributeDescriptor] = [],
+		assignedTypes: OrderedSet<TypeReference>,
+	) {
+		self.descriptor = TypealiasDescriptor(identifier, attributes: attributes, assignedTypes: assignedTypes)
 	}
 }
 
@@ -251,6 +273,7 @@ public extension TypeMemberDescriptor {
 	///   - identifier: The name of the protocol.
 	///   - comment: An optional documentation comment for the protocol.
 	///   - accessModifier: An optional access level modifier for the protocol.
+	///   - attributes: Attributes applied to the protocol.
 	///   - genericTypes: The generic type parameters associated with the protocol.
 	///   - conformances: The types or protocols the protocol inherits from.
 	///   - members: A result builder closure producing the protocol's member declarations.
@@ -258,6 +281,7 @@ public extension TypeMemberDescriptor {
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
 		genericTypes: OrderedSet<TypeReference> = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ProtocolMemberBuilder members: () -> [ProtocolMemberDescriptor] = { [] },
@@ -266,6 +290,7 @@ public extension TypeMemberDescriptor {
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
+			attributes: attributes,
 			genericTypes: genericTypes,
 			conformances: conformances,
 			members: members

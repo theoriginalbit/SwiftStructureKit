@@ -20,6 +20,7 @@ enum CodeRenderingSupport {
 	static func renderTypeSignature(
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
+		attributes: [AttributeDescriptor],
 		typeKeyword: String,
 		identifier: String,
 		genericTypes: OrderedSet<TypeReference>,
@@ -29,6 +30,7 @@ enum CodeRenderingSupport {
 		if let comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}
+		AttributeRenderer.render(attributes, to: &writer)
 
 		writer.writeLine { line in
 			if let accessModifier {

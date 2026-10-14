@@ -7,6 +7,7 @@ enum StructRenderer {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
+			attributes: descriptor.attributes,
 			typeKeyword: "struct",
 			identifier: descriptor.identifier,
 			genericTypes: descriptor.genericTypes,

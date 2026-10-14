@@ -7,6 +7,7 @@ enum ProtocolRenderer {
 		CodeRenderingSupport.renderTypeSignature(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
+			attributes: descriptor.attributes,
 			typeKeyword: "protocol",
 			identifier: descriptor.identifier,
 			genericTypes: descriptor.genericTypes,
@@ -65,6 +66,7 @@ enum ProtocolRenderer {
 		if let comment = property.comment {
 			writer.writeLine(comment.value, prefix: "/// ")
 		}
+		AttributeRenderer.render(property.attributes, to: &writer)
 
 		writer.writeLine { line in
 			line.token("var")

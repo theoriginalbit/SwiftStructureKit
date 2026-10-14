@@ -207,6 +207,32 @@ import Testing
 			""")
 	}
 
+	@Test("Render result builder on a computed property, not its getter")
+	func renderResultBuilderOnComputedProperty() {
+		let property = PropertyDescriptor.computed(
+			"body",
+			comment: "The rendered body.",
+			attributes: [.resultBuilder("ViewBuilder")],
+			type: .identifier("Content"),
+		) {
+			StatementDescriptor.return(.literal(.string("content")))
+		}
+		let output = RenderTest.render { writer in
+			PropertyRenderer.render(property, to: &writer)
+		}
+
+		#expect(output == """
+			/// The rendered body.
+			@ViewBuilder
+			var body: Content {
+			    get {
+			        return "content"
+			    }
+			}
+
+			""")
+	}
+
 	@Test("Render async getter with typed throws")
 	func renderGetterWithTypedThrows() {
 		let property = PropertyDescriptor(
