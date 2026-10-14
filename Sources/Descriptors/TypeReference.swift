@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import OrderedCollections
+
 /// A reference to a type representation in Swift.
 public indirect enum TypeReference: Hashable, Sendable {
 	/// Creates a type reference from a qualified identifier.
@@ -29,7 +31,20 @@ public indirect enum TypeReference: Hashable, Sendable {
 	case tuple([TupleElementDescriptor])
 
 	/// A type reference representing a closure.
-	case closure(parameters: [TypeReference], returns: TypeReference)
+	///
+	/// - Parameters:
+	///   - parameters: The closure's parameter types.
+	///   - returns: The closure's return type.
+	///   - isEscaping: Whether to include the `@escaping` parameter attribute.
+	///   - attributes: Additional attributes applied to the function type, such as `@MainActor`.
+	///   - effects: The closure's `async` and throwing specifiers.
+	case closure(
+		parameters: [TypeReference],
+		returns: TypeReference,
+		isEscaping: Bool = false,
+		attributes: OrderedSet<AttributeDescriptor> = [],
+		effects: EffectSpecifiers = .none
+	)
 
 }
 

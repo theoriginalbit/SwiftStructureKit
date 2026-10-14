@@ -3,7 +3,7 @@
 //
 
 /// An attribute attached to a Swift declaration or parameter.
-public enum AttributeDescriptor: Sendable {
+public enum AttributeDescriptor: Hashable, Sendable {
 	/// An attribute name defined by the consumer
 	case rawValue(String)
 

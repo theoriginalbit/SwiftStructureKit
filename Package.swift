@@ -2,33 +2,33 @@
 import PackageDescription
 
 let package = Package(
-    name: "SwiftStructureKit",
-    products: [
-        .library(
-            name: "SwiftStructureKit",
-            targets: ["SwiftStructureKit"]
-        ),
-    ],
+	name: "SwiftStructureKit",
+	products: [
+		.library(
+			name: "SwiftStructureKit",
+			targets: ["SwiftStructureKit"]
+		),
+	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.7.3")),
 	],
-    targets: [
+	targets: [
 		.target(
 			name: "SwiftStructureKit",
 			dependencies: [
 				.product(name: "OrderedCollections", package: "swift-collections"),
 			],
 		),
-        .testTarget(
-            name: "SwiftStructureKitTests",
-            dependencies: [
+		.testTarget(
+			name: "SwiftStructureKitTests",
+			dependencies: [
 				.target(name: "SwiftStructureKit"),
 			],
 			resources: [
 				.copy("Resources"),
 			],
-        ),
-    ]
+		),
+	]
 )
 
 for target in package.targets {

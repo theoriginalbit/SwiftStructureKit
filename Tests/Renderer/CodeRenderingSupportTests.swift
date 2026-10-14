@@ -66,10 +66,26 @@ import OrderedCollections
 		#expect(CodeRenderingSupport.renderedConstraint(requirement) == "T: Equatable")
 	}
 
-	@Test("Render closure")
-	func renderClosure() {
-		let closure = TypeReference.closure(parameters: [.int, .int], returns: .int)
+	@Test("Render closure attributes and effects", arguments: [
+		([], EffectSpecifiers.none, "(Int) -> Void"),
+		([.init("Sendable")], EffectSpecifiers.none, "@Sendable (Int) -> Void"),
+		([.mainActor, .init("Sendable")], EffectSpecifiers.none, "@MainActor @Sendable (Int) -> Void"),
+		([.init("Sendable")], .async, "@Sendable (Int) async -> Void"),
+		([.init("Sendable")], .throws, "@Sendable (Int) throws -> Void"),
+		([.init("Sendable")], EffectSpecifiers(isAsync: true, throwingSpecifier: .throws), "@Sendable (Int) async throws -> Void"),
+	] as [(OrderedSet<AttributeDescriptor>, EffectSpecifiers, String)])
+	func renderClosure(
+		attributes: OrderedSet<AttributeDescriptor>,
+		effects: EffectSpecifiers,
+		expected: String
+	) {
+		let closure = TypeReference.closure(
+			parameters: [.int],
+			returns: .identifier("Void"),
+			attributes: attributes,
+			effects: effects
+		)
 
-		#expect(CodeRenderingSupport.renderedType(closure) == "(Int, Int) -> Int")
+		#expect(CodeRenderingSupport.renderedType(closure) == expected)
 	}
 }

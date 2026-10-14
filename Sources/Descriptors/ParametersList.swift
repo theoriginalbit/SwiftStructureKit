@@ -15,6 +15,9 @@ public struct ParametersList: Sendable {
 		/// The Swift type of the parameter.
 		public let type: TypeReference
 
+		/// Whether the parameter is passed by reference using `inout`.
+		public let isInout: Bool
+
 		/// The attributes applied to the parameter.
 		public let attributes: [AttributeDescriptor]
 
@@ -33,6 +36,8 @@ public struct ParametersList: Sendable {
 		///   - label: The optional label used at the call site.
 		///   - identifier: The variable name used within the function body.
 		///   - type: The Swift type of the parameter.
+		///   - isInout: Whether the parameter is passed by reference using `inout`.
+		///   - isEscaping: Whether a closure parameter may escape the function body.
 		///   - attributes: The attributes applied to the parameter.
 		///   - defaultValue: An optional default value expression for the parameter.
 		///   - comment: An optional inline comment describing the parameter.
@@ -40,6 +45,7 @@ public struct ParametersList: Sendable {
 			label: String? = nil,
 			_ identifier: String,
 			type: TypeReference,
+			isInout: Bool = false,
 			attributes: [AttributeDescriptor] = [],
 			defaultValue: ExpressionDescriptor? = nil,
 			comment: InlineCommentDescriptor? = nil
@@ -47,6 +53,7 @@ public struct ParametersList: Sendable {
 			self.label = label
 			self.identifier = identifier
 			self.type = type
+			self.isInout = isInout
 			self.attributes = attributes
 			self.defaultValue = defaultValue
 			self.comment = comment

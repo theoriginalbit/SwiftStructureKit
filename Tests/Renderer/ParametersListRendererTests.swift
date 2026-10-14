@@ -51,6 +51,19 @@ import Testing
 		#expect(output == "(count: Int = 10)\n")
 	}
 
+	@Test("Render inout parameters", arguments: [
+		(false, "(value: Int)\n"),
+		(true, "(value: inout Int)\n"),
+	])
+	func renderInoutParameter(isInout: Bool, expected: String) {
+		let list: ParametersList = [.init("value", type: .int, isInout: isInout)]
+		let output = RenderTest.render { writer in
+			ParametersListRenderer.render(list, to: &writer)
+		}
+
+		#expect(output == expected)
+	}
+
 	@Test("Render multiple parameters with mixed labels, default values, and types")
 	func renderMultipleParametersWithMixedOptions() {
 		let list: ParametersList = [

@@ -31,6 +31,9 @@ enum ParametersListRenderer {
 		line.token(SwiftIdentifier.sanitized(parameter.identifier))
 		line.punctuation(":")
 		line.space()
+		if parameter.isInout {
+			line.token("inout")
+		}
 		line.token(CodeRenderingSupport.renderedType(parameter.type))
 		if let defaultValue = parameter.defaultValue {
 			line.space()

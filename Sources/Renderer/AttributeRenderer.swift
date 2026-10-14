@@ -13,7 +13,7 @@ enum AttributeRenderer {
 		}
 	}
 
-	private static func rendered(_ attribute: AttributeDescriptor) -> String {
+	static func rendered(_ attribute: AttributeDescriptor) -> String {
 		switch attribute {
 		case let .rawValue(name):
 			"@\(name.hasPrefix("@") ? String(name.dropFirst()) : name)"

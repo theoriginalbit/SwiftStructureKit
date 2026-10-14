@@ -75,13 +75,8 @@ enum FunctionRenderer {
 		if signature.effects.hasEffects {
 			line.space()
 
-			if signature.effects.isAsync {
-				line.token("async")
-			}
-
-			if let throwing = signature.effects.throwingSpecifier {
-				line.token(CodeRenderingSupport.renderedThrowingSpecifier(throwing))
-			}
+			let effects = CodeRenderingSupport.renderedEffects(signature.effects)
+			line.token(effects)
 		}
 
 		if case let .function(_, returns, _) = signature.kind, let returns {

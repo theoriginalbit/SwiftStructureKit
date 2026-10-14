@@ -121,6 +121,34 @@ import Testing
 		#expect(output == "@ViewBuilder @inlinable @discardableResult @_disfavoredOverload @available(iOS 17, *) public func render(@ViewBuilder content: () -> String)\n")
 	}
 
+	@Test("Render closure effects and inout parameters in function signatures")
+	func renderClosureEffectsAndInoutParameters() {
+		let signature = FunctionSignatureDescriptor(
+			kind: .function("perform"),
+			parameters: [
+				.init("value", type: .identifier("SomeObj"), isInout: true),
+				.init(
+					"completion",
+					type: .closure(
+						parameters: [.int],
+						returns: .identifier("Void"),
+						isEscaping: true,
+						attributes: [.mainActor, .init("Sendable")],
+						effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .throws)
+					),
+				),
+			]
+		)
+		let output = RenderTest.render { writer in
+			FunctionRenderer.renderSignature(signature, to: &writer)
+		}
+		let expected = """
+		func perform(value: inout SomeObj, completion: @MainActor @Sendable @escaping (Int) async throws -> Void)
+
+		"""
+		#expect(output == expected)
+	}
+
 	@Test("Render function with async and throwing effect specifiers")
 	func renderFunctionWithEffects() {
 		let signature = FunctionSignatureDescriptor(

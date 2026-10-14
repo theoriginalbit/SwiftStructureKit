@@ -3,9 +3,9 @@
 //
 
 /// The effect specifiers of a function, such as `async` and throwing behavior.
-public struct EffectSpecifiers: Sendable {
+public struct EffectSpecifiers: Hashable, Sendable {
 	/// The throwing behavior of a function.
-	public enum ThrowingSpecifier: Sendable {
+	public enum ThrowingSpecifier: Hashable, Sendable {
 		/// A function that can throw an error (`throws`).
 		case `throws`
 

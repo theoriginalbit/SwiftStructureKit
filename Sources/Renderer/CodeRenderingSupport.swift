@@ -2,6 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+import Foundation
 import OrderedCollections
 
 enum CodeRenderingSupport {
@@ -136,9 +137,61 @@ enum CodeRenderingSupport {
 			"some \(renderedType(value))"
 		case let .tuple(elements):
 			"(\(elements.map(rendered(_:)).joined(separator: ", ")))"
-		case let .closure(parameters, returns):
-			"(\(renderedTypesList(parameters))) -> \(renderedType(returns))"
+		case let .closure(parameters, returns, isEscaping, attributes, effects):
+			renderedClosure(
+				parameters: parameters,
+				returns: returns,
+				isEscaping: isEscaping,
+				attributes: attributes,
+				effects: effects
+			)
 		}
+	}
+
+	private static func renderedClosure(
+		parameters: [TypeReference],
+		returns: TypeReference,
+		isEscaping: Bool,
+		attributes: OrderedSet<AttributeDescriptor>,
+		effects: EffectSpecifiers,
+	) -> String {
+		var attributes = attributes
+		if isEscaping {
+			attributes.append(.rawValue("escaping"))
+		}
+
+		var writer = TokenWriter()
+		for attribute in attributes {
+			writer.write(AttributeRenderer.rendered(attribute))
+			writer.space()
+		}
+
+		writer.write("(")
+		writer.write(renderedTypesList(parameters))
+		writer.write(")")
+		if effects.hasEffects {
+			writer.space()
+			writer.write(renderedEffects(effects))
+		}
+
+		writer.write(" -> ")
+		writer.write(renderedType(returns))
+
+		return writer.finish()
+	}
+
+	static func renderedEffects(_ effects: EffectSpecifiers) -> String {
+		var writer = TokenWriter()
+		if effects.isAsync {
+			writer.write("async")
+		}
+		if let throwingSpecifier = effects.throwingSpecifier {
+			if effects.isAsync {
+				writer.space()
+			}
+			writer.write(renderedThrowingSpecifier(throwingSpecifier))
+		}
+		return writer.finish()
 	}
 
 	static func renderedIdentifier(_ identifier: TypeIdentifier) -> String {

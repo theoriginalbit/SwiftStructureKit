@@ -138,3 +138,19 @@ struct LineWriter: ~Copyable {
 		buffer
 	}
 }
+
+struct TokenWriter: ~Copyable {
+	private var buffer = ""
+
+	mutating func write(_ value: String) {
+		buffer += value
+	}
+
+	mutating func space() {
+		buffer += " "
+	}
+
+	consuming func finish() -> String {
+		buffer
+	}
+}
