@@ -151,7 +151,7 @@ public extension PropertyDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
-		getterEffects: EffectSpecifiers = .none,
+		getterEffects: EffectSpecifiers<ThrowingSpecifier> = .none,
 		@CodeBlockBuilder getter: () -> [StatementDescriptor],
 	) -> Self {
 		computed(
@@ -185,7 +185,7 @@ public extension PropertyDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
-		getterEffects: EffectSpecifiers = .none,
+		getterEffects: EffectSpecifiers<ThrowingSpecifier> = .none,
 		@CodeBlockBuilder getter: () -> [StatementDescriptor],
 		@CodeBlockBuilder setter: () -> [StatementDescriptor],
 	) -> Self {
@@ -220,7 +220,7 @@ public extension PropertyDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
-		getterEffects: EffectSpecifiers = .none,
+		getterEffects: EffectSpecifiers<ThrowingSpecifier> = .none,
 		@CodeBlockBuilder getter: () -> [StatementDescriptor],
 	) -> Self {
 		Self(
@@ -255,7 +255,7 @@ public extension PropertyDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		isStatic: Bool = false,
 		type: TypeReference,
-		getterEffects: EffectSpecifiers = .none,
+		getterEffects: EffectSpecifiers<ThrowingSpecifier> = .none,
 		@CodeBlockBuilder getter: () -> [StatementDescriptor],
 		@CodeBlockBuilder setter: () -> [StatementDescriptor],
 	) -> Self {

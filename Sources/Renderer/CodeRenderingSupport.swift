@@ -67,12 +67,21 @@ enum CodeRenderingSupport {
 
 	// MARK: Rendered to string
 
-	static func renderedThrowingSpecifier(_ specifier: EffectSpecifiers.ThrowingSpecifier) -> String {
+	static func renderedThrowingSpecifier(_ specifier: FunctionThrowingSpecifier) -> String {
 		switch specifier {
 		case .throws:
 			return "throws"
 		case .rethrows:
 			return "rethrows"
+		case let .typed(type):
+			return "throws(\(renderedType(type)))"
+		}
+	}
+
+	static func renderedThrowingSpecifier(_ specifier: ThrowingSpecifier) -> String {
+		switch specifier {
+		case .throws:
+			return "throws"
 		case let .typed(type):
 			return "throws(\(renderedType(type)))"
 		}
@@ -153,7 +162,7 @@ enum CodeRenderingSupport {
 		returns: TypeReference,
 		isEscaping: Bool,
 		attributes: OrderedSet<AttributeDescriptor>,
-		effects: EffectSpecifiers,
+		effects: EffectSpecifiers<ThrowingSpecifier>,
 	) -> String {
 		var attributes = attributes
 		if isEscaping {
@@ -180,7 +189,18 @@ enum CodeRenderingSupport {
 		return writer.finish()
 	}
 
-	static func renderedEffects(_ effects: EffectSpecifiers) -> String {
+	static func renderedEffects(_ effects: EffectSpecifiers<ThrowingSpecifier>) -> String {
+		renderedEffects(effects, renderThrowingSpecifier: renderedThrowingSpecifier)
+	}
+
+	static func renderedEffects(_ effects: EffectSpecifiers<FunctionThrowingSpecifier>) -> String {
+		renderedEffects(effects, renderThrowingSpecifier: renderedThrowingSpecifier)
+	}
+
+	private static func renderedEffects<Throwing: Hashable & Sendable>(
+		_ effects: EffectSpecifiers<Throwing>,
+		renderThrowingSpecifier: (Throwing) -> String,
+	) -> String {
 		var writer = TokenWriter()
 		if effects.isAsync {
 			writer.write("async")
@@ -189,7 +209,7 @@ enum CodeRenderingSupport {
 			if effects.isAsync {
 				writer.space()
 			}
-			writer.write(renderedThrowingSpecifier(throwingSpecifier))
+			writer.write(renderThrowingSpecifier(throwingSpecifier))
 		}
 		return writer.finish()
 	}

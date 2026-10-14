@@ -8,20 +8,27 @@ import Testing
 
 @Suite(.tags(.declaration)) struct EffectSpecifiersTests {
 	@Test func emptyEffects() {
-		let effects = EffectSpecifiers()
+		let effects = EffectSpecifiers<FunctionThrowingSpecifier>()
 
 		#expect(effects.hasEffects == false)
-		#expect(EffectSpecifiers.none.hasEffects == false)
+		#expect(EffectSpecifiers<FunctionThrowingSpecifier>.none.hasEffects == false)
 	}
 
 	@Test(
 		arguments: [
-			EffectSpecifiers(isAsync: true),
-			EffectSpecifiers(throwingSpecifier: .throws),
-			EffectSpecifiers(isAsync: true, throwingSpecifier: .throws),
+			EffectSpecifiers<FunctionThrowingSpecifier>(isAsync: true),
+			EffectSpecifiers<FunctionThrowingSpecifier>(throwingSpecifier: .throws),
+			EffectSpecifiers<FunctionThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws),
 		]
 	)
-	func nonemptyEffects(effects: EffectSpecifiers) {
+	func nonemptyEffects(effects: EffectSpecifiers<FunctionThrowingSpecifier>) {
 		#expect(effects.hasEffects == true)
+	}
+
+	@Test func closureAndPropertyEffects() {
+		#expect(EffectSpecifiers<ThrowingSpecifier>.none.hasEffects == false)
+		#expect(EffectSpecifiers<ThrowingSpecifier>.async.hasEffects == true)
+		#expect(EffectSpecifiers<ThrowingSpecifier>.throws.hasEffects == true)
+		#expect(EffectSpecifiers<ThrowingSpecifier>.throws(.identifier("ReadError")).hasEffects == true)
 	}
 }

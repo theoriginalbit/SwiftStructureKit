@@ -134,7 +134,7 @@ import Testing
 						returns: .identifier("Void"),
 						isEscaping: true,
 						attributes: [.mainActor, .init("Sendable")],
-						effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .throws)
+						effects: EffectSpecifiers<ThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws)
 					),
 				),
 			]
@@ -154,7 +154,7 @@ import Testing
 		let signature = FunctionSignatureDescriptor(
 			kind: .function("fetchData"),
 			parameters: [],
-			effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .throws)
+			effects: EffectSpecifiers<FunctionThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws)
 		)
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
@@ -167,7 +167,7 @@ import Testing
 		let signature = FunctionSignatureDescriptor(
 			kind: .function("performAction"),
 			parameters: [],
-			effects: EffectSpecifiers(isAsync: false, throwingSpecifier: .rethrows)
+			effects: EffectSpecifiers<FunctionThrowingSpecifier>(isAsync: false, throwingSpecifier: .rethrows)
 		)
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
@@ -180,7 +180,7 @@ import Testing
 		let signature = FunctionSignatureDescriptor(
 			kind: .function("validate"),
 			parameters: [],
-			effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .typed(.identifier("ValidationError")))
+			effects: EffectSpecifiers<FunctionThrowingSpecifier>(isAsync: true, throwingSpecifier: .typed(.identifier("ValidationError")))
 		)
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)

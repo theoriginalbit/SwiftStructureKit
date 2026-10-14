@@ -44,7 +44,7 @@ public extension TypeMemberDescriptor {
 		parameters: ParametersList = [],
 		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
-		effects: EffectSpecifiers = .none,
+		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
 		Self.function(FunctionDescriptor(
@@ -87,7 +87,7 @@ public extension TypeMemberDescriptor {
 		parameters: ParametersList = [],
 		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
-		effects: EffectSpecifiers = .none,
+		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
 		Self.function(FunctionDescriptor(

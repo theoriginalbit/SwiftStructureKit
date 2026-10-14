@@ -43,7 +43,7 @@ public indirect enum TypeReference: Hashable, Sendable {
 		returns: TypeReference,
 		isEscaping: Bool = false,
 		attributes: OrderedSet<AttributeDescriptor> = [],
-		effects: EffectSpecifiers = .none
+		effects: EffectSpecifiers<ThrowingSpecifier> = .none
 	)
 
 }

@@ -67,16 +67,17 @@ import OrderedCollections
 	}
 
 	@Test("Render closure attributes and effects", arguments: [
-		([], EffectSpecifiers.none, "(Int) -> Void"),
-		([.init("Sendable")], EffectSpecifiers.none, "@Sendable (Int) -> Void"),
-		([.mainActor, .init("Sendable")], EffectSpecifiers.none, "@MainActor @Sendable (Int) -> Void"),
+		([], EffectSpecifiers<ThrowingSpecifier>.none, "(Int) -> Void"),
+		([.init("Sendable")], EffectSpecifiers<ThrowingSpecifier>.none, "@Sendable (Int) -> Void"),
+		([.mainActor, .init("Sendable")], EffectSpecifiers<ThrowingSpecifier>.none, "@MainActor @Sendable (Int) -> Void"),
 		([.init("Sendable")], .async, "@Sendable (Int) async -> Void"),
 		([.init("Sendable")], .throws, "@Sendable (Int) throws -> Void"),
-		([.init("Sendable")], EffectSpecifiers(isAsync: true, throwingSpecifier: .throws), "@Sendable (Int) async throws -> Void"),
-	] as [(OrderedSet<AttributeDescriptor>, EffectSpecifiers, String)])
+		([.init("Sendable")], .throws(.identifier("ReadError")), "@Sendable (Int) throws(ReadError) -> Void"),
+		([.init("Sendable")], EffectSpecifiers<ThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws), "@Sendable (Int) async throws -> Void"),
+	] as [(OrderedSet<AttributeDescriptor>, EffectSpecifiers<ThrowingSpecifier>, String)])
 	func renderClosure(
 		attributes: OrderedSet<AttributeDescriptor>,
-		effects: EffectSpecifiers,
+		effects: EffectSpecifiers<ThrowingSpecifier>,
 		expected: String
 	) {
 		let closure = TypeReference.closure(

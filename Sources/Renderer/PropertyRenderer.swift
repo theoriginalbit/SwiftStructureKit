@@ -125,7 +125,7 @@ enum PropertyRenderer {
 		}
 	}
 
-	private static func render(_ effects: EffectSpecifiers, to line: inout LineWriter) {
+	private static func render(_ effects: EffectSpecifiers<ThrowingSpecifier>, to line: inout LineWriter) {
 		guard effects.isAsync || effects.throwingSpecifier != nil else { return }
 		if effects.isAsync {
 			line.token("async")

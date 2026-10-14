@@ -37,7 +37,7 @@ import Testing
 			PropertyDescriptor.computed(
 				"asyncValue",
 				type: .string,
-				getterEffects: EffectSpecifiers(
+				getterEffects: EffectSpecifiers<ThrowingSpecifier>(
 					isAsync: true,
 					throwingSpecifier: .typed(.identifier("ReadError")),
 				),
@@ -261,7 +261,7 @@ import Testing
 			"value",
 			type: .string,
 			kind: .computed(getter: PropertyAccessorDescriptor.Getter(
-				effects: EffectSpecifiers(isAsync: true, throwingSpecifier: .throws),
+				effects: EffectSpecifiers<ThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws),
 			)),
 		)
 		let output = RenderTest.render { writer in

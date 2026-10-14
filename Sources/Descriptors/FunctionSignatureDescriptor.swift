@@ -40,7 +40,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 	public let genericRequirements: [TypeConstraintDescriptor]
 
 	/// The effect specifiers of the function, such as `async` and `throws`.
-	public let effects: EffectSpecifiers
+	public let effects: EffectSpecifiers<FunctionThrowingSpecifier>
 
 	/// Creates a function signature.
 	///
@@ -59,7 +59,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 		parameters: ParametersList = [],
 		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
-		effects: EffectSpecifiers = .none
+		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier

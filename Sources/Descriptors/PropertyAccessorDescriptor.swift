@@ -7,7 +7,7 @@ public enum PropertyAccessorDescriptor {
 	/// A property getter.
 	public struct Getter: Sendable {
 		/// The effects declared by the getter.
-		public let effects: EffectSpecifiers
+		public let effects: EffectSpecifiers<ThrowingSpecifier>
 
 		/// The statements in the getter body.
 		public let body: CodeBlockDescriptor
@@ -15,16 +15,12 @@ public enum PropertyAccessorDescriptor {
 		/// Creates a property getter.
 		///
 		/// - Parameters:
-		///   - effects: The getter's `async` and throwing specifiers. `rethrows` is not valid.
+		///   - effects: The getter's `async` and throwing specifiers.
 		///   - body: A result builder closure producing the getter body.
 		public init(
-			effects: EffectSpecifiers = .none,
+			effects: EffectSpecifiers<ThrowingSpecifier> = .none,
 			@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
 		) {
-			if case .rethrows? = effects.throwingSpecifier {
-				preconditionFailure("Property getters cannot use rethrows.")
-			}
-
 			self.effects = effects
 			self.body = CodeBlockDescriptor(body)
 		}
