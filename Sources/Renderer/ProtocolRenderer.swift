@@ -53,9 +53,9 @@ enum ProtocolRenderer {
 			case let .conformsTo(conformingType):
 				line.punctuation(":")
 				line.space()
-				line.token(CodeRenderingSupport.renderedType(conformingType))
+				line.token(CodeRenderingSupport.renderedComposedTypes(conformingType))
 
-			case let .sameType(assignedType):
+			case let .defaultType(assignedType):
 				line.token("=")
 				line.token(CodeRenderingSupport.renderedType(assignedType))
 			}

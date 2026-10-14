@@ -158,10 +158,10 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	/// A constraint applied to an associated type.
 	public enum Kind: Sendable {
 		/// The associated type conforms to the specified type.
-		case conformsTo(TypeReference)
+		case conformsTo(OrderedSet<TypeReference>)
 
 		/// The associated type is the same type as the specified type.
-		case sameType(TypeReference)
+		case defaultType(TypeReference)
 	}
 
 	/// The associated type's identifier.
@@ -190,7 +190,19 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ identifier: TypeReference, conformsTo other: TypeReference, isPrimary: Bool = false) {
 		self.identifier = identifier
-		self.kind = .conformsTo(other)
+		self.kind = .conformsTo([other])
+		self.isPrimary = isPrimary
+	}
+
+	/// Creates an associated type requirement constrained to conform to a type.
+	///
+	/// - Parameters:
+	///   - identifier: The associated type's identifier.
+	///   - others: The types the associated type must conform to.
+	///   - isPrimary: Whether this is a primary associated type.
+	public init(_ identifier: TypeReference, conformsTo others: OrderedSet<TypeReference>, isPrimary: Bool = false) {
+		self.identifier = identifier
+		self.kind = .conformsTo(others)
 		self.isPrimary = isPrimary
 	}
 
@@ -202,7 +214,7 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ identifier: TypeReference, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
 		self.identifier = identifier
-		self.kind = .sameType(other)
+		self.kind = .defaultType(other)
 		self.isPrimary = isPrimary
 	}
 }
