@@ -19,7 +19,10 @@ public struct AnyEnumDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the enum.
-	public let genericTypes: OrderedSet<TypeReference>
+	public let genericParameters: OrderedSet<GenericParameterDescriptor>
+
+	/// The generic `where` requirements declared by the enum.
+	public let genericRequirements: [TypeConstraintDescriptor]
 
 	/// The type and protocol conformances of the enum.
 	public let conformances: OrderedSet<TypeReference>
@@ -36,7 +39,7 @@ public struct AnyEnumDescriptor: Sendable {
 	///   - identifier: The name of the enum.
 	///   - comment: An optional documentation comment for the enum.
 	///   - accessModifier: An optional access level modifier for the enum.
-	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - genericParameters: The generic parameters associated with the enum.
 	///   - conformances: The types or protocols the enum conforms to.
 	///   - cases: The case descriptors for the enum.
 	///   - members: The member descriptors contained within the enum.
@@ -45,7 +48,8 @@ public struct AnyEnumDescriptor: Sendable {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		cases: [AnyEnumCaseDescriptor] = [],
 		members: [TypeMemberDescriptor] = [],
@@ -54,7 +58,8 @@ public struct AnyEnumDescriptor: Sendable {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
 		self.identifier = identifier
-		self.genericTypes = genericTypes
+		self.genericParameters = genericParameters
+		self.genericRequirements = genericRequirements
 		self.conformances = conformances
 		self.cases = cases
 		self.members = members

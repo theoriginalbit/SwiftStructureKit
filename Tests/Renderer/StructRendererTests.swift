@@ -26,7 +26,7 @@ import Testing
 			"GenericContainer",
 			accessModifier: .public,
 			attributes: [.mainActor, .frozen, .available("iOS 17, *")],
-			genericTypes: [.identifier("T"), .identifier("U")],
+			genericParameters: ["T", "U"],
 			conformances: [.sendable, .equatable],
 		) {}
 		let output = RenderTest.render { writer in
@@ -41,6 +41,26 @@ import Testing
 
 			"""
 		#expect(output == expected)
+	}
+
+	@Test("Render generic parameter constraints and where requirements")
+	func renderGenericConstraints() {
+		let structDescriptor = StructDescriptor(
+			"F",
+			genericParameters: ["T", "N"],
+			genericRequirements: [
+				TypeConstraintDescriptor("T", conformsTo: .equatable)
+			]
+		) {}
+		let output = RenderTest.render { writer in
+			StructRenderer.render(structDescriptor, to: &writer)
+		}
+
+		#expect(output == """
+			struct F<T, N> where T: Equatable {
+			}
+
+			""")
 	}
 
 	@Test("Render struct with doc comment")

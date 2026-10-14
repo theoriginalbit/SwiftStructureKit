@@ -49,7 +49,7 @@ import Testing
 			comment: "A sequence of values.",
 			accessModifier: .public,
 			attributes: [.mainActor],
-			genericTypes: [.identifier("Element")],
+			genericParameters: ["Element"],
 			conformances: [.sendable],
 		) {}
 		let output = RenderTest.render { writer in
@@ -69,12 +69,12 @@ import Testing
 	func renderProtocolMembers() throws {
 		let descriptor = ProtocolDescriptor("Readable") {
 			ProtocolAssociatedtypeDescriptor(
-				.identifier("Content"),
+				"Content",
 				conformsTo: .equatable,
 				isPrimary: true,
 			)
 			ProtocolAssociatedtypeDescriptor(
-				.identifier("Element"),
+				"Element",
 				sameTypeAs: .identifier("Content"),
 			)
 			ProtocolPropertyDescriptor(
@@ -102,7 +102,7 @@ import Testing
 				accessorSpecifier: .borrowMutate,
 			)
 			ProtocolMemberDescriptor.typealias(
-				ProtocolTypealiasDescriptor(.identifier("Alias"), assignedType: .identifier("Content"))
+				ProtocolTypealiasDescriptor("Alias", assignedType: .identifier("Content"))
 			)
 			FunctionSignatureDescriptor(
 				comment: "Reads the next value.",

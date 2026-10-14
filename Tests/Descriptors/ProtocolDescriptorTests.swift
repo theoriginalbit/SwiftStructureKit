@@ -7,28 +7,28 @@ import Testing
 
 @Suite(.tags(.declaration)) struct ProtocolDescriptorTests {
 	@Test("Add primary associated types after explicit generic types")
-	func addPrimaryAssociatedTypesToGenericTypes() {
+	func addPrimaryAssociatedTypesToGenericParameters() {
 		let descriptor = ProtocolDescriptor(
 			"Collection",
-			genericTypes: [.identifier("Index"), .identifier("Element")],
+			genericParameters: ["Index", "Element"],
 		) {
 			ProtocolAssociatedtypeDescriptor(
-				.identifier("Element"),
+				"Element",
 				conformsTo: .equatable,
 				isPrimary: true,
 			)
 			ProtocolAssociatedtypeDescriptor(
-				.identifier("SubSequence"),
+				"SubSequence",
 				sameTypeAs: .identifier("Self"),
 				isPrimary: true,
 			)
-			ProtocolAssociatedtypeDescriptor(.identifier("Iterator"))
+			ProtocolAssociatedtypeDescriptor("Iterator")
 		}
 
-		#expect(Array(descriptor.genericTypes) == [
-			.identifier("Index"),
-			.identifier("Element"),
-			.identifier("SubSequence"),
+		#expect(Array(descriptor.genericParameters) == [
+			GenericParameterDescriptor("Index"),
+			GenericParameterDescriptor("Element"),
+			GenericParameterDescriptor("SubSequence"),
 		])
 		#expect(descriptor.members.count == 3)
 	}

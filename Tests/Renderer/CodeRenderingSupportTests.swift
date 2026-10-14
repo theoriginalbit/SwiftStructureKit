@@ -22,37 +22,22 @@ import OrderedCollections
 		#expect(SwiftIdentifier.sanitized("_") == "_")
 	}
 
-	@Test("Render structured type references")
-	func renderTypeReferences() {
-		let types: OrderedSet<TypeReference> = [
-			.string,
-			.array(.identifier("Element")),
-			.dictionary(key: .string, value: .optional(.int)),
-			.any(.sendable),
-			.some(.identifier("Sequence")),
-			.tuple {
-				TupleElementDescriptor(label: "name", type: .string)
-				TupleElementDescriptor(type: .int)
-			},
-			.closure(parameters: [.int, .string], returns: .bool),
-			.genericParameter("Element", constraints: [.equatable, .sendable]),
-		]
-		let output = types
-			.map(CodeRenderingSupport.renderedType(_:))
-			.joined(separator: "\n") + "\n"
-
-		let expected = """
-			String
-			Array<Element>
-			Dictionary<String, Optional<Int>>
-			any Sendable
-			some Sequence
-			(name: String, Int)
-			(Int, String) -> Bool
-			Element: Equatable & Sendable
-			
-			"""
-
+	@Test("Render structured type references", arguments: [
+		(.string, "String"),
+		(.array(.identifier("Element")), "Array<Element>"),
+		(.dictionary(key: .string, value: .optional(.int)), "Dictionary<String, Optional<Int>>"),
+		(.any(.sendable), "any Sendable"),
+		(.some(.identifier("Sequence")), "some Sequence"),
+		(.tuple {
+			TupleElementDescriptor(label: "name", type: .string)
+			TupleElementDescriptor(type: .int)
+		}, "(name: String, Int)"),
+		(.closure(parameters: [.int, .string], returns: .bool), "(Int, String) -> Bool"),
+		(.identifier("Foo.Bar"), "Foo.Bar"),
+		(.generic("F", arguments: [.int, .identifier("Int.Stride")]), "F<Int, Int.Stride>"),
+	] as [(TypeReference, String)])
+	func renderTypeReferences(input: TypeReference, expected: String) {
+		let output = CodeRenderingSupport.renderedType(input)
 		#expect(output == expected)
 	}
 
@@ -60,10 +45,24 @@ import OrderedCollections
 	func sanitizeRenderedTypes() {
 		let output = CodeRenderingSupport.renderedTypesList([
 			.identifier("$Response"),
-			.genericParameter("1Element", constraints: [.identifier("class")]),
 			.tuple([TupleElementDescriptor(label: "try", type: .identifier("Value"))]),
 		])
 
-		#expect(output == "$Response, _1Element: `class`, (`try`: Value)")
+		#expect(output == "$Response, (`try`: Value)")
+	}
+
+	@Test("Render generic parameters and where constraints separately")
+	func renderGenericParametersAndConstraints() {
+		let parameter = GenericParameterDescriptor(
+			"Element",
+			constraint: TypeComposition([.equatable, .sendable])
+		)
+		let requirement = TypeConstraintDescriptor(
+			"T",
+			conformsTo: .equatable
+		)
+
+		#expect(CodeRenderingSupport.renderedGenericParameter(parameter) == "Element: Equatable & Sendable")
+		#expect(CodeRenderingSupport.renderedConstraint(requirement) == "T: Equatable")
 	}
 }

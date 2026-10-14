@@ -18,6 +18,48 @@ import Testing
 		#expect(output == "func doSomething()\n")
 	}
 
+	@Test("Render generic parameters and where requirements")
+	func renderGenericSignatures() {
+		let unconstrained = FunctionSignatureDescriptor(
+			kind: .function("a1", returns: .identifier("T")),
+			genericParameters: ["T"]
+		)
+		let constrained = FunctionSignatureDescriptor(
+			kind: .function("a2", returns: .identifier("T")),
+			genericParameters: [
+				GenericParameterDescriptor("T", constraint: TypeComposition(.equatable))
+			]
+		)
+		let qualifiedGenericArgument = FunctionSignatureDescriptor(
+			kind: .function("c2"),
+			parameters: [
+				.init(
+					"j",
+					type: .generic("F", arguments: [.identifier("Int.Stride"), .identifier("T")])
+				)
+			],
+			genericParameters: ["T"],
+			genericRequirements: [
+				TypeConstraintDescriptor("T", conformsTo: .equatable)
+			]
+		)
+
+		let rendered = [unconstrained, constrained, qualifiedGenericArgument]
+			.map { signature in
+				RenderTest.render { writer in
+					FunctionRenderer.renderSignature(signature, to: &writer)
+				}
+			}
+			.joined()
+
+		#expect(rendered == """
+			func a1<T>() -> T
+			func a2<T: Equatable>() -> T
+			func c2<T>(j: F<Int.Stride, T>) where T: Equatable
+
+			""")
+	}
+
 	@Test("Sanitize function and parameter identifiers")
 	func sanitizeFunctionAndParameterIdentifiers() {
 		let signature = FunctionSignatureDescriptor(

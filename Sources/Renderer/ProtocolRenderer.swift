@@ -10,7 +10,8 @@ enum ProtocolRenderer {
 			attributes: descriptor.attributes,
 			typeKeyword: "protocol",
 			identifier: descriptor.identifier,
-			genericTypes: descriptor.genericTypes,
+			genericParameters: descriptor.genericParameters,
+			genericRequirements: descriptor.genericRequirements,
 			conformances: descriptor.conformances,
 			to: &writer
 		)
@@ -46,14 +47,14 @@ enum ProtocolRenderer {
 	private static func render(_ descriptor: ProtocolAssociatedtypeDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			line.token("associatedtype")
-			line.token(CodeRenderingSupport.renderedType(descriptor.identifier))
+			line.token(SwiftIdentifier.sanitized(descriptor.name))
 			switch descriptor.kind {
 			case .none: break
 
 			case let .conformsTo(conformingType):
 				line.punctuation(":")
 				line.space()
-				line.token(CodeRenderingSupport.renderedComposedTypes(conformingType))
+				line.token(CodeRenderingSupport.renderedComposition(conformingType))
 
 			case let .defaultType(assignedType):
 				line.token("=")

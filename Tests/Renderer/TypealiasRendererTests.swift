@@ -10,7 +10,7 @@ import Testing
 	@Test("Render typealias")
 	func renderTypealias() {
 		let descriptor = TypealiasDescriptor(
-			.identifier("StringAlias"),
+			"StringAlias",
 			assignedType: .string,
 		)
 		let output = RenderTest.render { writer in
@@ -26,7 +26,7 @@ import Testing
 	@Test("Render access modifier and composed assigned types")
 	func renderAccessModifierAndComposedTypes() {
 		let descriptor = TypealiasDescriptor(
-			.identifier("Value"),
+			"Value",
 			accessModifier: .public,
 			attributes: [.available("macOS 15, *")],
 			assignedTypes: [.sendable, .equatable],

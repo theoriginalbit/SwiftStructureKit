@@ -19,7 +19,10 @@ public struct StructDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the struct.
-	public let genericTypes: OrderedSet<TypeReference>
+	public let genericParameters: OrderedSet<GenericParameterDescriptor>
+
+	/// The generic `where` requirements declared by the struct.
+	public let genericRequirements: [TypeConstraintDescriptor]
 
 	/// The type and protocol conformances of the struct.
 	public let conformances: OrderedSet<TypeReference>
@@ -33,7 +36,8 @@ public struct StructDescriptor: Sendable {
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
 		attributes: [AttributeDescriptor],
-		genericTypes: OrderedSet<TypeReference>,
+		genericParameters: OrderedSet<GenericParameterDescriptor>,
+		genericRequirements: [TypeConstraintDescriptor],
 		conformances: OrderedSet<TypeReference>,
 		members: [TypeMemberDescriptor],
 	) {
@@ -41,7 +45,8 @@ public struct StructDescriptor: Sendable {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
 		self.identifier = identifier
-		self.genericTypes = genericTypes
+		self.genericParameters = genericParameters
+		self.genericRequirements = genericRequirements
 		self.conformances = conformances
 		self.members = members
 	}
@@ -53,7 +58,8 @@ public struct StructDescriptor: Sendable {
 	///   - comment: An optional documentation comment for the struct.
 	///   - accessModifier: An optional access level modifier for the struct.
 	///   - attributes: Attributes applied to the struct.
-	///   - genericTypes: The generic type parameters associated with the struct.
+	///   - genericParameters: The generic parameters associated with the struct.
+	///   - genericRequirements: The generic `where` requirements associated with the struct.
 	///   - conformances: The types or protocols the struct conforms to.
 	///   - members: A result builder closure producing the member descriptors contained within the struct.
 	public init(
@@ -61,7 +67,8 @@ public struct StructDescriptor: Sendable {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
 	) {
@@ -70,7 +77,8 @@ public struct StructDescriptor: Sendable {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			members: members()
 		)
@@ -85,7 +93,8 @@ public extension TypeMemberDescriptor {
 	///   - comment: An optional documentation comment for the struct.
 	///   - accessModifier: An optional access level modifier for the struct.
 	///   - attributes: Attributes applied to the struct.
-	///   - genericTypes: The generic type parameters associated with the struct.
+	///   - genericParameters: The generic parameters associated with the struct.
+	///   - genericRequirements: The generic `where` requirements associated with the struct.
 	///   - conformances: The types or protocols the struct conforms to.
 	///   - members: A result builder closure producing the member descriptors contained within the struct.
 	static func `struct`(
@@ -93,7 +102,8 @@ public extension TypeMemberDescriptor {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
 	) -> Self {
@@ -102,7 +112,8 @@ public extension TypeMemberDescriptor {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			members: members(),
 		))

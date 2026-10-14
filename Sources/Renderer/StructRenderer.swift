@@ -10,7 +10,8 @@ enum StructRenderer {
 			attributes: descriptor.attributes,
 			typeKeyword: "struct",
 			identifier: descriptor.identifier,
-			genericTypes: descriptor.genericTypes,
+			genericParameters: descriptor.genericParameters,
+			genericRequirements: descriptor.genericRequirements,
 			conformances: descriptor.conformances,
 			to: &writer
 		)

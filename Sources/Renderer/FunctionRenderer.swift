@@ -69,6 +69,7 @@ enum FunctionRenderer {
 			line.token(SwiftIdentifier.sanitized(name))
 		}
 
+		CodeRenderingSupport.renderGenericSignature(signature.genericParameters, to: &line)
 		ParametersListRenderer.render(signature.parameters, into: &line)
 
 		if signature.effects.hasEffects {
@@ -88,5 +89,7 @@ enum FunctionRenderer {
 			line.token("->")
 			line.token(CodeRenderingSupport.renderedType(returns))
 		}
+
+		CodeRenderingSupport.renderGenericRequirements(signature.genericRequirements, to: &line)
 	}
 }

@@ -10,26 +10,26 @@ import Testing
 	@Test("Create typealias descriptor with one assigned type")
 	func createTypealiasWithSingleAssignedType() {
 		let descriptor = TypealiasDescriptor(
-			.identifier("StringAlias"),
+			"StringAlias",
 			accessModifier: .public,
 			assignedType: .string,
 		)
 
-		#expect(descriptor.identifier == .identifier("StringAlias"))
+		#expect(descriptor.name == "StringAlias")
 		#expect(descriptor.accessModifier == .public)
-		#expect(descriptor.assignedType == [.string])
+		#expect(descriptor.assignedType.types == [.string])
 	}
 
 	@Test("Create typealias descriptor with composed assigned types")
 	func createTypealiasWithComposedAssignedTypes() {
 		let assignedTypes: OrderedSet<TypeReference> = [.sendable, .equatable]
 		let descriptor = TypealiasDescriptor(
-			.identifier("Value"),
+			"Value",
 			assignedTypes: assignedTypes,
 		)
 
-		#expect(descriptor.identifier == .identifier("Value"))
+		#expect(descriptor.name == "Value")
 		#expect(descriptor.accessModifier == nil)
-		#expect(descriptor.assignedType == assignedTypes)
+		#expect(descriptor.assignedType.types == assignedTypes)
 	}
 }

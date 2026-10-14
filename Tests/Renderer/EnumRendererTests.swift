@@ -50,7 +50,7 @@ import Testing
 			"Result",
 			accessModifier: .public,
 			attributes: [.frozen, .objc(name: "SKResult")],
-			genericTypes: [.identifier("Success"), .identifier("Failure")],
+			genericParameters: ["Success", "Failure"],
 			conformances: [.sendable],
 		)
 		let output = RenderTest.render { writer in

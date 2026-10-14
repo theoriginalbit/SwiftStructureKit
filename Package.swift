@@ -16,7 +16,7 @@ let package = Package(
 		.target(
 			name: "SwiftStructureKit",
 			dependencies: [
-				.product(name: "Collections", package: "swift-collections"),
+				.product(name: "OrderedCollections", package: "swift-collections"),
 			],
 		),
         .testTarget(

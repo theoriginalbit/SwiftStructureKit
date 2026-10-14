@@ -8,13 +8,23 @@ enum CodeRenderingSupport {
 	// MARK: Common rendering
 
 	static func renderGenericSignature(
-		_ genericTypes: OrderedSet<TypeReference>,
+		_ genericParameters: OrderedSet<GenericParameterDescriptor>,
 		to line: inout LineWriter,
 	) {
-		guard !genericTypes.isEmpty else { return }
+		guard !genericParameters.isEmpty else { return }
 		line.punctuation("<")
-		line.token(renderedTypesList(genericTypes))
+		line.token(genericParameters.map(renderedGenericParameter(_:)).joined(separator: ", "))
 		line.punctuation(">")
+	}
+
+	static func renderGenericRequirements(
+		_ requirements: [TypeConstraintDescriptor],
+		to line: inout LineWriter,
+	) {
+		guard !requirements.isEmpty else { return }
+		line.space()
+		line.token("where")
+		line.token(requirements.map(renderedConstraint(_:)).joined(separator: ", "))
 	}
 
 	static func renderTypeSignature(
@@ -23,7 +33,8 @@ enum CodeRenderingSupport {
 		attributes: [AttributeDescriptor],
 		typeKeyword: String,
 		identifier: String,
-		genericTypes: OrderedSet<TypeReference>,
+		genericParameters: OrderedSet<GenericParameterDescriptor>,
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference>,
 		to writer: inout CodeWriter,
 	) {
@@ -39,7 +50,7 @@ enum CodeRenderingSupport {
 
 			line.token(typeKeyword)
 			line.token(SwiftIdentifier.sanitized(identifier))
-			renderGenericSignature(genericTypes, to: &line)
+			renderGenericSignature(genericParameters, to: &line)
 
 			if !conformances.isEmpty {
 				line.punctuation(":")
@@ -47,6 +58,7 @@ enum CodeRenderingSupport {
 				line.token(renderedTypesList(conformances))
 			}
 
+			renderGenericRequirements(genericRequirements, to: &line)
 			line.space()
 			line.punctuation("{")
 		}
@@ -109,7 +121,9 @@ enum CodeRenderingSupport {
 	static func renderedType(_ type: TypeReference) -> String {
 		return switch type {
 		case let .identifier(identifier):
-			SwiftIdentifier.sanitized(identifier)
+			renderedIdentifier(identifier)
+		case let .generic(identifier, arguments):
+			"\(renderedIdentifier(identifier))<\(renderedTypesList(arguments))>"
 		case let .array(element):
 			"Array<\(renderedType(element))>"
 		case let .dictionary(key, value):
@@ -123,14 +137,22 @@ enum CodeRenderingSupport {
 		case let .tuple(elements):
 			"(\(elements.map(rendered(_:)).joined(separator: ", ")))"
 		case let .closure(parameters, returns):
-			"(\(parameters.map(renderedType(_:)).joined(separator: ", "))) -> \(renderedType(returns))"
-		case let .genericParameter(name, constraints):
-			if constraints.isEmpty {
-				SwiftIdentifier.sanitized(name)
-			} else {
-				"\(SwiftIdentifier.sanitized(name)): \(renderedComposedTypes(constraints))"
-			}
+			"(\(renderedTypesList(parameters))) -> \(renderedType(returns))"
 		}
+	}
+
+	static func renderedIdentifier(_ identifier: TypeIdentifier) -> String {
+		identifier.components.map(SwiftIdentifier.sanitized(_:)).joined(separator: ".")
+	}
+
+	static func renderedGenericParameter(_ parameter: GenericParameterDescriptor) -> String {
+		let identifier = renderedIdentifier(parameter.identifier)
+		guard let constraint = parameter.constraint else { return identifier }
+		return "\(identifier): \(renderedComposition(constraint))"
+	}
+
+	static func renderedConstraint(_ constraint: TypeConstraintDescriptor) -> String {
+		"\(renderedIdentifier(constraint.type)): \(renderedComposition(constraint.constraint))"
 	}
 
 	static func rendered(_ element: TupleElementDescriptor) -> String {
@@ -139,15 +161,19 @@ enum CodeRenderingSupport {
 		return "\(SwiftIdentifier.sanitized(label)): \(type)"
 	}
 
-	static func renderedTypesList(_ types: OrderedSet<TypeReference>) -> String {
+	static func renderedTypesList(_ types: some Collection<TypeReference>) -> String {
 		types.lazy
 			.map(renderedType(_:))
 			.joined(separator: ", ")
 	}
 
-	static func renderedComposedTypes(_ types: OrderedSet<TypeReference>) -> String {
+	static func renderedComposedTypes(_ types: some Collection<TypeReference>) -> String {
 		types.lazy
 			.map(renderedType(_:))
 			.joined(separator: " & ")
+	}
+
+	static func renderedComposition(_ composition: TypeComposition) -> String {
+		renderedComposedTypes(composition.types)
 	}
 }

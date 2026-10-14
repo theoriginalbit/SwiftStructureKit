@@ -12,33 +12,45 @@ public struct TypealiasDescriptor: Sendable {
 	/// The attributes applied to the typealias.
 	public let attributes: [AttributeDescriptor]
 
-	/// The alias identifier.
-	public let identifier: TypeReference
+	/// The alias name.
+	public let name: String
 
 	/// The type this alias refers to.
-	public let assignedType: OrderedSet<TypeReference>
+	public let assignedType: TypeComposition
 
 	public init(
-		_ identifier: TypeReference,
+		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
 		assignedType: TypeReference
 	) {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
-		self.identifier = identifier
-		self.assignedType = [assignedType]
+		self.name = name
+		self.assignedType = TypeComposition(assignedType)
 	}
 
 	public init(
-		_ identifier: TypeReference,
+		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
 		assignedTypes: OrderedSet<TypeReference>
 	) {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
-		self.identifier = identifier
-		self.assignedType = assignedTypes
+		self.name = name
+		self.assignedType = TypeComposition(assignedTypes)
+	}
+
+	public init(
+		_ name: String,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		assignedType: TypeComposition
+	) {
+		self.accessModifier = accessModifier
+		self.attributes = attributes
+		self.name = name
+		self.assignedType = assignedType
 	}
 }

@@ -10,9 +10,9 @@ enum TypealiasRenderer {
 				line.token(CodeRenderingSupport.renderedAccessModifier(accessModifier))
 			}
 			line.token("typealias")
-			line.token(CodeRenderingSupport.renderedType(descriptor.identifier))
+			line.token(SwiftIdentifier.sanitized(descriptor.name))
 			line.token("=")
-			line.token(CodeRenderingSupport.renderedComposedTypes(descriptor.assignedType))
+			line.token(CodeRenderingSupport.renderedComposition(descriptor.assignedType))
 		}
 	}
 }

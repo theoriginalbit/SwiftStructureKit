@@ -2,6 +2,8 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public import OrderedCollections
+
 /// A function.
 public struct FunctionDescriptor: Sendable {
 	/// The signature of the function.
@@ -29,6 +31,8 @@ public extension TypeMemberDescriptor {
 	///   - attributes: Attributes applied to the initializer.
 	///   - failable: Whether the initializer is failable (i.e. `init?`).
 	///   - parameters: The list of parameters the initializer accepts. Defaults to an empty list.
+	///   - genericParameters: The generic parameters declared by the initializer.
+	///   - genericRequirements: The generic `where` requirements declared by the initializer.
 	///   - effects: Effect specifiers (e.g. `throws`, `async`) for the initializer.
 	///   - body: A ``CodeBlockBuilder`` closure that produces the statements making up the initializer's body.
 	/// - Returns: A `.function` member descriptor configured as an initializer.
@@ -38,6 +42,8 @@ public extension TypeMemberDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		failable: Bool,
 		parameters: ParametersList = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
@@ -48,6 +54,8 @@ public extension TypeMemberDescriptor {
 				attributes: attributes,
 				kind: .initializer(failable: failable),
 				parameters: parameters,
+				genericParameters: genericParameters,
+				genericRequirements: genericRequirements,
 				effects: effects,
 			),
 			body: body,
@@ -64,6 +72,8 @@ public extension TypeMemberDescriptor {
 	///   - returns: An optional ``TypeReference`` describing the function's return type. Defaults to `nil` (no return value).
 	///   - isStatic: Whether the function is a static member. Defaults to `false`.
 	///   - parameters: The list of parameters the function accepts. Defaults to an empty list.
+	///   - genericParameters: The generic parameters declared by the function.
+	///   - genericRequirements: The generic `where` requirements declared by the function.
 	///   - effects: Effect specifiers (e.g. `throws`, `async`) for the function.
 	///   - body: A ``CodeBlockBuilder`` closure that produces the statements making up the function's body.
 	/// - Returns: A `.function` member descriptor configured as a named function.
@@ -75,6 +85,8 @@ public extension TypeMemberDescriptor {
 		returns: TypeReference? = nil,
 		isStatic: Bool = false,
 		parameters: ParametersList = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) -> Self {
@@ -89,6 +101,8 @@ public extension TypeMemberDescriptor {
 					isStatic: isStatic
 				),
 				parameters: parameters,
+				genericParameters: genericParameters,
+				genericRequirements: genericRequirements,
 				effects: effects,
 			),
 			body: body,

@@ -6,7 +6,7 @@ public import OrderedCollections
 
 /// A descriptor representing a Swift protocol declaration.
 ///
-/// - Note: Associated type members declared as primary associated types are automatically added to `genericTypes`, after explicitly supplied generic types.
+/// - Note: Primary associated types are automatically added to `genericParameters`, after explicitly supplied parameters.
 public struct ProtocolDescriptor: Sendable {
 	/// The documentation comment attached to the protocol definition, if any.
 	public let comment: DocCommentDescriptor?
@@ -21,7 +21,10 @@ public struct ProtocolDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the protocol.
-	public let genericTypes: OrderedSet<TypeReference>
+	public let genericParameters: OrderedSet<GenericParameterDescriptor>
+
+	/// The generic `where` requirements declared by the protocol.
+	public let genericRequirements: [TypeConstraintDescriptor]
 
 	/// The type and protocol conformances of the protocol.
 	public let conformances: OrderedSet<TypeReference>
@@ -35,7 +38,8 @@ public struct ProtocolDescriptor: Sendable {
 	///   - identifier: The name of the protocol.
 	///   - comment: An optional documentation comment for the protocol.
 	///   - accessModifier: An optional access level modifier for the protocol.
-	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - genericParameters: The generic parameters associated with the protocol.
+	///   - genericRequirements: The generic `where` requirements associated with the protocol.
 	///   - conformances: The types or protocols the protocol inherits from.
 	///   - members: A result builder closure producing the protocol's member declarations.
 	init(
@@ -43,7 +47,8 @@ public struct ProtocolDescriptor: Sendable {
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
 		attributes: [AttributeDescriptor],
-		genericTypes: OrderedSet<TypeReference>,
+		genericParameters: OrderedSet<GenericParameterDescriptor>,
+		genericRequirements: [TypeConstraintDescriptor],
 		conformances: OrderedSet<TypeReference>,
 		members: [ProtocolMemberDescriptor],
 	) {
@@ -52,20 +57,22 @@ public struct ProtocolDescriptor: Sendable {
 		self.attributes = attributes
 		self.identifier = identifier
 		// make sure primary associated types appear in the generics list
-		let primaryAssociatedTypes = members.lazy.compactMap {
-			if case let .associatedtype(descriptor) = $0, descriptor.isPrimary {
-				return descriptor.identifier
+		let primaryAssociatedTypes = members.lazy.compactMap { member -> GenericParameterDescriptor? in
+			if case let .associatedtype(descriptor) = member, descriptor.isPrimary {
+				return GenericParameterDescriptor(descriptor.name)
 			}
+
 			return nil
 		}
-		self.genericTypes = genericTypes.union(primaryAssociatedTypes)
+		self.genericParameters = genericParameters.union(primaryAssociatedTypes)
+		self.genericRequirements = genericRequirements
 		self.conformances = conformances
 		self.members = members
 	}
 
 	/// Creates a protocol descriptor using a result builder to define its members.
 	///
-	/// Primary associated types declared by `members` are added to `genericTypes`
+	/// Primary associated types declared by `members` are added to `genericParameters`
 	/// automatically. Explicit generic types retain their order, followed by any
 	/// primary associated types not already present.
 	///
@@ -74,7 +81,8 @@ public struct ProtocolDescriptor: Sendable {
 	///   - comment: An optional documentation comment for the protocol.
 	///   - accessModifier: An optional access level modifier for the protocol.
 	///   - attributes: Attributes applied to the protocol.
-	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - genericParameters: The generic parameters associated with the protocol.
+	///   - genericRequirements: The generic `where` requirements associated with the protocol.
 	///   - conformances: The types or protocols the protocol inherits from.
 	///   - members: A result builder closure producing the protocol's member declarations.
 	public init(
@@ -82,7 +90,8 @@ public struct ProtocolDescriptor: Sendable {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ProtocolMemberBuilder members: () -> [ProtocolMemberDescriptor] = { [] },
 	) {
@@ -91,7 +100,8 @@ public struct ProtocolDescriptor: Sendable {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			members: members()
 		)
@@ -158,14 +168,14 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	/// A constraint applied to an associated type.
 	public enum Kind: Sendable {
 		/// The associated type conforms to the specified type.
-		case conformsTo(OrderedSet<TypeReference>)
+		case conformsTo(TypeComposition)
 
 		/// The associated type is the same type as the specified type.
 		case defaultType(TypeReference)
 	}
 
-	/// The associated type's identifier.
-	public let identifier: TypeReference
+	/// The associated type's name.
+	public let name: String
 
 	/// The associated type's conformance or same-type requirement, if any.
 	public let kind: Kind?
@@ -175,9 +185,9 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 
 	/// Creates an unconstrained associated type requirement.
 	///
-	/// - Parameter identifier: The associated type's identifier.
-	public init(_ identifier: TypeReference) {
-		self.identifier = identifier
+	/// - Parameter name: The associated type's name.
+	public init(_ name: String) {
+		self.name = name
 		self.kind = nil
 		self.isPrimary = false
 	}
@@ -185,35 +195,42 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	/// Creates an associated type requirement constrained to conform to a type.
 	///
 	/// - Parameters:
-	///   - identifier: The associated type's identifier.
+	///   - name: The associated type's name.
 	///   - other: The type the associated type must conform to.
 	///   - isPrimary: Whether this is a primary associated type.
-	public init(_ identifier: TypeReference, conformsTo other: TypeReference, isPrimary: Bool = false) {
-		self.identifier = identifier
-		self.kind = .conformsTo([other])
+	public init(_ name: String, conformsTo other: TypeReference, isPrimary: Bool = false) {
+		self.name = name
+		self.kind = .conformsTo(TypeComposition(other))
 		self.isPrimary = isPrimary
 	}
 
 	/// Creates an associated type requirement constrained to conform to a type.
 	///
 	/// - Parameters:
-	///   - identifier: The associated type's identifier.
+	///   - name: The associated type's identifier.
 	///   - others: The types the associated type must conform to.
 	///   - isPrimary: Whether this is a primary associated type.
-	public init(_ identifier: TypeReference, conformsTo others: OrderedSet<TypeReference>, isPrimary: Bool = false) {
-		self.identifier = identifier
-		self.kind = .conformsTo(others)
+	public init(_ name: String, conformsTo others: OrderedSet<TypeReference>, isPrimary: Bool = false) {
+		self.name = name
+		self.kind = .conformsTo(TypeComposition(others))
+		self.isPrimary = isPrimary
+	}
+
+	/// Creates an associated type requirement constrained to conform to a type composition.
+	public init(_ name: String, conformsTo constraint: TypeComposition, isPrimary: Bool = false) {
+		self.name = name
+		self.kind = .conformsTo(constraint)
 		self.isPrimary = isPrimary
 	}
 
 	/// Creates an associated type requirement constrained to be another type.
 	///
 	/// - Parameters:
-	///   - identifier: The associated type's identifier.
+	///   - name: The associated type's name.
 	///   - other: The type the associated type must be identical to.
 	///   - isPrimary: Whether this is a primary associated type.
-	public init(_ identifier: TypeReference, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
-		self.identifier = identifier
+	public init(_ name: String, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
+		self.name = name
 		self.kind = .defaultType(other)
 		self.isPrimary = isPrimary
 	}
@@ -223,26 +240,34 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 public struct ProtocolTypealiasDescriptor: Sendable {
 	let descriptor: TypealiasDescriptor
 
-	/// The alias identifier.
-	public var identifier: TypeReference { descriptor.identifier }
+	/// The alias name.
+	public var name: String { descriptor.name }
 
 	/// The type this alias refers to.
-	public var assignedType: OrderedSet<TypeReference> { descriptor.assignedType }
+	public var assignedType: TypeComposition { descriptor.assignedType }
 
 	public init(
-		_ identifier: TypeReference,
+		_ name: String,
 		attributes: [AttributeDescriptor] = [],
 		assignedType: TypeReference,
 	) {
-		self.descriptor = TypealiasDescriptor(identifier, attributes: attributes, assignedType: assignedType)
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
 	}
 
 	public init(
-		_ identifier: TypeReference,
+		_ name: String,
 		attributes: [AttributeDescriptor] = [],
 		assignedTypes: OrderedSet<TypeReference>,
 	) {
-		self.descriptor = TypealiasDescriptor(identifier, attributes: attributes, assignedTypes: assignedTypes)
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedTypes: assignedTypes)
+	}
+
+	public init(
+		_ name: String,
+		attributes: [AttributeDescriptor] = [],
+		assignedType: TypeComposition,
+	) {
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
 	}
 }
 
@@ -286,7 +311,8 @@ public extension TypeMemberDescriptor {
 	///   - comment: An optional documentation comment for the protocol.
 	///   - accessModifier: An optional access level modifier for the protocol.
 	///   - attributes: Attributes applied to the protocol.
-	///   - genericTypes: The generic type parameters associated with the protocol.
+	///   - genericParameters: The generic parameters associated with the protocol.
+	///   - genericRequirements: The generic `where` requirements associated with the protocol.
 	///   - conformances: The types or protocols the protocol inherits from.
 	///   - members: A result builder closure producing the protocol's member declarations.
 	static func `protocol`(
@@ -294,7 +320,8 @@ public extension TypeMemberDescriptor {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ProtocolMemberBuilder members: () -> [ProtocolMemberDescriptor] = { [] },
 	) -> Self {
@@ -303,7 +330,8 @@ public extension TypeMemberDescriptor {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			members: members
 		))

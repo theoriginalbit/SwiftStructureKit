@@ -20,7 +20,8 @@ public struct PlainEnumDescriptor: Sendable {
 	///   - comment: An optional documentation comment for the enum.
 	///   - accessModifier: An optional access level modifier for the enum.
 	///   - attributes: Attributes applied to the enum.
-	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - genericParameters: The generic parameters associated with the enum.
+	///   - genericRequirements: The generic `where` requirements associated with the enum.
 	///   - conformances: The types or protocols the enum conforms to.
 	///   - cases: A result builder closure producing the case descriptors for the enum.
 	///   - members: A result builder closure producing the member descriptors contained within the enum.
@@ -29,7 +30,8 @@ public struct PlainEnumDescriptor: Sendable {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
@@ -39,7 +41,8 @@ public struct PlainEnumDescriptor: Sendable {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			cases: cases().map(\.descriptor),
 			members: members()
@@ -99,7 +102,8 @@ public extension TypeMemberDescriptor {
 	///   - comment: An optional documentation comment for the enum.
 	///   - accessModifier: An optional access level modifier for the enum.
 	///   - attributes: Attributes applied to the enum.
-	///   - genericTypes: The generic type parameters associated with the enum.
+	///   - genericParameters: The generic parameters associated with the enum.
+	///   - genericRequirements: The generic `where` requirements associated with the enum.
 	///   - conformances: The types or protocols the enum conforms to.
 	///   - cases: A result builder closure producing the case descriptors for the enum.
 	///   - members: A result builder closure producing the member descriptors contained within the enum.
@@ -108,7 +112,8 @@ public extension TypeMemberDescriptor {
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericTypes: OrderedSet<TypeReference> = [],
+		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference> = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
 		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
@@ -118,7 +123,8 @@ public extension TypeMemberDescriptor {
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
-			genericTypes: genericTypes,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
 			conformances: conformances,
 			cases: cases,
 			members: members,

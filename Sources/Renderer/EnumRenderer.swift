@@ -10,7 +10,8 @@ enum EnumRenderer {
 			attributes: descriptor.attributes,
 			typeKeyword: "enum",
 			identifier: descriptor.identifier,
-			genericTypes: descriptor.genericTypes,
+			genericParameters: descriptor.genericParameters,
+			genericRequirements: descriptor.genericRequirements,
 			conformances: descriptor.conformances,
 			to: &writer
 		)
