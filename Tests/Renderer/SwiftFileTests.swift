@@ -38,7 +38,7 @@ import Testing
 
 		try ReferenceTest.assert(
 			descriptor.render(),
-			matches: Fixtures.url("FileDescriptorTests_renderFile"),
+			matches: Fixtures.url("SwiftFileTests_renderFile"),
 		)
 	}
 

@@ -67,6 +67,11 @@ enum FunctionRenderer {
 			}
 			line.token("func")
 			line.token(SwiftIdentifier.sanitized(name))
+		case let .subscript(_, isStatic):
+			if isStatic {
+				line.token("static")
+			}
+			line.token("subscript")
 		}
 
 		CodeRenderingSupport.renderGenericSignature(signature.genericParameters, to: &line)
@@ -79,7 +84,13 @@ enum FunctionRenderer {
 			line.token(effects)
 		}
 
-		if case let .function(_, returns, _) = signature.kind, let returns {
+		let returns: TypeReference? = switch signature.kind {
+			case .initializer: nil
+			case let .function(_, returns, _): returns
+			case let .subscript(returns, _): returns
+		}
+
+		if let returns {
 			line.space()
 			line.token("->")
 			line.token(CodeRenderingSupport.renderedType(returns))

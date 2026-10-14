@@ -211,6 +211,32 @@ import Testing
 		#expect(failableInitOutput == "fileprivate init?(_ raw: Int)\n")
 	}
 
+	@Test("Render instance and static subscripts")
+	func renderSubscripts() {
+		let instanceSubscript = FunctionSignatureDescriptor(
+			kind: .subscript(returns: .string),
+			parameters: [.init(label: "for", "index", type: .int)]
+		)
+		let staticSubscript = FunctionSignatureDescriptor(
+			kind: .subscript(returns: .identifier("Element"), isStatic: true),
+			parameters: [.init("index", type: .int)]
+		)
+
+		let rendered = [instanceSubscript, staticSubscript]
+			.map { signature in
+				RenderTest.render { writer in
+					FunctionRenderer.renderSignature(signature, to: &writer)
+				}
+			}
+			.joined()
+
+		#expect(rendered == """
+			subscript(`for` index: Int) -> String
+			static subscript(index: Int) -> Element
+
+			""")
+	}
+
 	@Test("Render FunctionDescriptor with body and statements")
 	func renderFunctionWithBody() {
 		let function = FunctionDescriptor(

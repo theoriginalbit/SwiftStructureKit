@@ -9,13 +9,16 @@ public struct FunctionSignatureDescriptor: Sendable {
 	/// A function parameter.
 	public typealias Parameter = ParametersList.Parameter
 
-	/// A function kind: `init` or `func`.
+	/// A function kind: `init`, `func`, or `subscript`.
 	public enum Kind: Sendable {
 		/// An initializer.
 		case initializer(failable: Bool)
 
 		/// A function. Can be global or inhabiting a type as an instance function or static function.
 		case function(_ name: String, returns: TypeReference? = nil, isStatic: Bool = false)
+
+		/// A subscript.
+		case `subscript`(returns: TypeReference, isStatic: Bool = false)
 	}
 
 	/// A comment to document the function.
@@ -48,7 +51,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 	///   - comment: An optional documentation comment for the function.
 	///   - accessModifier: An optional access modifier for the function.
 	///   - attributes: The attributes applied to the function.
-	///   - kind: Whether the declaration is an initializer or named function.
+	///   - kind: Whether the declaration is an initializer, named function, or subscript.
 	///   - parameters: The parameters accepted by the function.
 	///   - effects: The function's `async` and throwing specifiers.
 	public init(
