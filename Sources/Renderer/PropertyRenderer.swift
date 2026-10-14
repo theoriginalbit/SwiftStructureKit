@@ -4,9 +4,7 @@
 
 enum PropertyRenderer {
 	static func render(_ property: PropertyDescriptor, to writer: inout CodeWriter) {
-		if let comment = property.comment {
-			writer.writeLine(comment.value, prefix: "/// ")
-		}
+		CommentRenderer.renderDocComment(property.comment, to: &writer)
 		AttributeRenderer.render(property.attributes, to: &writer)
 
 		switch property.kind {
@@ -45,7 +43,7 @@ enum PropertyRenderer {
 				line.space()
 				line.punctuation("{")
 			}
-			render(getter, to: &writer)
+			render(getter, hasSetter: setter != nil, to: &writer)
 			if let setter {
 				render(setter, to: &writer)
 			}
@@ -62,18 +60,25 @@ enum PropertyRenderer {
 		}
 	}
 
-	private static func render(_ getter: PropertyAccessorDescriptor.Getter, to writer: inout CodeWriter) {
+	private static func render(_ getter: PropertyAccessorDescriptor.Getter, hasSetter: Bool, to writer: inout CodeWriter) {
+		let requiresExplicitGetBlock = hasSetter || getter.effects.hasEffects
 		writer.indented { writer in
-			writer.writeLine { line in
-				line.token("get")
-				render(getter.effects, to: &line)
-				line.space()
-				line.punctuation("{")
-			}
-			writer.indented { writer in
+			if requiresExplicitGetBlock {
+				writer.writeLine { line in
+					line.token("get")
+					render(getter.effects, to: &line)
+					line.space()
+					line.punctuation("{")
+				}
+
+				writer.indented { writer in
+					StatementRenderer.render(getter.body.statements, to: &writer)
+				}
+
+				writer.writeLine("}")
+			} else {
 				StatementRenderer.render(getter.body.statements, to: &writer)
 			}
-			writer.writeLine("}")
 		}
 	}
 

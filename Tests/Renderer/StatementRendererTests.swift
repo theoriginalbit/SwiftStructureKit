@@ -40,6 +40,73 @@ import Testing
 		#expect(output == "let test: Int = 123\n")
 	}
 
+	@Test func assignmentStatement() {
+		let input = StatementDescriptor.assignment(
+			target: "self.name",
+			expression: .raw("name"),
+		)
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		#expect(output == "self.name = name\n")
+	}
+
+	@Test func assignmentWithFunctionCallExpression() {
+		let input = StatementDescriptor.assignment(
+			target: "self.descriptor",
+			expression: .functionCall(
+				.identifier("TypealiasDescriptor"),
+				[
+					.init(value: .raw("name")),
+					.init(label: "attributes", value: .raw("attributes")),
+					.init(label: "assignedType", value: .raw("assignedType")),
+				],
+			),
+		)
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		#expect(output == "self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)\n")
+	}
+
+	@Test func expressionStatementWithNestedFunctionCall() {
+		let block = CodeBlockDescriptor {
+			ExpressionDescriptor.functionCall(
+				.identifier("self.init"),
+				ArgumentsList {
+					Argument(value: .identifier("identifier"))
+					Argument(label: "comment", value: .raw("comment"))
+					Argument(label: "members", value: .functionCall(.raw("members")))
+				}
+			)
+			StatementDescriptor.assignment(
+				target: "self.kind",
+				expression: .functionCall(
+					.raw(".conformsTo"),
+					ArgumentsList([
+						.init(
+							value: .functionCall(
+								.raw("TypeComposition"),
+								[.init(value: .raw("other"))],
+							),
+						),
+					]),
+				),
+			)
+		}
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		#expect(output == """
+			self.init(identifier, comment: comment, members: members())
+			self.kind = .conformsTo(TypeComposition(other))
+
+			""")
+	}
+
 	@Test func storedAndComputedProperties() {
 		let statements = CodeBlockDescriptor {
 			PropertyDescriptor.var(
@@ -58,9 +125,7 @@ import Testing
 		#expect(output == """
 			var stored: Int = 1
 			var computed: Int {
-			    get {
-			        return 2
-			    }
+			    return 2
 			}
 
 			""")

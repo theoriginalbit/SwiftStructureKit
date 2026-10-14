@@ -11,6 +11,28 @@ enum StatementRenderer {
 
 	static func render(_ statement: StatementDescriptor, to writer: inout CodeWriter) {
 		switch statement {
+		case let .assignment(descriptor):
+			writer.writeLine { line in
+				line.token(CodeRenderingSupport.renderedIdentifier(descriptor.target))
+				line.token("=")
+				line.token(CodeRenderingSupport.renderedExpression(descriptor.expression))
+			}
+
+		case let .expression(expression):
+			writer.writeLine { line in
+				line.token(CodeRenderingSupport.renderedExpression(expression))
+			}
+
+		case let .declaration(descriptor):
+			PropertyRenderer.render(
+				PropertyDescriptor(
+					descriptor.identifier,
+					type: descriptor.type,
+					kind: .stored(isMutable: descriptor.isMutable, defaultValue: descriptor.expression)
+				),
+				to: &writer
+			)
+
 		case let .property(descriptor):
 			precondition(descriptor.accessModifier == nil, "Local properties cannot have access modifiers.")
 			precondition(!descriptor.isStatic, "Local properties cannot be static.")

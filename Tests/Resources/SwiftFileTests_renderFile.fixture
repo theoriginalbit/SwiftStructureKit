@@ -1,4 +1,6 @@
+//
 // Generated source.
+//
 
 import Foundation
 @_exported @preconcurrency public import SwiftStructureKit.Descriptors

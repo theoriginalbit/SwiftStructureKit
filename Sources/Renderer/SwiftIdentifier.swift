@@ -7,7 +7,18 @@ import Foundation
 enum SwiftIdentifier {
 	static func sanitized(_ identifier: String) -> String {
 		guard !identifier.isEmpty else { return "_empty" }
-		if identifier == "_" { return identifier }
+		if allowedKeywords.contains(identifier) {
+			// allow some keywords
+			return identifier
+		}
+		if identifier.hasPrefix("`") && identifier.hasSuffix("`") {
+			// assume already santisized
+			return identifier
+		}
+		if identifier == "_" {
+			// allow _ labels
+			return identifier
+		}
 
 		let firstCharacterSet = CharacterSet.letters.union(CharacterSet(charactersIn: "_$"))
 		let digits = CharacterSet.decimalDigits
@@ -38,6 +49,12 @@ enum SwiftIdentifier {
 		return keywords.contains(sanitized) ? "`\(sanitized)`" : sanitized
 	}
 
+	private static let allowedKeywords: Set<String> = [
+		"self",
+		"Self",
+		"init",
+	]
+
 	private static let keywords: Set<String> = [
 		"associatedtype",
 		"class",
@@ -46,7 +63,6 @@ enum SwiftIdentifier {
 		"extension",
 		"func",
 		"import",
-		"init",
 		"inout",
 		"let",
 		"operator",
@@ -85,8 +101,6 @@ enum SwiftIdentifier {
 		"is",
 		"nil",
 		"rethrows",
-		"self",
-		"Self",
 		"super",
 		"true",
 		"try",

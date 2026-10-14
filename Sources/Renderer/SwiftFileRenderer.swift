@@ -5,7 +5,9 @@
 enum SwiftFileRenderer {
 	static func render(_ descriptor: SwiftFile, to writer: inout CodeWriter) {
 		if let headerComment = descriptor.headerComment {
+			writer.writeLine("//")
 			writer.writeLine(headerComment.value, prefix: "// ")
+			writer.writeLine("//")
 		}
 
 		guard !descriptor.imports.isEmpty || !descriptor.declarations.isEmpty else {
@@ -20,7 +22,10 @@ enum SwiftFileRenderer {
 			render(importDescriptor, to: &writer)
 		}
 
-		writer.writeNewLine()
+		if !descriptor.imports.isEmpty {
+			// if there were imports add a new line
+			writer.writeNewLine()
+		}
 
 		TypeMemberRenderer.render(descriptor.declarations, to: &writer)
 

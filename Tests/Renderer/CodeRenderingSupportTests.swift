@@ -11,6 +11,8 @@ import OrderedCollections
 		("$nake…", "$nake_x2026_"),
 		("9-$patch", "_9_hyphen__dollar_patch"),
 		("class", "`class`"),
+		("`typealias`", "`typealias`"),
+		("``", "``"),
 		("", "_empty"),
 	])
 	func sanitizeSwiftIdentifiers(input: String, expected: String) {

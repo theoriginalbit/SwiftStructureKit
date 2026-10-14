@@ -64,9 +64,7 @@ enum ProtocolRenderer {
 	}
 
 	private static func render(_ property: ProtocolPropertyDescriptor, to writer: inout CodeWriter) {
-		if let comment = property.comment {
-			writer.writeLine(comment.value, prefix: "/// ")
-		}
+		CommentRenderer.renderDocComment(property.comment, to: &writer)
 		AttributeRenderer.render(property.attributes, to: &writer)
 
 		writer.writeLine { line in

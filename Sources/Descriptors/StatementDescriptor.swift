@@ -7,25 +7,14 @@ public enum StatementDescriptor: Sendable {
 	/// A stored or computed property declaration.
 	case property(PropertyDescriptor)
 
-	/// An assignment statement, declaring a variable or constant.
-	static func assignment(_ descriptor: AssignmentStatementDescriptor) -> Self {
-		// syntactically an assignment `var x: Int = 4` or `let y: Bool = false`
-		// is the same as a stored property. This helper allows sharing the renderer.
-		.property(
-			PropertyDescriptor(
-				descriptor.identifier,
-				comment: nil,
-				accessModifier: nil,
-				isStatic: false,
-				type: descriptor.type,
-				kind: .stored(
-					isMutable: descriptor.isMutable,
-					defaultValue: descriptor.expression,
-					observers: []
-				)
-			)
-		)
-	}
+	/// A variable or constant declaration.
+	case declaration(DeclarationStatementDescriptor)
+
+	/// An assignment to a target expression.
+	case assignment(AssignmentStatementDescriptor)
+
+	/// An expression evaluated as a statement.
+	case expression(ExpressionDescriptor)
 
 	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 	case comment(InlineCommentDescriptor)

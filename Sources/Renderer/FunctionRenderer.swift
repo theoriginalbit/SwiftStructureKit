@@ -26,22 +26,22 @@ enum FunctionRenderer {
 	}
 
 	private static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
-		guard let docComment = signature.comment else { return }
+		guard let comment = signature.comment else { return }
+		CommentRenderer.renderDocComment(comment, to: &writer)
 
-		writer.writeLine(docComment.value, prefix: "/// ")
-
-		let paramsWithComments = signature.parameters.filter { $0.comment != nil }
-		guard !paramsWithComments.isEmpty else { return }
+		// As long as one parameter has a comment, the parameters comment list will be generated
+		guard signature.parameters.contains(where: { $0.comment != nil }) else { return }
 
 		writer.writeLine("///")
-		if paramsWithComments.count == 1, let param = paramsWithComments.first, let comment = param.comment {
+		if signature.parameters.count == 1, let param = signature.parameters.first, let comment = param.comment {
 			writer.writeLine("- Parameter \(SwiftIdentifier.sanitized(param.identifier)): \(comment.value)", prefix: "/// ")
 		} else {
 			writer.writeLine("/// - Parameters:")
-			for param in paramsWithComments {
-				if let comment = param.comment {
-					writer.writeLine("- \(SwiftIdentifier.sanitized(param.identifier)): \(comment.value)", prefix: "///   ")
-				}
+			for param in signature.parameters {
+				// The parameter will get rendered into the list, whether it has a comment or not, to guarantee
+				// valid DocC is generated.
+				let comment = param.comment?.value ?? ""
+				writer.writeLine("- \(SwiftIdentifier.sanitized(param.identifier)): \(comment)", prefix: "///   ")
 			}
 		}
 	}

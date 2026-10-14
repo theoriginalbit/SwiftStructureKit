@@ -6,6 +6,9 @@ public import OrderedCollections
 
 /// A descriptor representing a Swift typealias declaration.
 public struct TypealiasDescriptor: Sendable {
+	/// A comment applied the typealias.
+	public let comment: DocCommentDescriptor?
+
 	/// The access level modifier specified for the alias, if any.
 	public let accessModifier: AccessModifierDescriptor?
 
@@ -22,35 +25,41 @@ public struct TypealiasDescriptor: Sendable {
 		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		assignedType: TypeReference
+		assignedType: TypeReference,
+		comment: DocCommentDescriptor? = nil,
 	) {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
 		self.name = name
 		self.assignedType = TypeComposition(assignedType)
+		self.comment = comment
 	}
 
 	public init(
 		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		assignedTypes: OrderedSet<TypeReference>
+		assignedTypes: OrderedSet<TypeReference>,
+		comment: DocCommentDescriptor? = nil,
 	) {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
 		self.name = name
 		self.assignedType = TypeComposition(assignedTypes)
+		self.comment = comment
 	}
 
 	public init(
 		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		assignedType: TypeComposition
+		assignedType: TypeComposition,
+		comment: DocCommentDescriptor? = nil,
 	) {
 		self.accessModifier = accessModifier
 		self.attributes = attributes
 		self.name = name
 		self.assignedType = assignedType
+		self.comment = comment
 	}
 }

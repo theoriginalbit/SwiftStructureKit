@@ -36,7 +36,8 @@ enum EnumRenderer {
 
 	private static func render(_ descriptor: AnyEnumCaseDescriptor, to writer: inout CodeWriter) {
 		if let comment = descriptor.comment {
-			writer.writeLine(comment.value, prefix: "/// ")
+			writer.writeNewLine()
+			CommentRenderer.renderDocComment(comment, to: &writer)
 		}
 
 		writer.writeLine { line in

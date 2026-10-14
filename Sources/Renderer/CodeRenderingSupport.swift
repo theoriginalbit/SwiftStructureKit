@@ -39,9 +39,7 @@ enum CodeRenderingSupport {
 		conformances: OrderedSet<TypeReference>,
 		to writer: inout CodeWriter,
 	) {
-		if let comment {
-			writer.writeLine(comment.value, prefix: "/// ")
-		}
+		CommentRenderer.renderDocComment(comment, to: &writer)
 		AttributeRenderer.render(attributes, to: &writer)
 
 		writer.writeLine { line in
@@ -99,11 +97,23 @@ enum CodeRenderingSupport {
 	}
 
 	static func renderedExpression(_ expression: ExpressionDescriptor) -> String {
-		switch expression.kind {
+		switch expression {
 		case let .literal(literal):
 			return renderedLiteral(literal)
 		case let .raw(value):
 			return value
+		case let .functionCall(callee, arguments):
+			let renderedArguments = arguments.map { argument in
+				let expression = renderedExpression(argument.value)
+				return if let label = argument.label {
+					"\(SwiftIdentifier.sanitized(label)): \(expression)"
+				} else {
+					expression
+				}
+			}
+			return "\(renderedExpression(callee))(\(renderedArguments.joined(separator: ", ")))"
+		case let .identifier(identifier):
+			return renderedIdentifier(identifier)
 		}
 	}
 
@@ -127,6 +137,10 @@ enum CodeRenderingSupport {
 			String(value)
 		case .nil:
 			"nil"
+		case .array:
+			"[]"
+		case .dictionary:
+			"[:]"
 		}
 	}
 

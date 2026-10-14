@@ -66,21 +66,23 @@ import Testing
 			comment: "Uses a sanitized parameter.",
 			kind: .function("default", returns: .identifier("9-Result")),
 			parameters: [
-				.init(label: "try", "1value", type: .identifier("$Payload"), comment: "The payload."),
-				.init(label: "_", "raw-value", type: .string),
+				.init("1value", label: "try", type: .identifier("$Payload"), comment: "The payload."),
+				.init("raw-value", label: "_", type: .string),
 			]
 		)
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-
-		#expect(output == """
+		let expected = """
 			/// Uses a sanitized parameter.
 			///
-			/// - Parameter _1value: The payload.
+			/// - Parameters:
+			///   - _1value: The payload.
+			///   - raw_hyphen_value: 
 			func `default`(`try` _1value: $Payload, _ raw_hyphen_value: String) -> _9_hyphen_Result
 
-			""")
+			"""
+		#expect(output == expected)
 	}
 
 	@Test("Render static public function with parameters and return type")
@@ -89,7 +91,7 @@ import Testing
 			accessModifier: .public,
 			kind: .function("calculate", returns: .int, isStatic: true),
 			parameters: [
-				.init(label: "for", "key", type: .string),
+				.init("key", label: "for", type: .string),
 				.init("count", type: .int, defaultValue: .literal(.integer(10)))
 			]
 		)
@@ -107,7 +109,6 @@ import Testing
 			kind: .function("render"),
 			parameters: [
 				.init(
-					label: "content",
 					"content",
 					type: .closure(parameters: [], returns: .string),
 					attributes: [.resultBuilder("@ViewBuilder")],
@@ -203,7 +204,7 @@ import Testing
 		let failableInitSignature = FunctionSignatureDescriptor(
 			accessModifier: .fileprivate,
 			kind: .initializer(failable: true),
-			parameters: [.init(label: "_", "raw", type: .int)]
+			parameters: [.init("raw", label: "_", type: .int)]
 		)
 		let failableInitOutput = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(failableInitSignature, to: &writer)
@@ -215,7 +216,7 @@ import Testing
 	func renderSubscripts() {
 		let instanceSubscript = FunctionSignatureDescriptor(
 			kind: .subscript(returns: .string),
-			parameters: [.init(label: "for", "index", type: .int)]
+			parameters: [.init("index", label: "for", type: .int)]
 		)
 		let staticSubscript = FunctionSignatureDescriptor(
 			kind: .subscript(returns: .identifier("Element"), isStatic: true),
@@ -288,7 +289,7 @@ import Testing
 			comment: DocCommentDescriptor("Configures the item.\nAdditional details line."),
 			kind: .function("configure"),
 			parameters: [
-				.init(label: "with", "name", type: .string, comment: "The item name."),
+				.init("name", label: "with", type: .string, comment: "The item name."),
 				.init("count", type: .int, comment: "The total count.")
 			]
 		)

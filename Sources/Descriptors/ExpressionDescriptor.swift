@@ -3,35 +3,31 @@
 //
 
 /// A descriptor for Swift expressions.
-public struct ExpressionDescriptor: Sendable {
-	/// The kind of expression.
-	public enum Kind: Sendable {
-		/// A literal expression.
-		case literal(LiteralDescriptor)
+public indirect enum ExpressionDescriptor: Sendable {
+	/// A literal expression.
+	case literal(LiteralDescriptor)
 
-		/// A source expression rendered without modification.
-		case raw(String)
+	/// A source expression rendered without modification.
+	case raw(String)
+
+	/// A function call with an expression callee and optional arguments.
+	case functionCall(ExpressionDescriptor, ArgumentsList = ArgumentsList())
+
+	/// A type identifier.
+	case identifier(TypeIdentifier)
+
+	/// A function call with an expression callee and optional arguments.
+	static func functionCall(_ callee: TypeIdentifier, _ arguments: ArgumentsList = ArgumentsList()) -> Self {
+		.functionCall(.identifier(callee), arguments)
 	}
 
-	/// The underlying kind of expression.
-	public let kind: Kind
-
-	/// Creates an expression with a given kind.
-	public init(_ kind: Kind) {
-		self.kind = kind
-	}
-}
-
-// MARK: - Conveniences
-
-public extension ExpressionDescriptor {
-	/// Creates a literal expression.
-	static func literal(_ literal: LiteralDescriptor) -> Self {
-		Self(.literal(literal))
+	/// A function call with an expression callee and optional arguments.
+	static func functionCall(_ callee: TypeIdentifier, @ArrayBuilder<Argument> _ arguments: () -> [Argument]) -> Self {
+		.functionCall(.identifier(callee), ArgumentsList(arguments()))
 	}
 
-	/// Creates a source expression rendered without modification.
-	static func raw(_ value: String) -> Self {
-		Self(.raw(value))
+	/// A type identifier.
+	static func identifier(_ value: String) -> Self {
+		.identifier(TypeIdentifier(value))
 	}
 }

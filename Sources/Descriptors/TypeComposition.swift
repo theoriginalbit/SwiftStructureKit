@@ -5,7 +5,7 @@
 public import OrderedCollections
 
 /// A qualified Swift type name, represented as independently sanitized components.
-public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral {
+public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral, ExpressibleByArrayLiteral {
 	/// The components making up the qualified type name.
 	public let components: [String]
 
@@ -13,12 +13,16 @@ public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral {
 		self.components = identifier.split(separator: ".", omittingEmptySubsequences: false).map(String.init)
 	}
 
-	public init(components: [String]) {
+	public init(_ components: [String]) {
 		self.components = components
 	}
 
 	public init(stringLiteral value: String) {
 		self.init(value)
+	}
+
+	public init(arrayLiteral elements: String...) {
+		self.components = elements
 	}
 }
 

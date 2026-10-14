@@ -5,7 +5,7 @@
 public import OrderedCollections
 
 /// A reference to a type representation in Swift.
-public indirect enum TypeReference: Hashable, Sendable {
+public indirect enum TypeReference: Hashable, Sendable, ExpressibleByStringLiteral {
 	/// Creates a type reference from a qualified identifier.
 	case identifier(TypeIdentifier)
 
@@ -46,6 +46,9 @@ public indirect enum TypeReference: Hashable, Sendable {
 		effects: EffectSpecifiers<ThrowingSpecifier> = .none
 	)
 
+	public init(stringLiteral value: StringLiteralType) {
+		self = .identifier(value)
+	}
 }
 
 /// A component of a tuple type.
@@ -84,6 +87,11 @@ public extension TypeReference {
 	/// Creates a generic type reference from a qualified identifier and type arguments.
 	static func generic(_ identifier: String, arguments: [Self]) -> Self {
 		.generic(TypeIdentifier(identifier), arguments: arguments)
+	}
+
+	/// Creates a generic type reference from a qualified identifier and type arguments.
+	static func generic(_ identifier: String, arguments: [String]) -> Self {
+		.generic(TypeIdentifier(identifier), arguments: arguments.map(Self.identifier(_:)))
 	}
 }
 

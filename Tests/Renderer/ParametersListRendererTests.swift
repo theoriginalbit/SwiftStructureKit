@@ -26,7 +26,7 @@ import Testing
 
 	@Test("Render single parameter with explicit custom label")
 	func renderSingleParameterWithCustomLabel() {
-		let list: ParametersList = [.init(label: "for", "key", type: .string)]
+		let list: ParametersList = [.init("key", label: "for", type: .string)]
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
@@ -35,7 +35,7 @@ import Testing
 
 	@Test("Render single parameter with wildcard label")
 	func renderSingleParameterWithWildcardLabel() {
-		let list: ParametersList = [.init(label: "_", "raw", type: .int)]
+		let list: ParametersList = [.init("raw", label: "_", type: .int)]
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
@@ -67,9 +67,9 @@ import Testing
 	@Test("Render multiple parameters with mixed labels, default values, and types")
 	func renderMultipleParametersWithMixedOptions() {
 		let list: ParametersList = [
-			.init(label: "for", "key", type: .string),
+			.init("key", label: "for", type: .string),
 			.init("count", type: .int, defaultValue: .literal(.integer(10))),
-			.init(label: "_", "verbose", type: .bool, defaultValue: .literal(.boolean(false)))
+			.init("verbose", label: "_", type: .bool, defaultValue: .literal(.boolean(false)))
 		]
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)

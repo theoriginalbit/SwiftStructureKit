@@ -6,9 +6,6 @@ public import OrderedCollections
 
 /// A function signature.
 public struct FunctionSignatureDescriptor: Sendable {
-	/// A function parameter.
-	public typealias Parameter = ParametersList.Parameter
-
 	/// A function kind: `init`, `func`, or `subscript`.
 	public enum Kind: Sendable {
 		/// An initializer.

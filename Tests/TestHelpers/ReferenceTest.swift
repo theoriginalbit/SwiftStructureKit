@@ -4,6 +4,7 @@
 
 import Foundation
 import Testing
+@testable import enum SwiftStructureKit.ArrayBuilder
 
 protocol ConvertibleToData {
 	func convertToData() -> Data
@@ -107,11 +108,19 @@ enum ReferenceTest {
 			expected: expectedURL,
 			actual: actualURL,
 		)
+		let whitespaceDiff = try _gitDiff(
+			expected: expectedURL,
+			actual: actualURL,
+			ignoringWhitespace: true,
+		)
+		let hint = whitespaceDiff.hasDifferences
+			? "Generated output does not match reference."
+			: "Differences disappear when whitespace is ignored; check whitespace, including inside string literals."
 
 		Issue.record(
 			"""
-			Generated output does not match reference.
-			\(diff)
+			\(hint)
+			\(diff.output)
 			""",
 			sourceLocation: sourceLocation,
 		)
@@ -120,21 +129,18 @@ enum ReferenceTest {
 	private static func _gitDiff(
 		expected: URL,
 		actual: URL,
-	) throws -> String {
+		ignoringWhitespace: Bool = false,
+	) throws -> (output: String, hasDifferences: Bool) {
 		let process = Process()
 		let output = Pipe()
 		let error = Pipe()
 
 		process.executableURL = URL(fileURLWithPath: "/usr/bin/git")
-		process.arguments = [
-			"diff",
-			"--no-index",
-			"--no-color",     // in case color.ui = always is set globally
-			"--unified=0",    // changed lines only, no surrounding context
-			"--",
-			expected.path,
-			actual.path,
-		]
+		process.arguments = _gitArguments(
+			ignoresWhitespace: ignoringWhitespace,
+			expected: expected,
+			actual: actual
+		)
 		process.standardOutput = output
 		process.standardError = error
 
@@ -156,8 +162,25 @@ enum ReferenceTest {
 		}
 
 		let diff = String(decoding: data, as: UTF8.self)
-		print(diff)
-		return _format(diff)
+		return (
+			output: _format(diff),
+			hasDifferences: process.terminationStatus == 1,
+		)
+	}
+
+	@ArrayBuilder<String>
+	private static func _gitArguments(ignoresWhitespace: Bool, expected: URL, actual: URL) -> [String] {
+		"diff"
+		"--no-index"
+		"--no-color" // in case color.ui = always is set globally
+		"--diff-algorithm=histogram"
+		"--unified=0" // changed lines only, no surrounding context
+		if ignoresWhitespace {
+			"--ignore-all-space"
+		}
+		"--"
+		expected.path
+		actual.path
 	}
 
 	private static func _format(_ diff: String) -> String {

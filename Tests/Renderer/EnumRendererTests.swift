@@ -72,8 +72,8 @@ import Testing
 			"CompassDirection",
 			comment: "A compass direction.",
 		) {
-			PlainEnumCaseDescriptor("north", comment: "Heading north.")
-			PlainEnumCaseDescriptor("south")
+			PlainEnumCaseDescriptor("north")
+			PlainEnumCaseDescriptor("south", comment: "Heading south.")
 			PlainEnumCaseDescriptor("east")
 			PlainEnumCaseDescriptor("west")
 		}
@@ -83,8 +83,9 @@ import Testing
 		let expected = """
 			/// A compass direction.
 			enum CompassDirection {
-			    /// Heading north.
 			    case north
+			
+			    /// Heading south.
 			    case south
 			    case east
 			    case west

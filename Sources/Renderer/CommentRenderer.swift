@@ -20,4 +20,13 @@ enum CommentRenderer {
 	static func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine(descriptor.value, prefix: "// ")
 	}
+
+	static func renderDocComment(_ descriptor: DocCommentDescriptor?, to writer: inout CodeWriter) {
+		guard let descriptor else { return }
+		if descriptor.value.isEmpty {
+			writer.writeLine("///")
+		} else {
+			writer.writeLine(descriptor.value, prefix: "/// ")
+		}
+	}
 }

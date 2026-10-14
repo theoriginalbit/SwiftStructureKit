@@ -181,12 +181,11 @@ import Testing
 					StatementDescriptor.return(.literal(.integer(42)))
 				},
 				setter: PropertyAccessorDescriptor.Setter(parameterName: "newValue") {
-					StatementDescriptor.assignment(.init(
-						isMutable: true,
-						identifier: "storedValue",
+					StatementDescriptor.var(
+						"storedValue",
 						type: .int,
 						expression: .literal(.integer(42)),
-					))
+					)
 				},
 			),
 		)
@@ -225,9 +224,7 @@ import Testing
 			/// The rendered body.
 			@ViewBuilder
 			var body: Content {
-			    get {
-			        return "content"
-			    }
+			    return "content"
 			}
 
 			""")
