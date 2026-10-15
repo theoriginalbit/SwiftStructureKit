@@ -1,8 +1,11 @@
-// swift-tools-version: 6.2
+// swift-tools-version: 6.0
 import PackageDescription
 
 let package = Package(
 	name: "SwiftStructureKit",
+	platforms: [
+		.macOS(.v12),
+	],
 	products: [
 		.library(
 			name: "SwiftStructureKit",
