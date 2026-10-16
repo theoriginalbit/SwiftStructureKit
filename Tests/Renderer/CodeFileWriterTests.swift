@@ -13,10 +13,10 @@ import Testing
 			line.token("public")
 			line.token("func")
 			line.token("hello")
-			line.punctuation("(")
-			line.punctuation(")")
+			line.punctuation(.leftParen)
+			line.punctuation(.rightParen)
 			line.space()
-			line.punctuation("{")
+			line.punctuation(.leftBrace)
 		}
 
 		writer.indented(to: 4) { writer in
@@ -30,10 +30,10 @@ import Testing
 			writer.writeLine { line in
 				line.token("func")
 				line.token("hello")
-				line.punctuation("(")
-				line.punctuation(")")
+				line.punctuation(.leftParen)
+				line.punctuation(.rightParen)
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 
 			writer.indented { writer in

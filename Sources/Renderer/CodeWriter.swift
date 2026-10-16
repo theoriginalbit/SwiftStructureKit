@@ -124,8 +124,9 @@ struct LineWriter: ~Copyable {
 		shouldSeparateNextToken = separating
 	}
 
-	mutating func punctuation(_ value: Unicode.Scalar) {
-		buffer.append(UInt8(ascii: value))
+	/// Writes a punctuation mark
+	mutating func punctuation(_ punctuation: Punctuation) {
+		buffer.append(contentsOf: punctuation.text.utf8)
 		shouldSeparateNextToken = false
 	}
 
@@ -153,4 +154,52 @@ struct TokenWriter: ~Copyable {
 	consuming func finish() -> String {
 		buffer
 	}
+}
+
+/// A punctuation mark
+struct Punctuation {
+	let text: String
+
+	private init(_ value: StringLiteralType) {
+		text = value
+	}
+
+	/// The `(` punctuation mark.
+	static let leftParen = Self("(")
+
+	/// The `)` punctuation mark.
+	static let rightParen = Self(")")
+
+	/// The `<` punctuation mark.
+	static let leftAngle = Self("<")
+
+	/// The `>` punctuation mark.
+	static let rightAngle = Self(">")
+
+	/// The `{` punctuation mark.
+	static let leftBrace = Self("{")
+
+	/// The `}` punctuation mark.
+	static let rightBrace = Self("}")
+
+	/// The `:` punctuation mark.
+	static let colon = Self(":")
+
+	/// The `,` punctuation mark.
+	static let comma = Self(",")
+
+	/// The `.` punctuation mark.
+	static let period = Self(".")
+
+	/// The `=` punctuation mark.
+	static let equal = Self("=")
+
+	/// The `->` punctuation mark.
+	static let arrow = Self("->")
+
+	/// The `?` punctuation mark.
+	static let questionMark = Self("?")
+
+	/// The `#` punctuation mark.
+	static let pound = Self("#")
 }

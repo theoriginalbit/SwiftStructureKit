@@ -14,7 +14,9 @@ enum StatementRenderer {
 		case let .assignment(descriptor):
 			writer.writeLine { line in
 				line.token(CodeRenderingSupport.renderedIdentifier(descriptor.target))
-				line.token("=")
+				line.space()
+				line.punctuation(.equal)
+				line.space()
 				line.token(CodeRenderingSupport.renderedExpression(descriptor.expression))
 			}
 
@@ -64,7 +66,7 @@ enum StatementRenderer {
 				line.token(CodeRenderingSupport.renderedExpression(descriptor.condition))
 				line.token("else")
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 			renderContents(descriptor.elseBody, to: &writer)
 			writer.writeLine("}")
@@ -78,25 +80,25 @@ enum StatementRenderer {
 				if index == 0 {
 					line.token("if")
 				} else {
-					line.punctuation("}")
+					line.punctuation(.rightBrace)
 					line.space()
 					line.token("else")
 					line.token("if")
 				}
 				line.token(CodeRenderingSupport.renderedExpression(branch.condition))
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 			renderContents(branch.body, to: &writer)
 		}
 
 		if let elseBody {
 			writer.writeLine { line in
-				line.punctuation("}")
+				line.punctuation(.rightBrace)
 				line.space()
 				line.token("else")
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 			renderContents(elseBody, to: &writer)
 		}

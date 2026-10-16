@@ -12,7 +12,9 @@ enum TypealiasRenderer {
 			}
 			line.token("typealias")
 			line.token(SwiftIdentifier.sanitized(descriptor.name))
-			line.token("=")
+			line.space()
+			line.punctuation(.equal)
+			line.space()
 			line.token(CodeRenderingSupport.renderedComposition(descriptor.assignedType))
 		}
 	}

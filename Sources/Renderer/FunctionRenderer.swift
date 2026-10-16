@@ -9,7 +9,7 @@ enum FunctionRenderer {
 		writer.writeLine { line in
 			renderSignature(function.signature, to: &line)
 			line.space()
-			line.punctuation("{")
+			line.punctuation(.leftBrace)
 		}
 		writer.indented { writer in
 			StatementRenderer.render(function.body.statements, to: &writer)
@@ -59,7 +59,7 @@ enum FunctionRenderer {
 		case let .initializer(failable):
 			line.token("init")
 			if failable {
-				line.punctuation("?")
+				line.punctuation(.questionMark)
 			}
 		case let .function(name, _, isStatic):
 			if isStatic {
@@ -92,7 +92,8 @@ enum FunctionRenderer {
 
 		if let returns {
 			line.space()
-			line.token("->")
+			line.punctuation(.arrow)
+			line.space()
 			line.token(CodeRenderingSupport.renderedType(returns))
 		}
 

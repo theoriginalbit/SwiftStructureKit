@@ -13,9 +13,9 @@ enum CodeRenderingSupport {
 		to line: inout LineWriter,
 	) {
 		guard !genericParameters.isEmpty else { return }
-		line.punctuation("<")
+		line.punctuation(.leftAngle)
 		line.token(genericParameters.map(renderedGenericParameter(_:)).joined(separator: ", "))
-		line.punctuation(">")
+		line.punctuation(.rightAngle)
 	}
 
 	static func renderGenericRequirements(
@@ -52,14 +52,14 @@ enum CodeRenderingSupport {
 			renderGenericSignature(genericParameters, to: &line)
 
 			if !conformances.isEmpty {
-				line.punctuation(":")
+				line.punctuation(.colon)
 				line.space()
 				line.token(renderedTypesList(conformances))
 			}
 
 			renderGenericRequirements(genericRequirements, to: &line)
 			line.space()
-			line.punctuation("{")
+			line.punctuation(.leftBrace)
 		}
 	}
 

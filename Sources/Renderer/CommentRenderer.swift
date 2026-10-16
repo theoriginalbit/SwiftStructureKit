@@ -7,9 +7,7 @@ enum CommentRenderer {
 		writer.writeLine { line in
 			line.token("// MARK:")
 			if descriptor.sectionBreak {
-				line.space()
-				line.punctuation("-")
-				line.space()
+				line.token("-")
 			}
 			if let value = descriptor.value {
 				line.token(value)

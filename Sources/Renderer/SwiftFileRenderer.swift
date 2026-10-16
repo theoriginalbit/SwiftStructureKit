@@ -52,7 +52,7 @@ enum SwiftFileRenderer {
 
 			line.token(descriptor.moduleName)
 			if let submodule = descriptor.submodule {
-				line.punctuation(".")
+				line.punctuation(.period)
 				line.token(submodule)
 			}
 		}

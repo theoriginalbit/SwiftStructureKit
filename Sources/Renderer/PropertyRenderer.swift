@@ -13,18 +13,18 @@ enum PropertyRenderer {
 				renderDeclarationPrefix(property, to: &line)
 				line.token(isMutable ? "var" : "let")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
-				line.punctuation(":")
+				line.punctuation(.colon)
 				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				if let defaultValue {
 					line.space()
-					line.punctuation("=")
+					line.punctuation(.equal)
 					line.space()
 					line.token(CodeRenderingSupport.renderedExpression(defaultValue))
 				}
 				if !observers.isEmpty {
 					line.space()
-					line.punctuation("{")
+					line.punctuation(.leftBrace)
 				}
 			}
 			if !observers.isEmpty {
@@ -37,11 +37,11 @@ enum PropertyRenderer {
 				renderDeclarationPrefix(property, to: &line)
 				line.token("var")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
-				line.punctuation(":")
+				line.punctuation(.colon)
 				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 			render(getter, hasSetter: setter != nil, to: &writer)
 			if let setter {
@@ -68,7 +68,7 @@ enum PropertyRenderer {
 					line.token("get")
 					render(getter.effects, to: &line)
 					line.space()
-					line.punctuation("{")
+					line.punctuation(.leftBrace)
 				}
 
 				writer.indented { writer in
@@ -87,7 +87,7 @@ enum PropertyRenderer {
 			writer.writeLine { line in
 				renderAccessorName("set", parameterName: setter.parameterName, to: &line)
 				line.space()
-				line.punctuation("{")
+				line.punctuation(.leftBrace)
 			}
 			writer.indented { writer in
 				StatementRenderer.render(setter.body.statements, to: &writer)
@@ -107,7 +107,7 @@ enum PropertyRenderer {
 						renderAccessorName("didSet", parameterName: parameterName, to: &line)
 					}
 					line.space()
-					line.punctuation("{")
+					line.punctuation(.leftBrace)
 				}
 				writer.indented { writer in
 					StatementRenderer.render(observer.body.statements, to: &writer)
@@ -124,9 +124,9 @@ enum PropertyRenderer {
 	) {
 		line.token(name, separateFromNextToken: parameterName == nil)
 		if let parameterName {
-			line.punctuation("(")
+			line.punctuation(.leftParen)
 			line.token(SwiftIdentifier.sanitized(parameterName))
-			line.punctuation(")")
+			line.punctuation(.rightParen)
 		}
 	}
 

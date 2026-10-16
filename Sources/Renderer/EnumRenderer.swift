@@ -45,33 +45,33 @@ enum EnumRenderer {
 			line.token(SwiftIdentifier.sanitized(descriptor.name))
 
 			if !descriptor.associatedValues.isEmpty {
-				line.punctuation("(")
+				line.punctuation(.leftParen)
 				for (index, associatedValue) in descriptor.associatedValues.enumerated() {
 					if let label = associatedValue.label {
 						line.token(SwiftIdentifier.sanitized(label))
-						line.punctuation(":")
+						line.punctuation(.colon)
 						line.space()
 					}
 					line.token(CodeRenderingSupport.renderedType(associatedValue.type))
 
 					if let defaultValue = associatedValue.defaultValue {
 						line.space()
-						line.punctuation("=")
+						line.punctuation(.equal)
 						line.space()
 						line.token(CodeRenderingSupport.renderedExpression(defaultValue))
 					}
 
 					if index < descriptor.associatedValues.count - 1 {
-						line.punctuation(",")
+						line.punctuation(.comma)
 						line.space()
 					}
 				}
-				line.punctuation(")")
+				line.punctuation(.rightParen)
 			}
 
 			if let rawValue = descriptor.rawValue {
 				line.space()
-				line.punctuation("=")
+				line.punctuation(.equal)
 				line.space()
 				line.token(CodeRenderingSupport.renderedLiteral(rawValue))
 			}

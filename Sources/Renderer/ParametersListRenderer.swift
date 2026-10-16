@@ -10,15 +10,15 @@ enum ParametersListRenderer {
 	}
 
 	static func render(_ parametersList: ParametersList, into line: inout LineWriter) {
-		line.punctuation("(")
+		line.punctuation(.leftParen)
 		for (index, parameter) in parametersList.parameters.enumerated() {
 			render(parameter, into: &line)
 			if index < parametersList.parameters.endIndex - 1 {
-				line.punctuation(",")
+				line.punctuation(.comma)
 				line.space()
 			}
 		}
-		line.punctuation(")")
+		line.punctuation(.rightParen)
 	}
 
 	private static func render(_ parameter: ParametersList.Parameter, into line: inout LineWriter) {
@@ -29,7 +29,7 @@ enum ParametersListRenderer {
 			line.token(SwiftIdentifier.sanitized(label))
 		}
 		line.token(SwiftIdentifier.sanitized(parameter.identifier))
-		line.punctuation(":")
+		line.punctuation(.colon)
 		line.space()
 		if parameter.isInout {
 			line.token("inout")
@@ -37,7 +37,7 @@ enum ParametersListRenderer {
 		line.token(CodeRenderingSupport.renderedType(parameter.type))
 		if let defaultValue = parameter.defaultValue {
 			line.space()
-			line.punctuation("=")
+			line.punctuation(.equal)
 			line.space()
 			line.token(CodeRenderingSupport.renderedExpression(defaultValue))
 		}

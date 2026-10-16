@@ -52,12 +52,14 @@ enum ProtocolRenderer {
 			case .none: break
 
 			case let .conformsTo(conformingType):
-				line.punctuation(":")
+				line.punctuation(.colon)
 				line.space()
 				line.token(CodeRenderingSupport.renderedComposition(conformingType))
 
 			case let .defaultType(assignedType):
-				line.token("=")
+				line.space()
+				line.punctuation(.equal)
+				line.space()
 				line.token(CodeRenderingSupport.renderedType(assignedType))
 			}
 		}
@@ -70,17 +72,20 @@ enum ProtocolRenderer {
 		writer.writeLine { line in
 			line.token("var")
 			line.token(SwiftIdentifier.sanitized(property.identifier))
-			line.punctuation(":")
+			line.punctuation(.colon)
 			line.space()
 			line.token(CodeRenderingSupport.renderedType(property.type))
-			line.token("{")
+			line.space()
+			line.punctuation(.leftBrace)
+			line.space()
 			switch property.accessorSpecifier {
 			case .get: line.token("get")
 			case .getSet: line.token("get set")
 			case .borrow: line.token("borrow")
 			case .borrowMutate: line.token("borrow mutate")
 			}
-			line.token("}")
+			line.space()
+			line.punctuation(.rightBrace)
 		}
 	}
 }
