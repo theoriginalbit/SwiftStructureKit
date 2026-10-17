@@ -33,8 +33,12 @@ public enum StatementDescriptor: Sendable {
 
 	/// A `guard` statement and its continuation.
 	case `guard`(GuardStatementDescriptor)
+}
 
-	/// A return statement with an optional return expression.
+public extension StatementDescriptor {
+	/// Creates a return statement with an optional return expression.
+	///
+	/// - Parameter expression: The optional expression to return.
 	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
 		.return(ReturnStatementDescriptor(expression))
 	}
