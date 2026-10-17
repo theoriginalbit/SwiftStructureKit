@@ -31,4 +31,26 @@ import Testing
 		#expect(descriptor.accessModifier == nil)
 		#expect(descriptor.assignedType.types == assignedTypes)
 	}
+
+	@Test("Create typealias descriptor with generic type")
+	func createTypealiasWithGenericParameters() {
+		let genericParameters: [GenericParameterDescriptor] = [
+			GenericParameterDescriptor("T", constraint: TypeComposition("Equatable"))
+		]
+		let assignedTypes: [TypeReference] = [
+			TypeReference.generic("ArrayBuilder", arguments: [
+				.identifier("T"),
+			]),
+		]
+		let descriptor = TypealiasDescriptor(
+			"Value",
+			genericParameters: genericParameters,
+			assignedTypes: assignedTypes,
+		)
+
+		#expect(descriptor.name == "Value")
+		#expect(descriptor.accessModifier == nil)
+		#expect(descriptor.genericParameters == genericParameters)
+		#expect(descriptor.assignedType.types == assignedTypes)
+	}
 }

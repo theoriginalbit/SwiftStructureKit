@@ -241,31 +241,73 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 	/// The alias name.
 	public var name: String { descriptor.name }
 
+	/// The generic parameters declared by the alias.
+	public var genericParameters: [GenericParameterDescriptor] { descriptor.genericParameters }
+
 	/// The type this alias refers to.
 	public var assignedType: TypeComposition { descriptor.assignedType }
 
+	/// Creates a protocol typealias referring to a single type.
+	///
+	/// - Parameters:
+	///   - name: The alias name.
+	///   - attributes: Attributes applied to the alias.
+	///   - genericParameters: The generic parameters declared by the alias.
+	///   - assignedType: The type the alias refers to.
 	public init(
 		_ name: String,
 		attributes: [AttributeDescriptor] = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		assignedType: TypeReference,
 	) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
+		self.descriptor = TypealiasDescriptor(
+			name,
+			attributes: attributes,
+			genericParameters: genericParameters,
+			assignedType: assignedType
+		)
 	}
 
+	/// Creates a protocol typealias referring to a composition of types (`A & B`).
+	///
+	/// - Parameters:
+	///   - name: The alias name.
+	///   - attributes: Attributes applied to the alias.
+	///   - genericParameters: The generic parameters declared by the alias.
+	///   - assignedTypes: The types composed by the alias.
 	public init(
 		_ name: String,
 		attributes: [AttributeDescriptor] = [],
-		assignedTypes: [TypeReference],
+		genericParameters: [GenericParameterDescriptor] = [],
+		assignedTypes: TypeReference...,
 	) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedTypes: assignedTypes)
+		self.descriptor = TypealiasDescriptor(
+			name,
+			attributes: attributes,
+			genericParameters: genericParameters,
+			assignedTypes: assignedTypes
+		)
 	}
 
+	/// Creates a protocol typealias referring to a type composition.
+	///
+	/// - Parameters:
+	///   - name: The alias name.
+	///   - attributes: Attributes applied to the alias.
+	///   - genericParameters: The generic parameters declared by the alias.
+	///   - assignedType: The type composition the alias refers to.
 	public init(
 		_ name: String,
 		attributes: [AttributeDescriptor] = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		assignedType: TypeComposition,
 	) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
+		self.descriptor = TypealiasDescriptor(
+			name,
+			attributes: attributes,
+			genericParameters: genericParameters,
+			assignedType: assignedType
+		)
 	}
 }
 

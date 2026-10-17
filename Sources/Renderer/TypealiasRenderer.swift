@@ -12,6 +12,7 @@ enum TypealiasRenderer {
 			}
 			line.token("typealias")
 			line.token(SwiftIdentifier.sanitized(descriptor.name))
+			CodeRenderingSupport.renderGenericSignature(descriptor.genericParameters, to: &line)
 			line.punctuation(.equal)
 			line.token(CodeRenderingSupport.renderedComposition(descriptor.assignedType))
 		}

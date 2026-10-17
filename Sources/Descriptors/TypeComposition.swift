@@ -51,6 +51,10 @@ public struct GenericParameterDescriptor: Hashable, Sendable, ExpressibleByStrin
 		self.init(TypeIdentifier(identifier), constraint: constraint)
 	}
 
+	public init(_ identifier: String, constraint: TypeReference...) {
+		self.init(TypeIdentifier(identifier), constraint: TypeComposition(constraint))
+	}
+
 	public init(stringLiteral value: String) {
 		self.init(value)
 	}
