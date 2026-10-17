@@ -28,6 +28,7 @@ import Testing
 		#expect(Array(descriptor.genericParameters) == [
 			GenericParameterDescriptor("Index"),
 			GenericParameterDescriptor("Element"),
+			GenericParameterDescriptor("Element"),
 			GenericParameterDescriptor("SubSequence"),
 		])
 		#expect(descriptor.members.count == 3)

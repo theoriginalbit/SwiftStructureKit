@@ -29,6 +29,10 @@ enum AttributeRenderer {
 			}
 		case .mainActor:
 			"@MainActor"
+		case .sendable:
+			"@Sendable"
+		case .escaping:
+			"@escaping"
 		case .frozen:
 			"@frozen"
 		case .inlinable:

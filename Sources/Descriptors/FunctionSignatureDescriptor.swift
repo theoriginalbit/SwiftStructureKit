@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A function signature.
 public struct FunctionSignatureDescriptor: Sendable {
 	/// A function kind: `init`, `func`, or `subscript`.
@@ -34,7 +32,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 	public let parameters: ParametersList
 
 	/// The generic parameters declared by the function.
-	public let genericParameters: OrderedSet<GenericParameterDescriptor>
+	public let genericParameters: [GenericParameterDescriptor]
 
 	/// The generic `where` requirements declared by the function.
 	public let genericRequirements: [TypeConstraintDescriptor]
@@ -57,7 +55,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 		attributes: [AttributeDescriptor] = [],
 		kind: Kind,
 		parameters: ParametersList = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none
 	) {

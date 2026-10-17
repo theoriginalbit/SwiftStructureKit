@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A descriptor representing a Swift typealias declaration.
 public struct TypealiasDescriptor: Sendable {
 	/// A comment applied the typealias.
@@ -39,7 +37,7 @@ public struct TypealiasDescriptor: Sendable {
 		_ name: String,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		assignedTypes: OrderedSet<TypeReference>,
+		assignedTypes: [TypeReference],
 		comment: DocCommentDescriptor? = nil,
 	) {
 		self.accessModifier = accessModifier

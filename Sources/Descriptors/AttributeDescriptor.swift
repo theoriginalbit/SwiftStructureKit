@@ -19,6 +19,12 @@ public enum AttributeDescriptor: Hashable, Sendable {
 	/// The `@MainActor` attribute.
 	case mainActor
 
+	/// The `@Sendable` attribute.
+	case sendable
+
+	/// The `@escaping` attribute.
+	case escaping
+
 	/// The `@frozen` attribute.
 	case frozen
 

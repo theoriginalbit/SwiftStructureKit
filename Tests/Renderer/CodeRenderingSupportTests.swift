@@ -4,7 +4,6 @@
 
 import Testing
 @testable import SwiftStructureKit
-import OrderedCollections
 
 @Suite(.tags(.renderer)) struct CodeRenderingSupportTests {
 	@Test("Sanitize Swift identifiers defensively", arguments: [
@@ -76,9 +75,9 @@ import OrderedCollections
 		([.init("Sendable")], .throws, "@Sendable (Int) throws -> Void"),
 		([.init("Sendable")], .throws(.identifier("ReadError")), "@Sendable (Int) throws(ReadError) -> Void"),
 		([.init("Sendable")], EffectSpecifiers<ThrowingSpecifier>(isAsync: true, throwingSpecifier: .throws), "@Sendable (Int) async throws -> Void"),
-	] as [(OrderedSet<AttributeDescriptor>, EffectSpecifiers<ThrowingSpecifier>, String)])
+	] as [([AttributeDescriptor], EffectSpecifiers<ThrowingSpecifier>, String)])
 	func renderClosure(
-		attributes: OrderedSet<AttributeDescriptor>,
+		attributes: [AttributeDescriptor],
 		effects: EffectSpecifiers<ThrowingSpecifier>,
 		expected: String
 	) {

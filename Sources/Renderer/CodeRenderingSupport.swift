@@ -3,18 +3,29 @@
 //
 
 import Foundation
-import OrderedCollections
 
 enum CodeRenderingSupport {
 	// MARK: Common rendering
 
 	static func renderGenericSignature(
-		_ genericParameters: OrderedSet<GenericParameterDescriptor>,
+		_ genericParameters: [GenericParameterDescriptor],
 		to line: inout LineWriter,
 	) {
 		guard !genericParameters.isEmpty else { return }
 		line.punctuation(.leftAngle)
-		line.token(genericParameters.map(renderedGenericParameter(_:)).joined(separator: ", "))
+
+		// track identifiers that have been rendered to de-duplicate
+		var seen: Set<TypeIdentifier> = []
+		for (index, genericParameter) in genericParameters.enumerated() {
+			if seen.contains(genericParameter.identifier) { continue }
+			seen.insert(genericParameter.identifier)
+			if index > 0 {
+				// not the first one, need to render another one, add the comma
+				// since we don't know if the next token is a duplicate or not
+				line.punctuation(.comma)
+			}
+			line.token(renderedGenericParameter(genericParameter))
+		}
 		line.punctuation(.rightAngle)
 	}
 
@@ -33,9 +44,9 @@ enum CodeRenderingSupport {
 		attributes: [AttributeDescriptor],
 		typeKeyword: String,
 		identifier: String,
-		genericParameters: OrderedSet<GenericParameterDescriptor>,
+		genericParameters: [GenericParameterDescriptor],
 		genericRequirements: [TypeConstraintDescriptor] = [],
-		conformances: OrderedSet<TypeReference>,
+		conformances: [TypeReference],
 		to writer: inout CodeWriter,
 		body: (inout CodeWriter) -> Void,
 	) {
@@ -53,6 +64,7 @@ enum CodeRenderingSupport {
 
 			if !conformances.isEmpty {
 				line.punctuation(.colon)
+				let conformances = conformances.removingDuplicates()
 				line.token(renderedTypesList(conformances))
 			}
 
@@ -175,17 +187,27 @@ enum CodeRenderingSupport {
 		parameters: [TypeReference],
 		returns: TypeReference,
 		isEscaping: Bool,
-		attributes: OrderedSet<AttributeDescriptor>,
+		attributes: [AttributeDescriptor],
 		effects: EffectSpecifiers<ThrowingSpecifier>,
 	) -> String {
 		var attributes = attributes
 		if isEscaping {
-			attributes.append(.rawValue("escaping"))
+			attributes.append(.escaping)
 		}
 
 		var writer = TokenWriter()
+
+		// We can only de-duplicate once the attribute has been rendered since
+		// AttributeDescriptor offers .rawValue which could dupe a convenience
+		// type. Performing de-dupe here also handles the scenario where a
+		// consumer could have supplied .rawValue("A") and .rawValue("@A")
+		// which would also have not been considered a duplicate.
+		var seen: Set<String> = []
 		for attribute in attributes {
-			writer.write(AttributeRenderer.rendered(attribute))
+			let rendered = AttributeRenderer.rendered(attribute)
+			if seen.contains(rendered) { continue }
+			seen.insert(rendered)
+			writer.write(rendered)
 		}
 
 		writer.write("(", acceptsSpaceAfter: false) // not standard ( punctuation, this accepts space before
@@ -252,6 +274,7 @@ enum CodeRenderingSupport {
 	static func renderedComposition(_ types: some Collection<TypeReference>) -> String {
 		types.lazy
 			.map(renderedType(_:))
+			.removingDuplicates()
 			.joined(separator: " & ")
 	}
 

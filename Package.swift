@@ -12,15 +12,9 @@ let package = Package(
 			targets: ["SwiftStructureKit"]
 		),
 	],
-	dependencies: [
-		.package(url: "https://github.com/apple/swift-collections.git", .upToNextMajor(from: "1.7.3")),
-	],
 	targets: [
 		.target(
-			name: "SwiftStructureKit",
-			dependencies: [
-				.product(name: "OrderedCollections", package: "swift-collections"),
-			],
+			name: "SwiftStructureKit"
 		),
 		.testTarget(
 			name: "SwiftStructureKitTests",
