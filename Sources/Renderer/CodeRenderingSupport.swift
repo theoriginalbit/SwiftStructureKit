@@ -202,11 +202,11 @@ enum CodeRenderingSupport {
 		// type. Performing de-dupe here also handles the scenario where a
 		// consumer could have supplied .rawValue("A") and .rawValue("@A")
 		// which would also have not been considered a duplicate.
-		var seen: Set<String> = []
+		var seenAttributes: Set<String> = []
 		for attribute in attributes {
 			let rendered = AttributeRenderer.rendered(attribute)
-			if seen.contains(rendered) { continue }
-			seen.insert(rendered)
+			if seenAttributes.contains(rendered) { continue }
+			seenAttributes.insert(rendered)
 			writer.write(rendered)
 		}
 

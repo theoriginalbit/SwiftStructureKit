@@ -138,7 +138,7 @@ import Testing
 			}
 
 			"""
-		try ReferenceTest.assert(output, matches: expected)
+		ReferenceTest.assert(output, matches: expected)
 	}
 
 	@Test("Render result builders on protocol properties and function parameters")

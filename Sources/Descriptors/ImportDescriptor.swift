@@ -24,7 +24,7 @@ public struct ImportDescriptor: Sendable {
 	public let accessModifier: AccessModifierDescriptor?
 
 	/// Attributes attached to the import, such as `@_exported` or `@testable`.
-	public let attributes: [String]
+	public let attributes: [AttributeDescriptor]
 
 	/// The imported declaration kind, if this is a kind-qualified import.
 	public let kind: Kind?
@@ -41,7 +41,7 @@ public struct ImportDescriptor: Sendable {
 		_ moduleName: String,
 		submodule: String? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
-		attributes: [String] = [],
+		attributes: [AttributeDescriptor] = [],
 		kind: Kind? = nil,
 	) {
 		self.moduleName = moduleName
