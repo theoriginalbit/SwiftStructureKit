@@ -168,14 +168,15 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 		/// The associated type conforms to the specified type.
 		case conformsTo(TypeComposition)
 
-		/// The associated type is the same type as the specified type.
+		/// The associated type defaults to the specified type when a conformer does not
+		/// provide one (`associatedtype T = Int`).
 		case defaultType(TypeReference)
 	}
 
 	/// The associated type's name.
 	public let name: String
 
-	/// The associated type's conformance or same-type requirement, if any.
+	/// The associated type's conformance requirement or default type, if any.
 	public let kind: Kind?
 
 	/// Whether this associated type is a primary associated type.

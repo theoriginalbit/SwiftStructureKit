@@ -35,7 +35,7 @@ public extension TypeMemberDescriptor {
 	///   - value: The optional mark text.
 	///   - sectionBreak: Whether to render a section break after the text.
 	/// - Returns: A type member containing the mark comment.
-	static func mark( _ value: String?, sectionBreak: Bool = false) -> Self {
+	static func mark(_ value: String?, sectionBreak: Bool = false) -> Self {
 		Self.mark(MarkCommentDescriptor(value, sectionBreak: sectionBreak))
 	}
 }
