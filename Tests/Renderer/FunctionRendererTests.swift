@@ -232,8 +232,8 @@ import Testing
 			.joined()
 
 		#expect(rendered == """
-			subscript(`for` index: Int) -> String
-			static subscript(index: Int) -> Element
+			subscript(`for` index: Int) -> String { get }
+			static subscript(index: Int) -> Element { get }
 
 			""")
 	}
@@ -258,6 +258,27 @@ import Testing
 		}
 
 		"""
+		#expect(output == expected)
+	}
+
+	@Test("Render subscript function")
+	func renderSubscriptFunction() {
+		let function = FunctionDescriptor(
+			signature: FunctionSignatureDescriptor(
+				kind: .subscript(returns: .string),
+				parameters: [.init("index", label: "for", type: .int)]
+			)) {
+				StatementDescriptor.return(.raw("internal[index]"))
+			}
+		let output = RenderTest.render { writer in
+			FunctionRenderer.render(function, to: &writer)
+		}
+		let expected = """
+			subscript(`for` index: Int) -> String {
+			    return internal[index]
+			}
+
+			"""
 		#expect(output == expected)
 	}
 

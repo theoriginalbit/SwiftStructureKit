@@ -22,6 +22,14 @@ enum FunctionRenderer {
 
 		writer.writeLine { line in
 			renderSignature(signature, to: &line)
+			if case .subscript = signature.kind {
+				line.space()
+				line.punctuation(.leftBrace)
+				line.space()
+				line.token("get")
+				line.space()
+				line.punctuation(.rightBrace)
+			}
 		}
 	}
 

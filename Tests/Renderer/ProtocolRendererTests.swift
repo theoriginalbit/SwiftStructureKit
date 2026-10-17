@@ -108,6 +108,10 @@ import Testing
 				comment: "Reads the next value.",
 				kind: .function("read", returns: .identifier("Content")),
 			)
+			FunctionSignatureDescriptor(
+				kind: .subscript(returns: .identifier("Content")),
+				parameters: [.init("index", label: "at", type: .int)],
+			)
 		}
 		let output = RenderTest.render(indentUsing: .tabs) { writer in
 			ProtocolRenderer.render(descriptor, to: &writer)
@@ -131,6 +135,8 @@ import Testing
 
 				/// Reads the next value.
 				func read() -> Content
+			
+				subscript(at index: Int) -> Content { get }
 			}
 
 			"""
