@@ -40,4 +40,24 @@ import Testing
 
 			""")
 	}
+
+	@Test("Render generic typealias")
+	func renderGenericTypealias() {
+		let descriptor = TypealiasDescriptor(
+			"Pair",
+			genericParameters: [
+				"T",
+				GenericParameterDescriptor("U", constraint: .sendable)
+			],
+			assignedType: .tuple(.identifier("T"), .identifier("U")),
+		)
+		let output = RenderTest.render { writer in
+			TypealiasRenderer.render(descriptor, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			typealias Pair<T, U: Sendable> = (T, U)
+
+			""")
+	}
 }
