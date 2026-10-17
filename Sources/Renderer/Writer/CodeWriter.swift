@@ -18,6 +18,11 @@ struct CodeWriter: ~Copyable {
 	private static let space = UInt8(ascii: " ")
 	private static let tab = UInt8(ascii: "\t")
 
+	/// Pre-built runs of indentation characters. Appending a slice of these is cheaper than
+	/// appending a `repeatElement` sequence, which goes through the generic sequence path.
+	private static let spaceRun = Data(repeating: space, count: 128)
+	private static let tabRun = Data(repeating: tab, count: 64)
+
 	private var buffer: Data
 
 	private var indentLevel: UInt = 0
@@ -222,15 +227,20 @@ struct CodeWriter: ~Copyable {
 	private mutating func appendIndentation() {
 		switch indentStyle {
 		case let .spaces(count):
-			buffer.append(
-				repeating: Self.space,
-				count: Int(count * indentLevel)
-			)
+			appendIndentation(count: Int(count * indentLevel), from: Self.spaceRun)
 		case .tabs:
-			buffer.append(
-				repeating: Self.tab,
-				count: Int(indentLevel)
-			)
+			appendIndentation(count: Int(indentLevel), from: Self.tabRun)
+		}
+	}
+
+	private mutating func appendIndentation(count: Int, from run: Data) {
+		guard count > 0 else { return }
+		if count <= run.count {
+			buffer.append(run[run.startIndex..<(run.startIndex + count)])
+		} else {
+			// The pre-built runs were not big enough, this is some extreme nesting!
+			// Get the first byte of the run and repeat it for whatever was needed.
+			buffer.append(repeating: run[0], count: count)
 		}
 	}
 }
