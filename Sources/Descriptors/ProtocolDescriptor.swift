@@ -225,11 +225,11 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///
 	/// - Parameters:
 	///   - name: The associated type's name.
-	///   - other: The type the associated type must be identical to.
+	///   - defaultType: The type the associated type must be identical to.
 	///   - isPrimary: Whether this is a primary associated type.
-	public init(_ name: String, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
+	public init(_ name: String, defaultType: TypeReference, isPrimary: Bool = false) {
 		self.name = name
-		self.kind = .defaultType(other)
+		self.kind = .defaultType(defaultType)
 		self.isPrimary = isPrimary
 	}
 }

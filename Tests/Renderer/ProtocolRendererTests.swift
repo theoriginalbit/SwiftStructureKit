@@ -73,7 +73,7 @@ import Testing
 			)
 			ProtocolAssociatedtypeDescriptor(
 				"Element",
-				sameTypeAs: .identifier("Content"),
+				defaultType: .identifier("Content"),
 			)
 			ProtocolPropertyDescriptor(
 				comment: "The current value.",
