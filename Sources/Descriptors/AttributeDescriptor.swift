@@ -37,6 +37,12 @@ public enum AttributeDescriptor: Hashable, Sendable {
 	/// The `@_disfavoredOverload` attribute.
 	case disfavoredOverload
 
+	/// The `@testable` attribute.
+	case testable
+
+	/// The `@_exported` attribute.
+	case exported
+
 	/// A custom attribute name
 	public init(_ value: String) {
 		self = .rawValue(value)

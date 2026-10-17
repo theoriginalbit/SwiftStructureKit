@@ -41,6 +41,10 @@ enum AttributeRenderer {
 			"@discardableResult"
 		case .disfavoredOverload:
 			"@_disfavoredOverload"
+		case .testable:
+			"@testable"
+		case .exported:
+			"@_exported"
 		}
 	}
 }
