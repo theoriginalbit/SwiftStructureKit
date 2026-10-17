@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A qualified Swift type name, represented as independently sanitized components.
 public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral, ExpressibleByArrayLiteral {
 	/// The components making up the qualified type name.
@@ -28,18 +26,14 @@ public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral, Ex
 
 /// A composition of types joined by `&`.
 public struct TypeComposition: Hashable, Sendable {
-	public let types: OrderedSet<TypeReference>
+	public let types: [TypeReference]
 
 	public init(_ type: TypeReference) {
 		self.types = [type]
 	}
 
-	public init(_ types: OrderedSet<TypeReference>) {
-		self.types = types
-	}
-
 	public init(_ types: [TypeReference]) {
-		self.types = OrderedSet(types)
+		self.types = types
 	}
 }
 
@@ -80,7 +74,7 @@ public struct TypeConstraintDescriptor: Hashable, Sendable {
 		self.init(type, constraint: constraint)
 	}
 
-	public init(_ type: TypeIdentifier, conformsTo constraints: OrderedSet<TypeReference>) {
+	public init(_ type: TypeIdentifier, conformsTo constraints: [TypeReference]) {
 		self.init(type, constraint: TypeComposition(constraints))
 	}
 

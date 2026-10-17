@@ -2,7 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-import OrderedCollections
 import Testing
 @testable import SwiftStructureKit
 

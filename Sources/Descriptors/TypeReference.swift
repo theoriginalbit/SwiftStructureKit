@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A reference to a type representation in Swift.
 public indirect enum TypeReference: Hashable, Sendable, ExpressibleByStringLiteral {
 	/// Creates a type reference from a qualified identifier.
@@ -42,7 +40,7 @@ public indirect enum TypeReference: Hashable, Sendable, ExpressibleByStringLiter
 		parameters: [TypeReference],
 		returns: TypeReference,
 		isEscaping: Bool = false,
-		attributes: OrderedSet<AttributeDescriptor> = [],
+		attributes: [AttributeDescriptor] = [],
 		effects: EffectSpecifiers<ThrowingSpecifier> = .none
 	)
 

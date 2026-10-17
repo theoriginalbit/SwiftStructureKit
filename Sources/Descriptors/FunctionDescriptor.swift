@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A function.
 public struct FunctionDescriptor: Sendable {
 	/// The signature of the function.
@@ -42,7 +40,7 @@ public extension FunctionDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		failable: Bool = false,
 		parameters: ParametersList = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
@@ -85,7 +83,7 @@ public extension FunctionDescriptor {
 		returns: TypeReference? = nil,
 		isStatic: Bool = false,
 		parameters: ParametersList = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
@@ -130,7 +128,7 @@ public extension TypeMemberDescriptor {
 		attributes: [AttributeDescriptor] = [],
 		failable: Bool = false,
 		parameters: ParametersList = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
@@ -173,7 +171,7 @@ public extension TypeMemberDescriptor {
 		returns: TypeReference? = nil,
 		isStatic: Bool = false,
 		parameters: ParametersList = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },

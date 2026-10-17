@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-public import OrderedCollections
-
 /// A descriptor representing a Swift structure declaration.
 public struct StructDescriptor: Sendable {
 	/// The documentation comment attached to the struct definition, if any.
@@ -19,27 +17,35 @@ public struct StructDescriptor: Sendable {
 	public let identifier: String
 
 	/// The generic type parameters declared for the struct.
-	public let genericParameters: OrderedSet<GenericParameterDescriptor>
+	public let genericParameters: [GenericParameterDescriptor]
 
 	/// The generic `where` requirements declared by the struct.
 	public let genericRequirements: [TypeConstraintDescriptor]
 
 	/// The type and protocol conformances of the struct.
-	public let conformances: OrderedSet<TypeReference>
+	public let conformances: [TypeReference]
 
 	/// The member declarations contained within the struct.
 	public let members: [TypeMemberDescriptor]
 
-	/// Creates a struct descriptor with an explicit array of member descriptors.
-	init(
+	/// Creates a struct descriptor using a result builder to define its members.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the struct.
+	///   - comment: An optional documentation comment for the struct.
+	///   - accessModifier: An optional access level modifier for the struct.
+	///   - genericParameters: The generic parameters associated with the struct.
+	///   - conformances: The types or protocols the struct conforms to.
+	///   - members: A result builder closure producing the struct's member declarations.
+	public init(
 		_ identifier: String,
-		comment: DocCommentDescriptor?,
-		accessModifier: AccessModifierDescriptor?,
-		attributes: [AttributeDescriptor],
-		genericParameters: OrderedSet<GenericParameterDescriptor>,
-		genericRequirements: [TypeConstraintDescriptor],
-		conformances: OrderedSet<TypeReference>,
-		members: [TypeMemberDescriptor],
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		genericParameters: [GenericParameterDescriptor] = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
+		conformances: [TypeReference] = [],
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -48,40 +54,13 @@ public struct StructDescriptor: Sendable {
 		self.genericParameters = genericParameters
 		self.genericRequirements = genericRequirements
 		self.conformances = conformances
-		self.members = members
+		self.members = members()
 	}
+}
 
-	/// Creates a struct descriptor using a result builder to define member descriptors.
-	///
-	/// - Parameters:
-	///   - identifier: The name of the struct.
-	///   - comment: An optional documentation comment for the struct.
-	///   - accessModifier: An optional access level modifier for the struct.
-	///   - attributes: Attributes applied to the struct.
-	///   - genericParameters: The generic parameters associated with the struct.
-	///   - genericRequirements: The generic `where` requirements associated with the struct.
-	///   - conformances: The types or protocols the struct conforms to.
-	///   - members: A result builder closure producing the member descriptors contained within the struct.
-	public init(
-		_ identifier: String,
-		comment: DocCommentDescriptor? = nil,
-		accessModifier: AccessModifierDescriptor? = nil,
-		attributes: [AttributeDescriptor] = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
-		genericRequirements: [TypeConstraintDescriptor] = [],
-		conformances: OrderedSet<TypeReference> = [],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
-	) {
-		self.init(
-			identifier,
-			comment: comment,
-			accessModifier: accessModifier,
-			attributes: attributes,
-			genericParameters: genericParameters,
-			genericRequirements: genericRequirements,
-			conformances: conformances,
-			members: members()
-		)
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: StructDescriptor) -> [T] {
+		[.struct(expression)]
 	}
 }
 
@@ -96,18 +75,18 @@ public extension TypeMemberDescriptor {
 	///   - genericParameters: The generic parameters associated with the struct.
 	///   - genericRequirements: The generic `where` requirements associated with the struct.
 	///   - conformances: The types or protocols the struct conforms to.
-	///   - members: A result builder closure producing the member descriptors contained within the struct.
+	///   - members: A result builder closure producing the struct's member declarations.
 	static func `struct`(
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
-		genericParameters: OrderedSet<GenericParameterDescriptor> = [],
+		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
-		conformances: OrderedSet<TypeReference> = [],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor],
+		conformances: [TypeReference] = [],
+		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
 	) -> Self {
-		Self.struct(StructDescriptor(
+		.struct(StructDescriptor(
 			identifier,
 			comment: comment,
 			accessModifier: accessModifier,
@@ -115,13 +94,7 @@ public extension TypeMemberDescriptor {
 			genericParameters: genericParameters,
 			genericRequirements: genericRequirements,
 			conformances: conformances,
-			members: members(),
+			members: members
 		))
-	}
-}
-
-public extension ArrayBuilder<TypeMemberDescriptor> {
-	static func buildExpression(_ expression: StructDescriptor) -> [T] {
-		[.struct(expression)]
 	}
 }

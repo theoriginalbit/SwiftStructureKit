@@ -2,7 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-import OrderedCollections
 import Testing
 @testable import SwiftStructureKit
 
@@ -22,7 +21,7 @@ import Testing
 
 	@Test("Create typealias descriptor with composed assigned types")
 	func createTypealiasWithComposedAssignedTypes() {
-		let assignedTypes: OrderedSet<TypeReference> = [.sendable, .equatable]
+		let assignedTypes: [TypeReference] = [.sendable, .equatable]
 		let descriptor = TypealiasDescriptor(
 			"Value",
 			assignedTypes: assignedTypes,
