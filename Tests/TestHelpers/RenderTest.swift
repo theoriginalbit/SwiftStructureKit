@@ -20,7 +20,7 @@ enum RenderTest {
 /// single space or blank line.
 func expectRendered(
 	_ actual: String,
-	matches expected: String,
+	equals expected: String,
 	sourceLocation: SourceLocation = #_sourceLocation,
 ) {
 	ReferenceTest.assert(actual, matches: expected, sourceLocation: sourceLocation)

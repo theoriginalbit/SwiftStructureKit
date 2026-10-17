@@ -13,7 +13,7 @@ import Testing
 			ProtocolRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			protocol Marker {}
 
 			""")
@@ -33,7 +33,7 @@ import Testing
 			ProtocolRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			protocol $Readable {
 			    var `class`: $Value { get }
 			}
@@ -55,7 +55,7 @@ import Testing
 			ProtocolRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			/// A sequence of values.
 			@MainActor
 			public protocol Sequence<Element>: Sendable {}
@@ -162,7 +162,7 @@ import Testing
 			ProtocolRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			protocol Renderable {
 			    @ViewBuilder
 			    var body: Content { get }

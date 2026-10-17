@@ -18,7 +18,7 @@ import Testing
 		// Bring balance to the Force, not leave it in darkness!
 		
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render inline comment from multiline string")
@@ -37,7 +37,7 @@ import Testing
 		// I have brought peace, freedom, justice and security to my new empire!
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render mark comment")
@@ -46,7 +46,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			CommentRenderer.renderMarkComment(descriptor, to: &writer)
 		}
-		#expect(output == "// MARK: It's over Anakin, \\nI have the high ground\n")
+		expectRendered(output, equals: "// MARK: It's over Anakin, \\nI have the high ground\n")
 	}
 
 	@Test("Render mark comment with section break")
@@ -55,6 +55,6 @@ import Testing
 		let output = RenderTest.render { writer in
 			CommentRenderer.renderMarkComment(descriptor, to: &writer)
 		}
-		#expect(output == "// MARK: - You were my brother, Anakin. \\nI loved you!\n")
+		expectRendered(output, equals: "// MARK: - You were my brother, Anakin. \\nI loved you!\n")
 	}
 }

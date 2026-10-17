@@ -13,7 +13,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "var test: Optional<String>\n")
+		expectRendered(output, equals: "var test: Optional<String>\n")
 	}
 
 	@Test func varStatement() {
@@ -21,7 +21,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "var test: Int = 123\n")
+		expectRendered(output, equals: "var test: Int = 123\n")
 	}
 
 	@Test func letDeclaration() {
@@ -29,7 +29,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "let test: Optional<String>\n")
+		expectRendered(output, equals: "let test: Optional<String>\n")
 	}
 
 	@Test func letStatement() {
@@ -37,7 +37,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "let test: Int = 123\n")
+		expectRendered(output, equals: "let test: Int = 123\n")
 	}
 
 	@Test func assignmentStatement() {
@@ -49,7 +49,7 @@ import Testing
 			StatementRenderer.render(input, to: &writer)
 		}
 
-		#expect(output == "self.name = name\n")
+		expectRendered(output, equals: "self.name = name\n")
 	}
 
 	@Test func assignmentWithFunctionCallExpression() {
@@ -68,7 +68,7 @@ import Testing
 			StatementRenderer.render(input, to: &writer)
 		}
 
-		#expect(output == "self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)\n")
+		expectRendered(output, equals: "self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)\n")
 	}
 
 	@Test func expressionStatementWithNestedFunctionCall() {
@@ -100,7 +100,7 @@ import Testing
 			StatementRenderer.render(block.statements, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			self.init(identifier, comment: comment, members: members())
 			self.kind = .conformsTo(TypeComposition(other))
 
@@ -122,7 +122,7 @@ import Testing
 			StatementRenderer.render(statements.statements, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var stored: Int = 1
 			var computed: Int {
 			    return 2
@@ -162,7 +162,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "return\n")
+		expectRendered(output, equals: "return\n")
     }
 
 	@Test func renderReturnWithValue() {
@@ -170,7 +170,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
 		}
-		#expect(output == "return 123\n")
+		expectRendered(output, equals: "return 123\n")
 	}
 
 	// MARK: - Conditional statements
@@ -191,7 +191,7 @@ import Testing
 			StatementRenderer.render(block.statements, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			if value > 0 {
 			    return 1
 			} else if value < 0 {
@@ -213,7 +213,7 @@ import Testing
 			StatementRenderer.render(block.statements, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			if isEnabled {
 			    return
 			}
@@ -233,7 +233,7 @@ import Testing
 			StatementRenderer.render(block.statements, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			guard isValid else {
 			    return
 			}

@@ -16,7 +16,7 @@ import Testing
 			struct SimpleStruct {}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render struct with access modifier, generic types, and conformances")
@@ -38,7 +38,7 @@ import Testing
 			public struct GenericContainer<T, U>: Sendable, Equatable {}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render generic parameter constraints and where requirements")
@@ -54,7 +54,7 @@ import Testing
 			StructRenderer.render(structDescriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			struct F<T, N> where T: Equatable {}
 
 			""")
@@ -76,7 +76,7 @@ import Testing
 			struct UserModel {}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render struct with members")
@@ -110,6 +110,6 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 }

@@ -15,7 +15,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "func doSomething()\n")
+		expectRendered(output, equals: "func doSomething()\n")
 	}
 
 	@Test("Render generic parameters and where requirements")
@@ -52,7 +52,7 @@ import Testing
 			}
 			.joined()
 
-		#expect(rendered == """
+		expectRendered(rendered, equals: """
 			func a1<T>() -> T
 			func a2<T: Equatable>() -> T
 			func c2<T>(j: F<Int.Stride, T>) where T: Equatable
@@ -82,7 +82,7 @@ import Testing
 			func `default`(`try` _1value: $Payload, _ raw_hyphen_value: String) -> _9_hyphen_Result
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render static public function with parameters and return type")
@@ -98,7 +98,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "public static func calculate(`for` key: String, count: Int = 10) -> Int\n")
+		expectRendered(output, equals: "public static func calculate(`for` key: String, count: Int = 10) -> Int\n")
 	}
 
 	@Test("Render result builders on functions and parameters")
@@ -119,7 +119,7 @@ import Testing
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
 
-		#expect(output == "@ViewBuilder @inlinable @discardableResult @_disfavoredOverload @available(iOS 17, *) public func render(@ViewBuilder content: () -> String)\n")
+		expectRendered(output, equals: "@ViewBuilder @inlinable @discardableResult @_disfavoredOverload @available(iOS 17, *) public func render(@ViewBuilder content: () -> String)\n")
 	}
 
 	@Test("Render closure effects and inout parameters in function signatures")
@@ -147,7 +147,7 @@ import Testing
 		func perform(value: inout SomeObj, completion: @MainActor @Sendable @escaping (Int) async throws -> Void)
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render function with async and throwing effect specifiers")
@@ -164,7 +164,7 @@ import Testing
 		func fetchData() async throws
 		
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render function with rethrows effect specifier")
@@ -177,7 +177,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "func performAction() rethrows\n")
+		expectRendered(output, equals: "func performAction() rethrows\n")
 	}
 
 	@Test("Render function with typed throws effect specifier")
@@ -190,7 +190,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "func validate() async throws(ValidationError)\n")
+		expectRendered(output, equals: "func validate() async throws(ValidationError)\n")
 	}
 
 	@Test("Render initializers: standard and failable")
@@ -203,7 +203,7 @@ import Testing
 		let initOutput = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(initSignature, to: &writer)
 		}
-		#expect(initOutput == "public init(name: String)\n")
+		expectRendered(initOutput, equals: "public init(name: String)\n")
 
 		let failableInitSignature = FunctionSignatureDescriptor(
 			accessModifier: .fileprivate,
@@ -213,7 +213,7 @@ import Testing
 		let failableInitOutput = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(failableInitSignature, to: &writer)
 		}
-		#expect(failableInitOutput == "fileprivate init?(_ raw: Int)\n")
+		expectRendered(failableInitOutput, equals: "fileprivate init?(_ raw: Int)\n")
 	}
 
 	@Test("Render instance and static subscripts")
@@ -235,7 +235,7 @@ import Testing
 			}
 			.joined()
 
-		#expect(rendered == """
+		expectRendered(rendered, equals: """
 			subscript(`for` index: Int) -> String { get }
 			static subscript(index: Int) -> Element { get }
 
@@ -262,7 +262,7 @@ import Testing
 		}
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render subscript function")
@@ -283,7 +283,7 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render DocComment with single parameter documentation")
@@ -305,7 +305,7 @@ import Testing
 		func process(input: Data)
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render DocComment with multiple parameter documentations")
@@ -331,7 +331,7 @@ import Testing
 		func configure(with name: String, count: Int)
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render parameter comments ignored if function doc comment is nil")
@@ -346,6 +346,6 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "func run(step: Int)\n")
+		expectRendered(output, equals: "func run(step: Int)\n")
 	}
 }

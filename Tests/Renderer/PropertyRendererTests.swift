@@ -49,7 +49,7 @@ import Testing
 			StructRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			struct Convenient {
 			    var stored: Int = 0 {
 			        didSet {
@@ -99,7 +99,7 @@ import Testing
 			StructRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			struct Settings {
 			    /// The name.
 			    public let name: String = "Swift"
@@ -124,7 +124,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var `default`: String {
 			    get {}
 			    set(new_hyphen_value) {}
@@ -155,7 +155,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var value: Int = 0 {
 			    willSet(next) {
 			        // Observe the incoming value.
@@ -191,7 +191,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			private var value: Int {
 			    get {
 			        return 42
@@ -218,7 +218,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			/// The rendered body.
 			@ViewBuilder
 			var body: Content {
@@ -241,7 +241,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var value: String {
 			    get throws(ReadError) {}
 			}
@@ -262,7 +262,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var value: String {
 			    get async throws {}
 			}
@@ -283,7 +283,7 @@ import Testing
 			PropertyRenderer.render(property, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			var value: String {
 			    get async {}
 			}

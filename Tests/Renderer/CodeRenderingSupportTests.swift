@@ -40,7 +40,7 @@ import OrderedCollections
 	] as [(TypeReference, String)])
 	func renderTypeReferences(input: TypeReference, expected: String) {
 		let output = CodeRenderingSupport.renderedType(input)
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Sanitize identifiers in rendered types and tuple labels")
@@ -50,7 +50,7 @@ import OrderedCollections
 			.tuple([TupleElementDescriptor(label: "try", type: .identifier("Value"))]),
 		])
 
-		#expect(output == "$Response, (`try`: Value)")
+		expectRendered(output, equals: "$Response, (`try`: Value)")
 	}
 
 	@Test("Render generic parameters and where constraints separately")
@@ -64,8 +64,8 @@ import OrderedCollections
 			conformsTo: .equatable
 		)
 
-		#expect(CodeRenderingSupport.renderedGenericParameter(parameter) == "Element: Equatable & Sendable")
-		#expect(CodeRenderingSupport.renderedConstraint(requirement) == "T: Equatable")
+		expectRendered(CodeRenderingSupport.renderedGenericParameter(parameter), equals: "Element: Equatable & Sendable")
+		expectRendered(CodeRenderingSupport.renderedConstraint(requirement), equals: "T: Equatable")
 	}
 
 	@Test("Render closure attributes and effects", arguments: [
@@ -89,6 +89,6 @@ import OrderedCollections
 			effects: effects
 		)
 
-		#expect(CodeRenderingSupport.renderedType(closure) == expected)
+		expectRendered(CodeRenderingSupport.renderedType(closure), equals: expected)
 	}
 }

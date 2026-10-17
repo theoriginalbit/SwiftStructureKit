@@ -12,7 +12,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "()\n")
+		expectRendered(output, equals: "()\n")
 	}
 
 	@Test("Render single parameter with implicit label")
@@ -21,7 +21,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "(name: String)\n")
+		expectRendered(output, equals: "(name: String)\n")
 	}
 
 	@Test("Render single parameter with explicit custom label")
@@ -30,7 +30,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "(`for` key: String)\n")
+		expectRendered(output, equals: "(`for` key: String)\n")
 	}
 
 	@Test("Render single parameter with wildcard label")
@@ -39,7 +39,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "(_ raw: Int)\n")
+		expectRendered(output, equals: "(_ raw: Int)\n")
 	}
 
 	@Test("Render single parameter with default value")
@@ -48,7 +48,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "(count: Int = 10)\n")
+		expectRendered(output, equals: "(count: Int = 10)\n")
 	}
 
 	@Test("Render inout parameters", arguments: [
@@ -61,7 +61,7 @@ import Testing
 			ParametersListRenderer.render(list, to: &writer)
 		}
 
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render multiple parameters with mixed labels, default values, and types")
@@ -74,6 +74,6 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		#expect(output == "(`for` key: String, count: Int = 10, _ verbose: Bool = false)\n")
+		expectRendered(output, equals: "(`for` key: String, count: Int = 10, _ verbose: Bool = false)\n")
 	}
 }

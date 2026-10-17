@@ -17,7 +17,7 @@ import Testing
 			enum Direction {}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Sanitize enum, case, and associated value identifiers")
@@ -40,7 +40,7 @@ import Testing
 		}
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render complex enum header with access modifier, generic types, and conformances")
@@ -61,7 +61,7 @@ import Testing
 			public enum Result<Success, Failure>: Sendable {}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render plain enum with cases and doc comments")
@@ -91,7 +91,7 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render raw value enum with explicit and implicit raw values")
@@ -116,7 +116,7 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render raw value enum with integer raw values")
@@ -138,7 +138,7 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render associated value enum with labeled and unlabelled values")
@@ -170,7 +170,7 @@ import Testing
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render enum with cases and members")
@@ -206,7 +206,7 @@ import Testing
 			}
 
 			"""
-		expectRendered(output, matches: expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render associated value enum with labeled and unlabelled values")
@@ -244,7 +244,7 @@ import Testing
 		}
 		
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render namespace enum")
@@ -309,6 +309,6 @@ import Testing
 		}
 
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 }

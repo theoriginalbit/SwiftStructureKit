@@ -65,7 +65,7 @@ import Testing
 		writer.indented { file in
 			file.writeLine("no indent", indent: false)
 		}
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "no indent\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "no indent\n")
 	}
 
 	@Test("indented(_:) restores the previous indent level after the closure returns")
@@ -75,7 +75,7 @@ import Testing
 			file.writeLine("inner")
 		}
 		writer.writeLine("outer")
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "  inner\nouter\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "  inner\nouter\n")
 	}
 
 	@Test("indented(to:) sets an absolute level and restores the previous one afterward")
@@ -87,7 +87,7 @@ import Testing
 			}
 			file.writeLine("back to one")    // should be level 1 again, not 3
 		}
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "      deep\n  back to one\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "      deep\n  back to one\n")
 	}
 
 	@Test("Nested indented(_:) calls accumulate indent level")
@@ -98,7 +98,7 @@ import Testing
 				inner.writeLine("nested")
 			}
 		}
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "    nested\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "    nested\n")
 	}
 
 	// MARK: - Multiline strings
@@ -109,7 +109,7 @@ import Testing
 		writer.indented { file in
 			file.writeLine("line one\nline two")
 		}
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "  line one\n  line two\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "  line one\n  line two\n")
 	}
 
 	@Test("A multi-line string gets indentation re-applied on each embedded line")
@@ -121,6 +121,6 @@ import Testing
 			line two
 			""")
 		}
-		#expect(String(decoding: writer.rendered(), as: UTF8.self) == "  line one\n  line two\n")
+		expectRendered(String(decoding: writer.rendered(), as: UTF8.self), equals: "  line one\n  line two\n")
 	}
 }

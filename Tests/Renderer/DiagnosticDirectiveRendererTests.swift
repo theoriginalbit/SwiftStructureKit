@@ -16,7 +16,7 @@ import Testing
 		#warning("This is my warning")
 		
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render error diagnostic directive")
@@ -29,6 +29,6 @@ import Testing
 		#error("This is an error")
 		
 		"""
-		#expect(output == expected)
+		expectRendered(output, equals: expected)
 	}
 }

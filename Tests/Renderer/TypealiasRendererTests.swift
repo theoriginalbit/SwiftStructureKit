@@ -17,7 +17,7 @@ import Testing
 			TypealiasRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			typealias StringAlias = String
 
 			""")
@@ -35,7 +35,7 @@ import Testing
 			TypealiasRenderer.render(descriptor, to: &writer)
 		}
 
-		#expect(output == """
+		expectRendered(output, equals: """
 			@available(macOS 15, *)
 			public typealias Value = Sendable & Equatable
 
