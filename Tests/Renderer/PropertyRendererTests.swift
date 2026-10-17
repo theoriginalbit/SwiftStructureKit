@@ -126,10 +126,8 @@ import Testing
 
 		#expect(output == """
 			var `default`: String {
-			    get {
-			    }
-			    set(new_hyphen_value) {
-			    }
+			    get {}
+			    set(new_hyphen_value) {}
 			}
 
 			""")
@@ -245,8 +243,7 @@ import Testing
 
 		#expect(output == """
 			var value: String {
-			    get throws(ReadError) {
-			    }
+			    get throws(ReadError) {}
 			}
 
 			""")
@@ -267,8 +264,7 @@ import Testing
 
 		#expect(output == """
 			var value: String {
-			    get async throws {
-			    }
+			    get async throws {}
 			}
 
 			""")
@@ -289,8 +285,7 @@ import Testing
 
 		#expect(output == """
 			var value: String {
-			    get async {
-			    }
+			    get async {}
 			}
 
 			""")

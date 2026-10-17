@@ -14,8 +14,7 @@ import Testing
 			EnumRenderer.render(enumDescriptor.descriptor, to: &writer)
 		}
 		let expected = """
-			enum Direction {
-			}
+			enum Direction {}
 
 			"""
 		#expect(output == expected)
@@ -59,8 +58,7 @@ import Testing
 		let expected = """
 			@frozen
 			@objc(SKResult)
-			public enum Result<Success, Failure>: Sendable {
-			}
+			public enum Result<Success, Failure>: Sendable {}
 
 			"""
 		#expect(output == expected)
@@ -87,6 +85,7 @@ import Testing
 			
 			    /// Heading south.
 			    case south
+			
 			    case east
 			    case west
 			}
@@ -189,7 +188,7 @@ import Testing
 					name: "toggle",
 					returns: .identifier("State")
 				) {
-					StatementDescriptor.return(.literal(.nil))
+					StatementDescriptor.return(.raw("self == .active ? .inactive : .active"))
 				}
 			}
 		)
@@ -202,12 +201,12 @@ import Testing
 			    case inactive
 
 			    public func toggle() -> State {
-			        return nil
+			        return self == .active ? .inactive : .active
 			    }
 			}
 
 			"""
-		#expect(output == expected)
+		expectRendered(output, matches: expected)
 	}
 
 	@Test("Render associated value enum with labeled and unlabelled values")

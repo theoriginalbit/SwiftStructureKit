@@ -1,13 +1,13 @@
 import Testing
 @testable import SwiftStructureKit
 
-@Suite(.tags(.renderer)) struct CodeFileWriterTests {
+@Suite(.tags(.renderer)) struct CodeWriterTests {
 	@Test("Test all major functions of the writer")
 	func wholeContract() async throws {
-		var writer = CodeWriter()
+		var writer = CodeWriter(indentUsing: .spaces(4))
 
 		writer.writeLine("import Foundation")
-		writer.writeNewLine()
+		writer.writeBlankLine()
 
 		writer.writeLine { line in
 			line.token("public")
@@ -15,52 +15,40 @@ import Testing
 			line.token("hello")
 			line.punctuation(.leftParen)
 			line.punctuation(.rightParen)
-			line.space()
-			line.punctuation(.leftBrace)
-		}
-
-		writer.indented(to: 4) { writer in
-			writer.writeLine(#"print("Hello, world 1!")"#)
-		}
-
-		writer.indented { writer in
-			writer.writeLine("print(\"Hello, world 2!\")")
-			writer.writeNewLine()
-
-			writer.writeLine { line in
-				line.token("func")
-				line.token("hello")
-				line.punctuation(.leftParen)
-				line.punctuation(.rightParen)
-				line.space()
-				line.punctuation(.leftBrace)
-			}
-
-			writer.indented { writer in
-				writer.writeLine("print(\"Hello, world 3!\")")
-				writer.writeLine("#if DEBUG", indent: false)
-				writer.writeLine("Only needed\nin debug", prefix: "// ")
-				writer.writeLine("print(\"Hello, world 4!\")")
-				writer.writeLine("#endif", indent: false)
-				writer.writeLine("print(\"Hello, world 5!\")")
-				writer.writeLine { line in
-					line.token("let")
-					line.token("closure")
-					line.space()
-					line.punctuation(.equal)
-					line.space()
-					line.token("{\n    print(\"Hello, world 6!\")\n}")
+			line.block { writer in
+				writer.indented(to: 4) { writer in
+					writer.writeLine(#"print("Hello, world 1!")"#)
 				}
-				writer.writeLine(#"""
-				print("Hello, world 7!")
-				print("Hello, world 8!")
-				"""#)
+
+				writer.writeLine("print(\"Hello, world 2!\")")
+				writer.writeBlankLine()
+
+				writer.writeLine { line in
+					line.token("func")
+					line.token("hello")
+					line.punctuation(.leftParen)
+					line.punctuation(.rightParen)
+					line.block { writer in
+						writer.writeLine("print(\"Hello, world 3!\")")
+						writer.writeLine("#if DEBUG", indent: false)
+						writer.writeLine("Only needed\nin debug", prefix: "// ")
+						writer.writeLine("print(\"Hello, world 4!\")")
+						writer.writeLine("#endif", indent: false)
+						writer.writeLine("print(\"Hello, world 5!\")")
+						writer.writeLine { line in
+							line.token("let")
+							line.token("closure")
+							line.punctuation(.equal)
+							line.token("{\n    print(\"Hello, world 6!\")\n}")
+						}
+						writer.writeLine(#"""
+							print("Hello, world 7!")
+							print("Hello, world 8!")
+							"""#)
+					}
+				}
 			}
-
-			writer.writeLine("}")
 		}
-
-		writer.writeLine("}")
 
 		let actual = writer.rendered()
 		try ReferenceTest.assert(

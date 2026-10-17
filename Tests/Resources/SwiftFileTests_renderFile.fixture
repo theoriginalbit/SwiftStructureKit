@@ -10,8 +10,7 @@ func greeting() -> String {
     return "Hello"
 }
 
-struct Person {
-}
+struct Person {}
 
 enum Status {
     case active

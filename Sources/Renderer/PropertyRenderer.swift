@@ -14,22 +14,16 @@ enum PropertyRenderer {
 				line.token(isMutable ? "var" : "let")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
 				line.punctuation(.colon)
-				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				if let defaultValue {
-					line.space()
 					line.punctuation(.equal)
-					line.space()
 					line.token(CodeRenderingSupport.renderedExpression(defaultValue))
 				}
 				if !observers.isEmpty {
-					line.space()
-					line.punctuation(.leftBrace)
+					line.block { writer in
+						render(observers, to: &writer)
+					}
 				}
-			}
-			if !observers.isEmpty {
-				render(observers, to: &writer)
-				writer.writeLine("}")
 			}
 
 		case let .computed(getter, setter):
@@ -38,16 +32,14 @@ enum PropertyRenderer {
 				line.token("var")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
 				line.punctuation(.colon)
-				line.space()
 				line.token(CodeRenderingSupport.renderedType(property.type))
-				line.space()
-				line.punctuation(.leftBrace)
+				line.block { writer in
+					render(getter, hasSetter: setter != nil, to: &writer)
+					if let setter {
+						render(setter, to: &writer)
+					}
+				}
 			}
-			render(getter, hasSetter: setter != nil, to: &writer)
-			if let setter {
-				render(setter, to: &writer)
-			}
-			writer.writeLine("}")
 		}
 	}
 
@@ -62,57 +54,37 @@ enum PropertyRenderer {
 
 	private static func render(_ getter: PropertyAccessorDescriptor.Getter, hasSetter: Bool, to writer: inout CodeWriter) {
 		let requiresExplicitGetBlock = hasSetter || getter.effects.hasEffects
-		writer.indented { writer in
-			if requiresExplicitGetBlock {
-				writer.writeLine { line in
-					line.token("get")
-					render(getter.effects, to: &line)
-					line.space()
-					line.punctuation(.leftBrace)
-				}
+		guard requiresExplicitGetBlock else {
+			StatementRenderer.render(getter.body.statements, to: &writer)
+			return
+		}
 
-				writer.indented { writer in
-					StatementRenderer.render(getter.body.statements, to: &writer)
-				}
-
-				writer.writeLine("}")
-			} else {
-				StatementRenderer.render(getter.body.statements, to: &writer)
+		writer.writeLine { line in
+			line.token("get")
+			if getter.effects.hasEffects {
+				line.token(CodeRenderingSupport.renderedEffects(getter.effects))
 			}
+			line.block(getter.body)
 		}
 	}
 
 	private static func render(_ setter: PropertyAccessorDescriptor.Setter, to writer: inout CodeWriter) {
-		writer.indented { writer in
-			writer.writeLine { line in
-				renderAccessorName("set", parameterName: setter.parameterName, to: &line)
-				line.space()
-				line.punctuation(.leftBrace)
-			}
-			writer.indented { writer in
-				StatementRenderer.render(setter.body.statements, to: &writer)
-			}
-			writer.writeLine("}")
+		writer.writeLine { line in
+			renderAccessorName("set", parameterName: setter.parameterName, to: &line)
+			line.block(setter.body)
 		}
 	}
 
 	private static func render(_ observers: [PropertyAccessorDescriptor.Observer], to writer: inout CodeWriter) {
-		writer.indented { writer in
-			for observer in observers {
-				writer.writeLine { line in
-					switch observer.kind {
-					case let .willSet(parameterName):
-						renderAccessorName("willSet", parameterName: parameterName, to: &line)
-					case let .didSet(parameterName):
-						renderAccessorName("didSet", parameterName: parameterName, to: &line)
-					}
-					line.space()
-					line.punctuation(.leftBrace)
+		for observer in observers {
+			writer.writeLine { line in
+				switch observer.kind {
+				case let .willSet(parameterName):
+					renderAccessorName("willSet", parameterName: parameterName, to: &line)
+				case let .didSet(parameterName):
+					renderAccessorName("didSet", parameterName: parameterName, to: &line)
 				}
-				writer.indented { writer in
-					StatementRenderer.render(observer.body.statements, to: &writer)
-				}
-				writer.writeLine("}")
+				line.block(observer.body)
 			}
 		}
 	}
@@ -122,21 +94,11 @@ enum PropertyRenderer {
 		parameterName: String?,
 		to line: inout LineWriter,
 	) {
-		line.token(name, separateFromNextToken: parameterName == nil)
+		line.token(name)
 		if let parameterName {
 			line.punctuation(.leftParen)
 			line.token(SwiftIdentifier.sanitized(parameterName))
 			line.punctuation(.rightParen)
-		}
-	}
-
-	private static func render(_ effects: EffectSpecifiers<ThrowingSpecifier>, to line: inout LineWriter) {
-		guard effects.isAsync || effects.throwingSpecifier != nil else { return }
-		if effects.isAsync {
-			line.token("async")
-		}
-		if let throwingSpecifier = effects.throwingSpecifier {
-			line.token(CodeRenderingSupport.renderedThrowingSpecifier(throwingSpecifier))
 		}
 	}
 }

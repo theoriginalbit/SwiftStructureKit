@@ -4,7 +4,7 @@
 
 enum StructRenderer {
 	static func render(_ descriptor: StructDescriptor, to writer: inout CodeWriter) {
-		CodeRenderingSupport.renderTypeSignature(
+		CodeRenderingSupport.renderTypeDeclaration(
 			comment: descriptor.comment,
 			accessModifier: descriptor.accessModifier,
 			attributes: descriptor.attributes,
@@ -14,10 +14,8 @@ enum StructRenderer {
 			genericRequirements: descriptor.genericRequirements,
 			conformances: descriptor.conformances,
 			to: &writer
-		)
-		writer.indented { writer in
+		) { writer in
 			TypeMemberRenderer.render(descriptor.members, to: &writer)
 		}
-		writer.writeLine("}")
 	}
 }

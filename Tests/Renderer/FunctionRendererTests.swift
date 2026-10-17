@@ -160,7 +160,11 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		#expect(output == "func fetchData() async throws\n")
+		let expected = """
+		func fetchData() async throws
+		
+		"""
+		#expect(output == expected)
 	}
 
 	@Test("Render function with rethrows effect specifier")

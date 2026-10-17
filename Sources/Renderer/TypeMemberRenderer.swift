@@ -4,13 +4,7 @@
 
 enum TypeMemberRenderer {
 	static func render(_ declarations: [TypeMemberDescriptor], to writer: inout CodeWriter) {
-		guard !declarations.isEmpty else { return }
-		for (index, declaration) in declarations.enumerated() {
-			render(declaration, to: &writer)
-			if index < declarations.count - 1 {
-				writer.writeNewLine()
-			}
-		}
+		writer.writeSeparated(declarations, render(_:to:))
 	}
 
 	static func render(_ member: TypeMemberDescriptor, to writer: inout CodeWriter) {

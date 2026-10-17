@@ -14,8 +14,7 @@ import Testing
 		}
 
 		#expect(output == """
-			protocol Marker {
-			}
+			protocol Marker {}
 
 			""")
 	}
@@ -59,8 +58,7 @@ import Testing
 		#expect(output == """
 			/// A sequence of values.
 			@MainActor
-			public protocol Sequence<Element>: Sendable {
-			}
+			public protocol Sequence<Element>: Sendable {}
 
 			""")
 	}

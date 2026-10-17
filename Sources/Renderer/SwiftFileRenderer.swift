@@ -4,33 +4,35 @@
 
 enum SwiftFileRenderer {
 	static func render(_ descriptor: SwiftFile, to writer: inout CodeWriter) {
+		// Each present section is separated from the previous one by a single blank line.
+		// Nothing is written before the first section or after the last, so a headerless
+		// file does not start with a blank line and a file without declarations does not
+		// end with one.
+		var hasPrecedingSection = false
+		func beginSection() {
+			if hasPrecedingSection {
+				writer.writeBlankLine()
+			}
+			hasPrecedingSection = true
+		}
+
 		if let headerComment = descriptor.headerComment {
+			beginSection()
 			writer.writeLine("//")
 			writer.writeLine(headerComment.value, prefix: "// ")
 			writer.writeLine("//")
 		}
 
-		guard !descriptor.imports.isEmpty || !descriptor.declarations.isEmpty else {
-			// early exit to avoid writing newlines when there is no content
-			// result will be a file with just a header, or a zero byte file
-			return
-		}
-
-		writer.writeNewLine()
-
-		for importDescriptor in descriptor.imports {
-			render(importDescriptor, to: &writer)
-		}
-
 		if !descriptor.imports.isEmpty {
-			// if there were imports add a new line
-			writer.writeNewLine()
+			beginSection()
+			for importDescriptor in descriptor.imports {
+				render(importDescriptor, to: &writer)
+			}
 		}
 
-		TypeMemberRenderer.render(descriptor.declarations, to: &writer)
-
-		if !writer.isLastByteNewLine() {
-			writer.writeNewLine()
+		if !descriptor.declarations.isEmpty {
+			beginSection()
+			TypeMemberRenderer.render(descriptor.declarations, to: &writer)
 		}
 	}
 

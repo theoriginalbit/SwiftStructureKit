@@ -23,12 +23,11 @@ enum CodeRenderingSupport {
 		to line: inout LineWriter,
 	) {
 		guard !requirements.isEmpty else { return }
-		line.space()
 		line.token("where")
 		line.token(requirements.map(renderedConstraint(_:)).joined(separator: ", "))
 	}
 
-	static func renderTypeSignature(
+	static func renderTypeDeclaration(
 		comment: DocCommentDescriptor?,
 		accessModifier: AccessModifierDescriptor?,
 		attributes: [AttributeDescriptor],
@@ -38,6 +37,7 @@ enum CodeRenderingSupport {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: OrderedSet<TypeReference>,
 		to writer: inout CodeWriter,
+		body: (inout CodeWriter) -> Void,
 	) {
 		CommentRenderer.renderDocComment(comment, to: &writer)
 		AttributeRenderer.render(attributes, to: &writer)
@@ -53,28 +53,15 @@ enum CodeRenderingSupport {
 
 			if !conformances.isEmpty {
 				line.punctuation(.colon)
-				line.space()
 				line.token(renderedTypesList(conformances))
 			}
 
 			renderGenericRequirements(genericRequirements, to: &line)
-			line.space()
-			line.punctuation(.leftBrace)
+			line.block(body)
 		}
 	}
 
 	// MARK: Rendered to string
-
-	static func renderedThrowingSpecifier(_ specifier: FunctionThrowingSpecifier) -> String {
-		switch specifier {
-		case .throws:
-			return "throws"
-		case .rethrows:
-			return "rethrows"
-		case let .typed(type):
-			return "throws(\(renderedType(type)))"
-		}
-	}
 
 	static func renderedThrowingSpecifier(_ specifier: ThrowingSpecifier) -> String {
 		switch specifier {
@@ -82,6 +69,17 @@ enum CodeRenderingSupport {
 			return "throws"
 		case let .typed(type):
 			return "throws(\(renderedType(type)))"
+		}
+	}
+
+	static func renderedThrowingSpecifier(_ specifier: FunctionThrowingSpecifier) -> String {
+		switch specifier {
+		case .throws:
+			return renderedThrowingSpecifier(ThrowingSpecifier.throws)
+		case .rethrows:
+			return "rethrows"
+		case let .typed(type):
+			return renderedThrowingSpecifier(ThrowingSpecifier.typed(type))
 		}
 	}
 
@@ -188,18 +186,16 @@ enum CodeRenderingSupport {
 		var writer = TokenWriter()
 		for attribute in attributes {
 			writer.write(AttributeRenderer.rendered(attribute))
-			writer.space()
 		}
 
-		writer.write("(")
+		writer.write("(", acceptsSpaceAfter: false) // not standard ( punctuation, this accepts space before
 		writer.write(renderedTypesList(parameters))
-		writer.write(")")
+		writer.write(.rightParen)
 		if effects.hasEffects {
-			writer.space()
 			writer.write(renderedEffects(effects))
 		}
 
-		writer.write(" -> ")
+		writer.write(.arrow)
 		writer.write(renderedType(returns))
 
 		return writer.finish()
@@ -222,9 +218,6 @@ enum CodeRenderingSupport {
 			writer.write("async")
 		}
 		if let throwingSpecifier = effects.throwingSpecifier {
-			if effects.isAsync {
-				writer.space()
-			}
 			writer.write(renderThrowingSpecifier(throwingSpecifier))
 		}
 		return writer.finish()

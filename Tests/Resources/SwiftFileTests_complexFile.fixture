@@ -5,7 +5,7 @@
 public import OrderedCollections
 
 /// A descriptor representing a Swift protocol declaration.
-/// 
+///
 /// - Note: Primary associated types are automatically added to `genericParameters`, after explicitly supplied parameters.
 public struct ProtocolDescriptor: Sendable {
 	/// The documentation comment attached to the protocol definition, if any.
@@ -45,7 +45,7 @@ public struct ProtocolDescriptor: Sendable {
 	}
 
 	/// Creates a protocol descriptor using a result builder to define its members.
-	/// 
+	///
 	/// Primary associated types declared by `members` are added to `genericParameters`
 	/// automatically. Explicit generic types retain their order, followed by any
 	/// primary associated types not already present.
@@ -100,7 +100,6 @@ public struct ProtocolPropertyDescriptor: Sendable {
 
 /// The accessors required by a protocol property.
 public enum ProtocolPropertyAccessorSpecifier: Sendable {
-
 	/// The property must be readable.
 	case get
 
@@ -118,7 +117,6 @@ public enum ProtocolPropertyAccessorSpecifier: Sendable {
 public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	/// A constraint applied to an associated type.
 	public enum Kind: Sendable {
-
 		/// The associated type conforms to the specified type.
 		case conformsTo(TypeComposition)
 
@@ -217,7 +215,6 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 
 /// A declaration that can appear as a protocol member.
 public enum ProtocolMemberDescriptor: Sendable {
-
 	/// An associated type requirement.
 	case `associatedtype`(ProtocolAssociatedtypeDescriptor)
 

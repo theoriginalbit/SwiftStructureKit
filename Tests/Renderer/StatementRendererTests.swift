@@ -138,7 +138,7 @@ import Testing
 				accessModifier: .private,
 				type: .int,
 			)
-			var writer = CodeWriter()
+			var writer = CodeWriter(indentUsing: .spaces(4))
 			StatementRenderer.render(.property(property), to: &writer)
 		}
 	}
@@ -150,7 +150,7 @@ import Testing
 				isStatic: true,
 				type: .int,
 			)
-			var writer = CodeWriter()
+			var writer = CodeWriter(indentUsing: .spaces(4))
 			StatementRenderer.render(.property(property), to: &writer)
 		}
 	}

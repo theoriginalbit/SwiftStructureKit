@@ -7,8 +7,8 @@ enum DiagnosticDirectiveRenderer {
 		writer.writeLine { line in
 			line.punctuation(.pound)
 			switch descriptor.kind {
-			case .warning: line.token("warning", separateFromNextToken: false)
-			case .error: line.token("error", separateFromNextToken: false)
+			case .warning: line.token("warning")
+			case .error: line.token("error")
 			}
 			line.punctuation(.leftParen)
 			line.token(CodeRenderingSupport.renderedLiteral(.string(descriptor.message)))

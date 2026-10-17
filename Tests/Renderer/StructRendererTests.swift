@@ -13,8 +13,7 @@ import Testing
 			StructRenderer.render(structDescriptor, to: &writer)
 		}
 		let expected = """
-			struct SimpleStruct {
-			}
+			struct SimpleStruct {}
 
 			"""
 		#expect(output == expected)
@@ -36,8 +35,7 @@ import Testing
 			@MainActor
 			@frozen
 			@available(iOS 17, *)
-			public struct GenericContainer<T, U>: Sendable, Equatable {
-			}
+			public struct GenericContainer<T, U>: Sendable, Equatable {}
 
 			"""
 		#expect(output == expected)
@@ -57,8 +55,7 @@ import Testing
 		}
 
 		#expect(output == """
-			struct F<T, N> where T: Equatable {
-			}
+			struct F<T, N> where T: Equatable {}
 
 			""")
 	}
@@ -74,10 +71,9 @@ import Testing
 		}
 		let expected = """
 			/// A user model.
-			/// 
+			///
 			/// Replicates the server model.
-			struct UserModel {
-			}
+			struct UserModel {}
 
 			"""
 		#expect(output == expected)
@@ -105,8 +101,7 @@ import Testing
 		}
 		let expected = """
 			struct User {
-			    public init(id: String) {
-			    }
+			    public init(id: String) {}
 			
 			    /// Gets the identifier.
 			    public func getIdentifier() -> String {

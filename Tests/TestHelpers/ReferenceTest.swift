@@ -24,7 +24,7 @@ enum ReferenceTest {
 		matches expected: some ConvertibleToData,
 		attachmentName: String? = nil,
 		sourceLocation: SourceLocation = #_sourceLocation,
-	) throws {
+	) {
 		let actual = actual.convertToData()
 		let expected = expected.convertToData()
 		let attachmentName = attachmentName ?? UUID().uuidString
@@ -35,46 +35,54 @@ enum ReferenceTest {
 			return
 		}
 
-		// Outputs were different, let's find out why. We're going
-		// to use Git, so will need to write the results to a file.
-		let actualURL = try _writeToFile(actual)
-		defer { try? FileManager.default.removeItem(at: actualURL) }
+		do {
+			// Outputs were different, let's find out why. We're going
+			// to use Git, so will need to write the results to a file.
+			let actualURL = try _writeToFile(actual)
+			defer { try? FileManager.default.removeItem(at: actualURL) }
 
-		let expectedURL = try _writeToFile(expected)
-		defer { try? FileManager.default.removeItem(at: expectedURL) }
+			let expectedURL = try _writeToFile(expected)
+			defer { try? FileManager.default.removeItem(at: expectedURL) }
 
-		try _assert(
-			actualURL,
-			matches: expectedURL,
-			sourceLocation: sourceLocation,
-		)
+			try _assert(
+				actualURL,
+				matches: expectedURL,
+				sourceLocation: sourceLocation,
+			)
+		} catch {
+			Issue.record(error, sourceLocation: sourceLocation)
+		}
 	}
 
 	static func assert(
 		_ actual: some ConvertibleToData,
 		matches expectedURL: URL,
 		sourceLocation: SourceLocation = #_sourceLocation,
-	) throws {
+	) {
 		let actual = actual.convertToData()
 		_recordAttachment(actual, sourceLocation: sourceLocation)
 
-		let expected = try Data(contentsOf: expectedURL)
-		guard actual != expected else {
-			return
+		do {
+			let expected = try Data(contentsOf: expectedURL)
+			guard actual != expected else {
+				return
+			}
+
+			// Outputs were different, let's find out why. We're going
+			// to use Git, so will need to write the actual results to
+			// a file.
+			let actualURL = try _writeToFile(actual)
+
+			defer { try? FileManager.default.removeItem(at: actualURL) }
+
+			try _assert(
+				actualURL,
+				matches: expectedURL,
+				sourceLocation: sourceLocation,
+			)
+		} catch {
+			Issue.record(error, sourceLocation: sourceLocation)
 		}
-
-		// Outputs were different, let's find out why. We're going
-		// to use Git, so will need to write the actual results to
-		// a file.
-		let actualURL = try _writeToFile(actual)
-
-		defer { try? FileManager.default.removeItem(at: actualURL) }
-
-		try _assert(
-			actualURL,
-			matches: expectedURL,
-			sourceLocation: sourceLocation,
-		)
 	}
 
 	private static func _recordAttachment(

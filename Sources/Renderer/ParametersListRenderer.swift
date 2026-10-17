@@ -15,7 +15,6 @@ enum ParametersListRenderer {
 			render(parameter, into: &line)
 			if index < parametersList.parameters.endIndex - 1 {
 				line.punctuation(.comma)
-				line.space()
 			}
 		}
 		line.punctuation(.rightParen)
@@ -30,15 +29,12 @@ enum ParametersListRenderer {
 		}
 		line.token(SwiftIdentifier.sanitized(parameter.identifier))
 		line.punctuation(.colon)
-		line.space()
 		if parameter.isInout {
 			line.token("inout")
 		}
 		line.token(CodeRenderingSupport.renderedType(parameter.type))
 		if let defaultValue = parameter.defaultValue {
-			line.space()
 			line.punctuation(.equal)
-			line.space()
 			line.token(CodeRenderingSupport.renderedExpression(defaultValue))
 		}
 	}

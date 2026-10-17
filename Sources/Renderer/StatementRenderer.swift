@@ -14,9 +14,7 @@ enum StatementRenderer {
 		case let .assignment(descriptor):
 			writer.writeLine { line in
 				line.token(CodeRenderingSupport.renderedIdentifier(descriptor.target))
-				line.space()
 				line.punctuation(.equal)
-				line.space()
 				line.token(CodeRenderingSupport.renderedExpression(descriptor.expression))
 			}
 
@@ -65,49 +63,29 @@ enum StatementRenderer {
 				line.token("guard")
 				line.token(CodeRenderingSupport.renderedExpression(descriptor.condition))
 				line.token("else")
-				line.space()
-				line.punctuation(.leftBrace)
+				line.block(descriptor.elseBody)
 			}
-			renderContents(descriptor.elseBody, to: &writer)
-			writer.writeLine("}")
-			StatementRenderer.render(descriptor.body.statements, to: &writer)
+			render(descriptor.body.statements, to: &writer)
 		}
 	}
 
 	private static func render(_ branches: [IfStatementDescriptor.Branch], elseBody: CodeBlockDescriptor? = nil, to writer: inout CodeWriter) {
-		for (index, branch) in branches.enumerated() {
-			writer.writeLine { line in
-				if index == 0 {
-					line.token("if")
-				} else {
-					line.punctuation(.rightBrace)
-					line.space()
+		// The whole chain is one logical line: each block's closing
+		// brace is followed by the next `else` on the same physical line.
+		writer.writeLine { line in
+			for (index, branch) in branches.enumerated() {
+				if index > 0 {
 					line.token("else")
-					line.token("if")
 				}
+				line.token("if")
 				line.token(CodeRenderingSupport.renderedExpression(branch.condition))
-				line.space()
-				line.punctuation(.leftBrace)
+				line.block(branch.body)
 			}
-			renderContents(branch.body, to: &writer)
-		}
 
-		if let elseBody {
-			writer.writeLine { line in
-				line.punctuation(.rightBrace)
-				line.space()
+			if let elseBody {
 				line.token("else")
-				line.space()
-				line.punctuation(.leftBrace)
+				line.block(elseBody)
 			}
-			renderContents(elseBody, to: &writer)
-		}
-		writer.writeLine("}")
-	}
-
-	private static func renderContents(_ body: CodeBlockDescriptor, to writer: inout CodeWriter) {
-		writer.indented { writer in
-			StatementRenderer.render(body.statements, to: &writer)
 		}
 	}
 }

@@ -3,18 +3,14 @@
 //
 
 enum FunctionRenderer {
+	/// Renders a function and it's body.
 	static func render(_ function: FunctionDescriptor, to writer: inout CodeWriter) {
 		renderDocComment(for: function.signature, to: &writer)
 
 		writer.writeLine { line in
 			renderSignature(function.signature, to: &line)
-			line.space()
-			line.punctuation(.leftBrace)
+			line.block(function.body)
 		}
-		writer.indented { writer in
-			StatementRenderer.render(function.body.statements, to: &writer)
-		}
-		writer.writeLine("}")
 	}
 
 	static func renderSignature(_ signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
@@ -23,11 +19,8 @@ enum FunctionRenderer {
 		writer.writeLine { line in
 			renderSignature(signature, to: &line)
 			if case .subscript = signature.kind {
-				line.space()
 				line.punctuation(.leftBrace)
-				line.space()
 				line.token("get")
-				line.space()
 				line.punctuation(.rightBrace)
 			}
 		}
@@ -86,10 +79,7 @@ enum FunctionRenderer {
 		ParametersListRenderer.render(signature.parameters, into: &line)
 
 		if signature.effects.hasEffects {
-			line.space()
-
-			let effects = CodeRenderingSupport.renderedEffects(signature.effects)
-			line.token(effects)
+			line.token(CodeRenderingSupport.renderedEffects(signature.effects))
 		}
 
 		let returns: TypeReference? = switch signature.kind {
@@ -99,9 +89,7 @@ enum FunctionRenderer {
 		}
 
 		if let returns {
-			line.space()
 			line.punctuation(.arrow)
-			line.space()
 			line.token(CodeRenderingSupport.renderedType(returns))
 		}
 
