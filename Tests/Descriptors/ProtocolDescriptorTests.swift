@@ -19,7 +19,7 @@ import Testing
 			)
 			ProtocolAssociatedtypeDescriptor(
 				"SubSequence",
-				sameTypeAs: .identifier("Self"),
+				defaultType: .identifier("Self"),
 				isPrimary: true,
 			)
 			ProtocolAssociatedtypeDescriptor("Iterator")
