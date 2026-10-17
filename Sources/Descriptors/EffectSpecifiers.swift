@@ -53,25 +53,31 @@ public extension EffectSpecifiers {
 	/// No effect specifiers.
 	static var none: Self { Self() }
 
-	/// Creates an effect specifier.
+	/// An `async` effect specifier.
 	static var async: Self { Self(isAsync: true) }
 }
 
 public extension EffectSpecifiers where Throwing == ThrowingSpecifier {
-	/// Creates an effect specifier.
+	/// A `throws` effect specifier.
 	static var `throws`: Self { Self(throwingSpecifier: .throws) }
 
-	/// Creates an effect specifier that declares throws a specific error type (`throws(MyError)`).
+	/// An `async throws` effect specifier.
+	static var asyncThrows: Self { Self(isAsync: true, throwingSpecifier: .throws) }
+
+	/// An effect specifier that declares throws a specific error type (`throws(MyError)`).
 	static func `throws`(_ type: TypeReference) -> Self { Self(throwingSpecifier: .typed(type)) }
 }
 
 public extension EffectSpecifiers where Throwing == FunctionThrowingSpecifier {
-	/// Creates an effect specifier.
+	/// A `thros` effect specifier.
 	static var `throws`: Self { Self(throwingSpecifier: .throws) }
 
-	/// Creates an effect specifier.
+	/// A `rethrows` effect specifier.
 	static var `rethrows`: Self { Self(throwingSpecifier: .rethrows) }
 
-	/// Creates an effect specifier that declares throws a specific error type (`throws(MyError)`).
+	/// An `async throws` effect specifier.
+	static var asyncThrows: Self { Self(isAsync: true, throwingSpecifier: .throws) }
+
+	/// An effect specifier that declares throws a specific error type (`throws(MyError)`).
 	static func `throws`(_ type: TypeReference) -> Self { Self(throwingSpecifier: .typed(type)) }
 }
