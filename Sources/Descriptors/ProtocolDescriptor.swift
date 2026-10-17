@@ -341,6 +341,16 @@ extension ArrayBuilder where T == ProtocolMemberDescriptor {
 	public static func buildExpression(_ expression: FunctionSignatureDescriptor) -> Result {
 		[.function(expression)]
 	}
+
+	public static func buildExpression(_ expression: ProtocolTypealiasDescriptor) -> Result {
+		[.typealias(expression)]
+	}
+}
+
+public extension ArrayBuilder<TypeMemberDescriptor> {
+	static func buildExpression(_ expression: ProtocolDescriptor) -> [T] {
+		[.protocol(expression)]
+	}
 }
 
 public extension TypeMemberDescriptor {
