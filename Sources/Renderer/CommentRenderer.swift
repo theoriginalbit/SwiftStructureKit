@@ -10,7 +10,9 @@ enum CommentRenderer {
 				line.token("-")
 			}
 			if let value = descriptor.value {
-				line.token(value)
+				// A MARK comment is only recognised by Xcode when it occupies a single line, so
+				// any embedded newlines are escaped to avoid source issues
+				line.token(escapingNewlines(in: value))
 			}
 		}
 	}
@@ -26,5 +28,20 @@ enum CommentRenderer {
 		} else {
 			writer.writeLine(descriptor.value, prefix: "/// ")
 		}
+	}
+
+	private static func escapingNewlines(in value: String) -> String {
+		guard value.contains(where: \.isNewline) else { return value }
+
+		var result = ""
+		result.reserveCapacity(value.utf8.count + 8)
+		for character in value {
+			if character.isNewline {
+				result += "\\n"
+			} else {
+				result.append(character)
+			}
+		}
+		return result
 	}
 }

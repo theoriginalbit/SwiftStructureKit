@@ -46,7 +46,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			CommentRenderer.renderMarkComment(descriptor, to: &writer)
 		}
-		#expect(output == "// MARK: It's over Anakin, I have the high ground\n")
+		#expect(output == "// MARK: It's over Anakin, \\nI have the high ground\n")
 	}
 
 	@Test("Render mark comment with section break")
@@ -55,6 +55,6 @@ import Testing
 		let output = RenderTest.render { writer in
 			CommentRenderer.renderMarkComment(descriptor, to: &writer)
 		}
-		#expect(output == "// MARK: - You were my brother, Anakin. I loved you!\n")
+		#expect(output == "// MARK: - You were my brother, Anakin. \\nI loved you!\n")
 	}
 }

@@ -44,12 +44,16 @@ import Testing
 				writer.writeLine("#endif", indent: false)
 				writer.writeLine("print(\"Hello, world 5!\")")
 				writer.writeLine { line in
-					line.token("//")
-					line.token("Incorrect \n multiline")
+					line.token("let")
+					line.token("closure")
+					line.space()
+					line.punctuation(.equal)
+					line.space()
+					line.token("{\n    print(\"Hello, world 6!\")\n}")
 				}
 				writer.writeLine(#"""
-				print("Hello, world 6!")
 				print("Hello, world 7!")
+				print("Hello, world 8!")
 				"""#)
 			}
 
