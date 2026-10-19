@@ -64,10 +64,11 @@ import Testing
 	func sanitizeFunctionAndParameterIdentifiers() {
 		let signature = FunctionSignatureDescriptor(
 			comment: "Uses a sanitized parameter.",
-			kind: .function("default", returns: .identifier("9-Result")),
+			kind: .function("default", returns: .void),
 			parameters: [
 				.init("1value", label: "try", type: .identifier("$Payload"), comment: "The payload."),
 				.init("raw-value", label: "_", type: .string),
+				.init("inout", type: .array(.int)),
 			]
 		)
 		let output = RenderTest.render { writer in
@@ -78,8 +79,9 @@ import Testing
 			///
 			/// - Parameters:
 			///   - _1value: The payload.
-			///   - raw_hyphen_value: 
-			func `default`(`try` _1value: $Payload, _ raw_hyphen_value: String) -> _9_hyphen_Result
+			///   - raw_hyphen_value:
+			///   - inout:
+			func `default`(try _1value: _dollar_Payload, _ raw_hyphen_value: String, `inout`: Array<Int>) -> ()
 
 			"""
 		expectRendered(output, equals: expected)
@@ -98,7 +100,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(signature, to: &writer)
 		}
-		expectRendered(output, equals: "public static func calculate(`for` key: String, count: Int = 10) -> Int\n")
+		expectRendered(output, equals: "public static func calculate(for key: String, count: Int = 10) -> Int\n")
 	}
 
 	@Test("Render result builders on functions and parameters")
@@ -236,7 +238,7 @@ import Testing
 			.joined()
 
 		expectRendered(rendered, equals: """
-			subscript(`for` index: Int) -> String { get }
+			subscript(for index: Int) -> String { get }
 			static subscript(index: Int) -> Element { get }
 
 			""")
@@ -278,7 +280,7 @@ import Testing
 			FunctionRenderer.render(function, to: &writer)
 		}
 		let expected = """
-			subscript(`for` index: Int) -> String {
+			subscript(for index: Int) -> String {
 			    return internal[index]
 			}
 

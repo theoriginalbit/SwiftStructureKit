@@ -35,14 +35,18 @@ enum FunctionRenderer {
 
 		writer.writeLine("///")
 		if signature.parameters.count == 1, let param = signature.parameters.first, let comment = param.comment {
-			writer.writeLine("- Parameter \(SwiftIdentifier.sanitized(param.identifier)): \(comment.value)", prefix: "/// ")
+			writer.writeLine("- Parameter \(SwiftIdentifier.sanitized(param.identifier, position: .documentation)): \(comment.value)", prefix: "/// ")
 		} else {
 			writer.writeLine("/// - Parameters:")
 			for param in signature.parameters {
 				// The parameter will get rendered into the list, whether it has a comment or not, to guarantee
 				// valid DocC is generated.
-				let comment = param.comment?.value ?? ""
-				writer.writeLine("- \(SwiftIdentifier.sanitized(param.identifier)): \(comment)", prefix: "///   ")
+				let name = SwiftIdentifier.sanitized(param.identifier, position: .documentation)
+				if let comment = param.comment?.value, !comment.isEmpty {
+					writer.writeLine("- \(name): \(comment)", prefix: "///   ")
+				} else {
+					writer.writeLine("- \(name):", prefix: "///   ")
+				}
 			}
 		}
 	}

@@ -34,8 +34,8 @@ import Testing
 		}
 
 		expectRendered(output, equals: """
-			protocol $Readable {
-			    var `class`: $Value { get }
+			protocol _dollar_Readable {
+			    var `class`: _dollar_Value { get }
 			}
 
 			""")

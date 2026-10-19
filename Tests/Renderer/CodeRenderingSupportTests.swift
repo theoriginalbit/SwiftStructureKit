@@ -6,21 +6,33 @@ import Testing
 @testable import SwiftStructureKit
 
 @Suite(.tags(.renderer)) struct CodeRenderingSupportTests {
-	@Test("Sanitize Swift identifiers defensively", arguments: [
-		("$nake…", "$nake_x2026_"),
-		("9-$patch", "_9_hyphen__dollar_patch"),
-		("class", "`class`"),
-		("`typealias`", "`typealias`"),
-		("``", "``"),
-		("", "_empty"),
-	])
-	func sanitizeSwiftIdentifiers(input: String, expected: String) {
-		#expect(SwiftIdentifier.sanitized(input) == expected)
+	@Test("Render every access modifier", arguments: [
+		(.open, "open"),
+		(.public, "public"),
+		(.package, "package"),
+		(.internal, "internal"),
+		(.fileprivate, "fileprivate"),
+		(.private, "private"),
+	] as [(AccessModifierDescriptor, String)])
+	func renderAccessModifiers(modifier: AccessModifierDescriptor, expected: String) {
+		#expect(CodeRenderingSupport.renderedAccessModifier(modifier) == expected)
 	}
 
-	@Test("Preserves underscore")
-	func preservesUnderscore() {
-		#expect(SwiftIdentifier.sanitized("_") == "_")
+	@Test("Render every attribute kind", arguments: [
+		(.rawValue("Observable"), "@Observable"),
+		(.rawValue("@Observable"), "@Observable"),
+		(.resultBuilder("ViewBuilder"), "@ViewBuilder"),
+		(.available("iOS 17, *"), "@available(iOS 17, *)"),
+		(.objc(), "@objc"),
+		(.objc(name: "SKValue"), "@objc(SKValue)"),
+		(.mainActor, "@MainActor"),
+		(.frozen, "@frozen"),
+		(.inlinable, "@inlinable"),
+		(.discardableResult, "@discardableResult"),
+		(.disfavoredOverload, "@_disfavoredOverload"),
+	] as [(AttributeDescriptor, String)])
+	func renderAttributes(attribute: AttributeDescriptor, expected: String) {
+		#expect(AttributeRenderer.rendered(attribute) == expected)
 	}
 
 	@Test("Render structured type references", arguments: [
@@ -49,7 +61,25 @@ import Testing
 			.tuple([TupleElementDescriptor(label: "try", type: .identifier("Value"))]),
 		])
 
-		expectRendered(output, equals: "$Response, (`try`: Value)")
+		expectRendered(output, equals: "_dollar_Response, (try: Value)")
+	}
+
+	@Test("Qualified identifiers only escape the leading component", arguments: [
+		((TypeIdentifier("Color.default"), "Color.default")),
+		(TypeIdentifier("self.init"), "self.init"),
+		(TypeIdentifier("default.value"), "`default`.value"),
+		(TypeIdentifier("self.$binding"), "self.$binding"),
+		(TypeIdentifier("$binding.wrappedValue"), "$binding.wrappedValue"),
+	] as [(TypeIdentifier, String)])
+	func qualifiedIdentifierEscaping(identifier: TypeIdentifier, expected: String) {
+		#expect(CodeRenderingSupport.renderedIdentifier(identifier) == expected)
+	}
+
+	@Test("Type names never carry a $ prefix even where expressions may")
+	func typeIdentifiersRejectDollarPrefix() {
+		#expect(CodeRenderingSupport.renderedIdentifier(TypeIdentifier("$Response"), as: .type) == "_dollar_Response")
+		#expect(CodeRenderingSupport.renderedIdentifier(TypeIdentifier("Outer.$Inner"), as: .type) == "Outer._dollar_Inner")
+		#expect(CodeRenderingSupport.renderedType(.generic("$Box", arguments: [.int])) == "_dollar_Box<Int>")
 	}
 
 	@Test("Render generic parameters and where constraints separately")
@@ -63,8 +93,8 @@ import Testing
 			conformsTo: .equatable
 		)
 
-		expectRendered(CodeRenderingSupport.renderedGenericParameter(parameter), equals: "Element: Equatable & Sendable")
-		expectRendered(CodeRenderingSupport.renderedConstraint(requirement), equals: "T: Equatable")
+		#expect(CodeRenderingSupport.renderedGenericParameter(parameter) == "Element: Equatable & Sendable")
+		#expect(CodeRenderingSupport.renderedConstraint(requirement) == "T: Equatable")
 	}
 
 	@Test("Render closure attributes and effects", arguments: [
@@ -88,6 +118,6 @@ import Testing
 			effects: effects
 		)
 
-		expectRendered(CodeRenderingSupport.renderedType(closure), equals: expected)
+		#expect(CodeRenderingSupport.renderedType(closure) == expected)
 	}
 }

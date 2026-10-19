@@ -131,6 +131,11 @@ public extension TypeReference {
 	static var equatable: Self {
 		.identifier("Equatable")
 	}
+
+	/// A type reference to `Void`.
+	static var void: Self {
+		.tuple([])
+	}
 }
 
 // MARK: Foundation types

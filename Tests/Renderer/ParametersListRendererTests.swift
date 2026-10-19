@@ -30,7 +30,7 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		expectRendered(output, equals: "(`for` key: String)\n")
+		expectRendered(output, equals: "(for key: String)\n")
 	}
 
 	@Test("Render single parameter with wildcard label")
@@ -74,6 +74,6 @@ import Testing
 		let output = RenderTest.render { writer in
 			ParametersListRenderer.render(list, to: &writer)
 		}
-		expectRendered(output, equals: "(`for` key: String, count: Int = 10, _ verbose: Bool = false)\n")
+		expectRendered(output, equals: "(for key: String, count: Int = 10, _ verbose: Bool = false)\n")
 	}
 }

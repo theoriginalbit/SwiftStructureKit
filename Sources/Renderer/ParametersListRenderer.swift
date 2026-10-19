@@ -25,7 +25,7 @@ enum ParametersListRenderer {
 			AttributeRenderer.render(attribute, to: &line)
 		}
 		if let label = parameter.label, label != parameter.identifier {
-			line.token(SwiftIdentifier.sanitized(label))
+			line.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
 		}
 		line.token(SwiftIdentifier.sanitized(parameter.identifier))
 		line.punctuation(.colon)

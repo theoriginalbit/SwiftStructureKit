@@ -116,7 +116,7 @@ enum CodeRenderingSupport {
 			let renderedArguments = arguments.map { argument in
 				let expression = renderedExpression(argument.value)
 				return if let label = argument.label {
-					"\(SwiftIdentifier.sanitized(label)): \(expression)"
+					"\(SwiftIdentifier.sanitized(label, position: .argumentLabel)): \(expression)"
 				} else {
 					expression
 				}
@@ -157,9 +157,9 @@ enum CodeRenderingSupport {
 	static func renderedType(_ type: TypeReference) -> String {
 		return switch type {
 		case let .identifier(identifier):
-			renderedIdentifier(identifier)
+			renderedIdentifier(identifier, as: .type)
 		case let .generic(identifier, arguments):
-			"\(renderedIdentifier(identifier))<\(renderedTypesList(arguments))>"
+			"\(renderedIdentifier(identifier, as: .type))<\(renderedTypesList(arguments))>"
 		case let .array(element):
 			"Array<\(renderedType(element))>"
 		case let .dictionary(key, value):
@@ -245,24 +245,57 @@ enum CodeRenderingSupport {
 		return writer.finish()
 	}
 
-	static func renderedIdentifier(_ identifier: TypeIdentifier) -> String {
-		identifier.components.map(SwiftIdentifier.sanitized(_:)).joined(separator: ".")
+	/// The syntactic role of a qualified identifier, which decides how each component is escaped.
+	enum IdentifierContext {
+		/// A value expression such as `self.$binding` or `Color.default`.
+		case expression
+
+		/// A type name such as `Foundation.Date`.
+		case type
+
+		fileprivate var leadingPosition: SwiftIdentifier.Position {
+			switch self {
+			case .expression: .reference
+			case .type: .type
+			}
+		}
+
+		fileprivate var trailingPosition: SwiftIdentifier.Position {
+			switch self {
+			case .expression: .memberAccess
+			case .type: .nestedType
+			}
+		}
+	}
+
+	static func renderedIdentifier(_ identifier: TypeIdentifier, as context: IdentifierContext = .expression) -> String {
+		var writer = TokenWriter()
+		var iterator = identifier.components.makeIterator()
+		guard let first = iterator.next() else {
+			return ""
+		}
+		writer.write(SwiftIdentifier.sanitized(first, position: context.leadingPosition))
+		while let next = iterator.next() {
+			writer.write(.period)
+			writer.write(SwiftIdentifier.sanitized(next, position: context.trailingPosition))
+		}
+		return writer.finish()
 	}
 
 	static func renderedGenericParameter(_ parameter: GenericParameterDescriptor) -> String {
-		let identifier = renderedIdentifier(parameter.identifier)
+		let identifier = renderedIdentifier(parameter.identifier, as: .type)
 		guard let constraint = parameter.constraint else { return identifier }
 		return "\(identifier): \(renderedComposition(constraint))"
 	}
 
 	static func renderedConstraint(_ constraint: TypeConstraintDescriptor) -> String {
-		"\(renderedIdentifier(constraint.type)): \(renderedComposition(constraint.constraint))"
+		"\(renderedIdentifier(constraint.type, as: .type)): \(renderedComposition(constraint.constraint))"
 	}
 
 	static func rendered(_ element: TupleElementDescriptor) -> String {
 		let type = renderedType(element.type)
 		guard let label = element.label else { return type }
-		return "\(SwiftIdentifier.sanitized(label)): \(type)"
+		return "\(SwiftIdentifier.sanitized(label, position: .argumentLabel)): \(type)"
 	}
 
 	static func renderedTypesList(_ types: some Collection<TypeReference>) -> String {

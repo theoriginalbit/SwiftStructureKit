@@ -35,7 +35,7 @@ import Testing
 			EnumRenderer.render(descriptor.descriptor, to: &writer)
 		}
 		let expected = """
-		enum $Response {
+		enum _dollar_Response {
 		    case `class`(_1_hyphen_value: `try`, _: String)
 		}
 
