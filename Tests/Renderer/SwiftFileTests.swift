@@ -370,11 +370,11 @@ import Testing
 							comment: "Whether this is a primary associated type."
 						)
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
+						StatementDescriptor.assignment(target: "self.name", expression: .identifier("name"))
 						StatementDescriptor.assignment(
 							target: "self.kind",
 							expression: .functionCall(
-								"Kind.conformsTo",
+								.memberAccess(nil, "conformsTo"),
 								ArgumentsList {
 									Argument(
 										value: .functionCall(
@@ -457,7 +457,7 @@ import Testing
 						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
 						StatementDescriptor.assignment(
 							target: "self.kind",
-							expression: .functionCall("Kind.defaultType", [
+							expression: .functionCall(.memberAccess(nil, "defaultType"), [
 								Argument(value: .identifier("defaultType"))
 							])
 						)
@@ -474,15 +474,15 @@ import Testing
 				PropertyDescriptor.let("descriptor", type: "TypealiasDescriptor")
 
 				PropertyDescriptor.computed("name", comment: "The alias name.", accessModifier: .public, type: .string) {
-					StatementDescriptor.return(.raw("descriptor.name"))
+					StatementDescriptor.return(.memberAccess("descriptor", "name"))
 				}
 
 				PropertyDescriptor.computed("genericParameters", comment: "The generic parameters declared by the alias.", accessModifier: .public, type: .array("GenericParameterDescriptor")) {
-					StatementDescriptor.return(.raw("descriptor.genericParameters"))
+					StatementDescriptor.return(.memberAccess("descriptor", "genericParameters"))
 				}
 
 				PropertyDescriptor.computed("assignedType", comment: "The type this alias refers to.", accessModifier: .public, type: "TypeComposition") {
-					StatementDescriptor.return(.raw("descriptor.assignedType"))
+					StatementDescriptor.return(.memberAccess("descriptor", "assignedType"))
 				}
 
 				let supportedAssignedTypes: [(name: String, type: TypeReference)] = [

@@ -150,7 +150,7 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ name: String, conformsTo other: TypeReference, isPrimary: Bool = false) {
 		self.name = name
-		self.kind = Kind.conformsTo(TypeComposition(other))
+		self.kind = .conformsTo(TypeComposition(other))
 		self.isPrimary = isPrimary
 	}
 
@@ -181,7 +181,7 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ name: String, defaultType: TypeReference, isPrimary: Bool = false) {
 		self.name = name
-		self.kind = Kind.defaultType(defaultType)
+		self.kind = .defaultType(defaultType)
 		self.isPrimary = isPrimary
 	}
 }

@@ -13,6 +13,11 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// A function call.
 	case functionCall(FunctionCallDescriptor)
 
+	/// A member access expression.
+	///
+	/// For example: `foo.bar` or `.bar`.
+	case memberAccess(MemberAccessDescriptor)
+
 	/// A type identifier.
 	case identifier(TypeIdentifier)
 }
@@ -64,6 +69,20 @@ public extension ExpressionDescriptor {
 			calledExpression: .identifier(calledIdentifier),
 			arguments: ArgumentsList(arguments())
 		))
+	}
+
+	/// A member access expression.
+	///
+	/// For example: `foo.bar` or `.bar`.
+	static func memberAccess(_ left: ExpressionDescriptor?, _ right: String) -> Self {
+		.memberAccess(MemberAccessDescriptor(left, right))
+	}
+
+	/// A member access expression.
+	///
+	/// For example: `foo.bar` or `.bar`.
+	static func memberAccess(_ left: String, _ right: String) -> Self {
+		.memberAccess(MemberAccessDescriptor(.identifier(left), right))
 	}
 
 	/// An identifier expression created from a dotted string, such as `"self.value"`.

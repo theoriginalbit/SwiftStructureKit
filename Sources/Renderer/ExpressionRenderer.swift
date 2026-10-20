@@ -14,6 +14,9 @@ enum ExpressionRenderer {
 		case let .functionCall(descriptor):
 			return renderedFunctionCall(descriptor)
 
+		case let .memberAccess(descriptor):
+			return renderedMemberAccess(descriptor)
+
 		case let .identifier(identifier):
 			return CodeRenderingSupport.renderedIdentifier(identifier)
 		}
@@ -43,5 +46,15 @@ enum ExpressionRenderer {
 			writer.write(.colon)
 		}
 		writer.write(renderedExpression(argument.value))
+	}
+
+	private static func renderedMemberAccess(_ descriptor: MemberAccessDescriptor) -> String {
+		var writer = TokenWriter()
+		if let left = descriptor.left {
+			writer.write(renderedExpression(left))
+		}
+		writer.write(.period)
+		writer.write(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
+		return writer.finish()
 	}
 }
