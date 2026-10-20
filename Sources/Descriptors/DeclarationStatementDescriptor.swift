@@ -4,8 +4,13 @@
 
 /// An declaration statement that declares a variable or constant.
 public struct DeclarationStatementDescriptor: Sendable {
-	/// A Boolean value indicating whether the declaration is mutable (`var`) or immutable (`let`).
-	public let isMutable: Bool
+	public enum Kind: Sendable {
+		case `var`
+		case `let`
+	}
+
+	/// Whether the declaration is `var` `let`.
+	public let kind: Kind
 
 	/// The variable or constant identifier.
 	public let identifier: String
@@ -19,17 +24,17 @@ public struct DeclarationStatementDescriptor: Sendable {
 	/// An assignment statement, declaring a variable or constant.
 	///
 	/// - Parameters:
-	///   - isMutable: A Boolean value indicating whether the declaration is mutable (`var`) or immutable (`let`).
+	///   - kind: Whether the declaration is `var` `let`.
 	///   - identifier: The variable or constant identifier.
 	///   - type: The type reference of the variable or constant.
 	///   - expression: An optional initial value expression assigned to the declaration.
 	public init(
-		isMutable: Bool,
+		_ kind: Kind,
 		identifier: String,
 		type: TypeReference,
 		expression: ExpressionDescriptor? = nil
 	) {
-		self.isMutable = isMutable
+		self.kind = kind
 		self.identifier = identifier
 		self.type = type
 		self.expression = expression
@@ -50,7 +55,7 @@ public extension StatementDescriptor {
 		expression: ExpressionDescriptor? = nil
 	) -> StatementDescriptor {
 		.declaration(DeclarationStatementDescriptor(
-			isMutable: true,
+			.var,
 			identifier: identifier,
 			type: type,
 			expression: expression,
@@ -64,7 +69,7 @@ public extension StatementDescriptor {
 		expression: ExpressionDescriptor? = nil
 	) -> StatementDescriptor {
 		.declaration(DeclarationStatementDescriptor(
-			isMutable: false,
+			.let,
 			identifier: identifier,
 			type: type,
 			expression: expression

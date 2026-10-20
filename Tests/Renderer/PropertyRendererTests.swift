@@ -86,13 +86,13 @@ import Testing
 				comment: "The name.",
 				accessModifier: .public,
 				type: .string,
-				kind: .stored(isMutable: false, defaultValue: .literal(.string("Swift"))),
+				kind: .stored(.let, defaultValue: .literal(.string("Swift"))),
 			)
 			PropertyDescriptor(
 				"count",
 				isStatic: true,
 				type: .int,
-				kind: .stored(isMutable: true, defaultValue: .literal(.integer(0))),
+				kind: .stored(.var, defaultValue: .literal(.integer(0))),
 			)
 		}
 		let output = RenderTest.render { writer in
@@ -139,7 +139,7 @@ import Testing
 			"value",
 			type: .int,
 			kind: .stored(
-				isMutable: true,
+				.var,
 				defaultValue: .literal(.integer(0)),
 				observers: [
 					PropertyAccessorDescriptor.Observer(.willSet(parameterName: "next")) {

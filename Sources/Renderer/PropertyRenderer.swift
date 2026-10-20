@@ -8,10 +8,10 @@ enum PropertyRenderer {
 		AttributeRenderer.render(property.attributes, to: &writer)
 
 		switch property.kind {
-		case let .stored(isMutable, defaultValue, observers):
+		case let .stored(kind, defaultValue, observers):
 			writer.writeLine { line in
 				renderDeclarationPrefix(property, to: &line)
-				line.token(isMutable ? "var" : "let")
+				line.token(kind == .var ? "var" : "let")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
 				line.punctuation(.colon)
 				line.token(CodeRenderingSupport.renderedType(property.type))

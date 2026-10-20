@@ -8,7 +8,7 @@ public struct PropertyDescriptor: Sendable {
 	public enum Kind: Sendable {
 		/// A stored property, optionally initialized and observed.
 		case stored(
-			isMutable: Bool,
+			_ kind: DeclarationStatementDescriptor.Kind,
 			defaultValue: ExpressionDescriptor? = nil,
 			observers: [PropertyAccessorDescriptor.Observer] = [],
 		)
@@ -99,7 +99,7 @@ public extension PropertyDescriptor {
 			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
-			kind: .stored(isMutable: true, defaultValue: defaultValue, observers: observers()),
+			kind: .stored(.var, defaultValue: defaultValue, observers: observers()),
 		)
 	}
 
@@ -129,7 +129,7 @@ public extension PropertyDescriptor {
 			attributes: attributes,
 			isStatic: isStatic,
 			type: type,
-			kind: .stored(isMutable: false, defaultValue: defaultValue),
+			kind: .stored(.let, defaultValue: defaultValue),
 		)
 	}
 

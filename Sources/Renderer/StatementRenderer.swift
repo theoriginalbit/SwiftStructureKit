@@ -28,7 +28,7 @@ enum StatementRenderer {
 				PropertyDescriptor(
 					descriptor.identifier,
 					type: descriptor.type,
-					kind: .stored(isMutable: descriptor.isMutable, defaultValue: descriptor.expression)
+					kind: .stored(descriptor.kind, defaultValue: descriptor.expression)
 				),
 				to: &writer
 			)
