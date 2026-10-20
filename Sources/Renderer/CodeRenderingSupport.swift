@@ -145,59 +145,26 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderedExpression(_ expression: ExpressionDescriptor) -> String {
-		switch expression {
-		case let .literal(literal):
-			return renderedLiteral(literal)
-		case let .raw(value):
-			return value
-		case let .functionCall(descriptor):
-			var writer = TokenWriter()
-			writer.write(renderedExpression(descriptor.calledExpression))
-			writer.write(.leftParen)
-			var iterator = descriptor.arguments.makeIterator()
-			if let first = iterator.next() {
-				renderArgument(first, into: &writer)
-				while let next = iterator.next() {
-					writer.write(.comma)
-					renderArgument(next, into: &writer)
-				}
-			}
-			writer.write(.rightParen)
-			return writer.finish()
-		case let .identifier(identifier):
-			return renderedIdentifier(identifier)
-		}
-	}
-
-	private static func renderArgument(_ argument: Argument, into writer: inout TokenWriter) {
-		if let label = argument.label {
-			writer.write(SwiftIdentifier.sanitized(label, position: .argumentLabel))
-			writer.write(.colon)
-		}
-		writer.write(renderedExpression(argument.value))
-	}
-
 	static func renderUnaryKeyword(_ descriptor: UnaryKeywordDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			switch descriptor {
 			case let .return(expression):
 				line.token("return")
 				if let expression {
-					line.token(renderedExpression(expression))
+					line.token(ExpressionRenderer.renderedExpression(expression))
 				}
 			case let .try(hasPostfixQuestionMark, expression):
 				line.token("try")
 				if hasPostfixQuestionMark {
 					line.punctuation(.questionMark)
 				}
-				line.token(renderedExpression(expression))
+				line.token(ExpressionRenderer.renderedExpression(expression))
 			case let .await(expression):
 				line.token("await")
-				line.token(renderedExpression(expression))
+				line.token(ExpressionRenderer.renderedExpression(expression))
 			case let .throw(expression):
 				line.token("throw")
-				line.token(renderedExpression(expression))
+				line.token(ExpressionRenderer.renderedExpression(expression))
 			}
 		}
 	}

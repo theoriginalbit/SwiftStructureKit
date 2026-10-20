@@ -55,7 +55,7 @@ enum EnumRenderer {
 
 					if let defaultValue = associatedValue.defaultValue {
 						line.punctuation(.equal)
-						line.token(CodeRenderingSupport.renderedExpression(defaultValue))
+						line.token(ExpressionRenderer.renderedExpression(defaultValue))
 					}
 
 					if index < descriptor.associatedValues.count - 1 {

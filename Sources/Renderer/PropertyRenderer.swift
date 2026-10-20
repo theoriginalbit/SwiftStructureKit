@@ -17,7 +17,7 @@ enum PropertyRenderer {
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				if let defaultValue {
 					line.punctuation(.equal)
-					line.token(CodeRenderingSupport.renderedExpression(defaultValue))
+					line.token(ExpressionRenderer.renderedExpression(defaultValue))
 				}
 				if !observers.isEmpty {
 					line.block { writer in
