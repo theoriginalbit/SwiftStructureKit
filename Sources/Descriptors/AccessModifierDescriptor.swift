@@ -4,9 +4,6 @@
 
 /// A description of an access modifier.
 public enum AccessModifierDescriptor: Sendable {
-	/// A declaration extensible outside of the module.
-	case open
-
 	/// A declaration accessible outside of the module.
 	case `public`
 

@@ -97,7 +97,6 @@ enum CodeRenderingSupport {
 
 	static func renderedAccessModifier(_ accessModifier: AccessModifierDescriptor) -> String {
 		switch accessModifier {
-		case .open: "open"
 		case .public: "public"
 		case .package: "package"
 		case .internal: "internal"

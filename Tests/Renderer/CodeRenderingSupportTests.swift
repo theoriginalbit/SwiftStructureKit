@@ -7,7 +7,6 @@ import Testing
 
 @Suite(.tags(.renderer)) struct CodeRenderingSupportTests {
 	@Test("Render every access modifier", arguments: [
-		(.open, "open"),
 		(.public, "public"),
 		(.package, "package"),
 		(.internal, "internal"),
