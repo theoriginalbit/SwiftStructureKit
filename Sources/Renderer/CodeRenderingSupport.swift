@@ -151,20 +151,20 @@ enum CodeRenderingSupport {
 			case let .return(expression):
 				line.token("return")
 				if let expression {
-					line.token(ExpressionRenderer.renderedExpression(expression))
+					line.token(ExpressionRenderer.rendered(expression))
 				}
 			case let .try(hasPostfixQuestionMark, expression):
 				line.token("try")
 				if hasPostfixQuestionMark {
 					line.punctuation(.questionMark)
 				}
-				line.token(ExpressionRenderer.renderedExpression(expression))
+				line.token(ExpressionRenderer.rendered(expression))
 			case let .await(expression):
 				line.token("await")
-				line.token(ExpressionRenderer.renderedExpression(expression))
+				line.token(ExpressionRenderer.rendered(expression))
 			case let .throw(expression):
 				line.token("throw")
-				line.token(ExpressionRenderer.renderedExpression(expression))
+				line.token(ExpressionRenderer.rendered(expression))
 			}
 		}
 	}
@@ -224,7 +224,7 @@ enum CodeRenderingSupport {
 		case let .some(value):
 			"some \(renderedType(value))"
 		case let .tuple(elements):
-			renderedTuple(elements)
+			renderedTupleSignature(elements)
 		case let .closure(parameters, returns, isEscaping, attributes, effects):
 			renderedClosure(
 				parameters: parameters,
@@ -245,21 +245,27 @@ enum CodeRenderingSupport {
 		return writer.finish()
 	}
 
-	private static func renderedTuple(
+	private static func renderedTupleSignature(
 		_ elements: [TupleElementDescriptor]
 	) -> String {
 		var writer = TokenWriter()
 		writer.write(.leftParen)
 		var iterator = elements.makeIterator()
 		if let first = iterator.next() {
-			writer.write(rendered(first))
+			writer.write(renderedTupleSignatureElement(first))
 			while let next = iterator.next() {
 				writer.write(.comma)
-				writer.write(rendered(next))
+				writer.write(renderedTupleSignatureElement(next))
 			}
 		}
 		writer.write(.rightParen)
 		return writer.finish()
+	}
+
+	private static func renderedTupleSignatureElement(_ element: TupleElementDescriptor) -> String {
+		let type = renderedType(element.type)
+		guard let label = element.label else { return type }
+		return "\(SwiftIdentifier.sanitized(label, position: .argumentLabel)): \(type)"
 	}
 
 	private static func renderedClosure(
@@ -384,12 +390,6 @@ enum CodeRenderingSupport {
 			writer.write(renderedComposition(composition))
 		}
 		return writer.finish()
-	}
-
-	static func rendered(_ element: TupleElementDescriptor) -> String {
-		let type = renderedType(element.type)
-		guard let label = element.label else { return type }
-		return "\(SwiftIdentifier.sanitized(label, position: .argumentLabel)): \(type)"
 	}
 
 	static func renderedTypesList(_ types: some Collection<TypeReference>) -> String {

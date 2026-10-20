@@ -20,6 +20,9 @@ public indirect enum ExpressionDescriptor: Sendable {
 
 	/// A type identifier.
 	case identifier(TypeIdentifier)
+
+	/// A tuple expression.
+	case tuple([ExpressionDescriptor])
 }
 
 public extension ExpressionDescriptor {
@@ -90,5 +93,10 @@ public extension ExpressionDescriptor {
 	/// - Parameter value: The dotted identifier string.
 	static func identifier(_ value: String) -> Self {
 		.identifier(TypeIdentifier(value))
+	}
+
+	/// A tuple expression.
+	static func tuple(@ArrayBuilder<ExpressionDescriptor> _ values: () -> [ExpressionDescriptor]) -> Self {
+		.tuple(values())
 	}
 }

@@ -3,7 +3,7 @@
 //
 
 enum ExpressionRenderer {
-	static func renderedExpression(_ expression: ExpressionDescriptor) -> String {
+	static func rendered(_ expression: ExpressionDescriptor) -> String {
 		switch expression {
 		case let .literal(literal):
 			return CodeRenderingSupport.renderedLiteral(literal)
@@ -19,12 +19,15 @@ enum ExpressionRenderer {
 
 		case let .identifier(identifier):
 			return CodeRenderingSupport.renderedIdentifier(identifier)
+
+		case let .tuple(descriptors):
+			return renderedTuple(descriptors)
 		}
 	}
 
 	private static func renderedFunctionCall(_ descriptor: FunctionCallDescriptor) -> String {
 		var writer = TokenWriter()
-		writer.write(renderedExpression(descriptor.calledExpression))
+		writer.write(rendered(descriptor.calledExpression))
 		writer.write(.leftParen)
 
 		var iterator = descriptor.arguments.makeIterator()
@@ -45,16 +48,31 @@ enum ExpressionRenderer {
 			writer.write(SwiftIdentifier.sanitized(label, position: .argumentLabel))
 			writer.write(.colon)
 		}
-		writer.write(renderedExpression(argument.value))
+		writer.write(rendered(argument.value))
 	}
 
 	private static func renderedMemberAccess(_ descriptor: MemberAccessDescriptor) -> String {
 		var writer = TokenWriter()
 		if let left = descriptor.left {
-			writer.write(renderedExpression(left))
+			writer.write(rendered(left))
 		}
 		writer.write(.period)
 		writer.write(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
+		return writer.finish()
+	}
+
+	private static func renderedTuple(_ descriptors: [ExpressionDescriptor]) -> String {
+		var writer = TokenWriter()
+		writer.write(.leftParen)
+		var iterator = descriptors.makeIterator()
+		if let first = iterator.next() {
+			writer.write(rendered(first))
+			while let next = iterator.next() {
+				writer.write(.comma)
+				writer.write(rendered(next))
+			}
+		}
+		writer.write(.rightParen)
 		return writer.finish()
 	}
 }
