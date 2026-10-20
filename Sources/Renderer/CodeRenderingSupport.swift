@@ -151,11 +151,11 @@ enum CodeRenderingSupport {
 			return renderedLiteral(literal)
 		case let .raw(value):
 			return value
-		case let .functionCall(callee, arguments):
+		case let .functionCall(descriptor):
 			var writer = TokenWriter()
-			writer.write(renderedExpression(callee))
+			writer.write(renderedExpression(descriptor.calledExpression))
 			writer.write(.leftParen)
-			var iterator = arguments.makeIterator()
+			var iterator = descriptor.arguments.makeIterator()
 			if let first = iterator.next() {
 				renderArgument(first, into: &writer)
 				while let next = iterator.next() {
