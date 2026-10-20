@@ -335,17 +335,29 @@ struct Punctuation: Equatable {
 	/// The `}` punctuation mark.
 	static let rightBrace = Self("}", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
+	/// The `[` punctuation mark.
+	static let leftBracket = Self("[", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+	/// The `]` punctuation mark.
+	static let rightBracket = Self("]", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
+
 	/// The `:` punctuation mark.
 	static let colon = Self(":", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 
 	/// The `,` punctuation mark.
 	static let comma = Self(",", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 
+	/// The `&` punctuation mark.
+	static let ampersand = Self("&", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+
 	/// The `.` punctuation mark.
 	static let period = Self(".", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
 
 	/// The `=` punctuation mark.
 	static let equal = Self("=", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+
+	/// The `==` punctuation mark.
+	static let equality = Self("==", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
 	/// The `->` punctuation mark.
 	static let arrow = Self("->", acceptsSpaceBefore: true, acceptsSpaceAfter: true)

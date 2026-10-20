@@ -93,8 +93,8 @@ public extension TypeReference {
 	}
 }
 
-extension ArrayBuilder where T == TupleElementDescriptor {
-	public static func buildExpression(_ expression: TypeReference) -> Result {
+public extension ArrayBuilder<TupleElementDescriptor> {
+	static func buildExpression(_ expression: TypeReference) -> Result {
 		[T(type: expression)]
 	}
 }

@@ -29,7 +29,7 @@ public struct AnyEnumDescriptor: Sendable {
 	public let cases: [AnyEnumCaseDescriptor]
 
 	/// The member declarations contained within the enum.
-	public let members: [TypeMemberDescriptor]
+	public let members: [DeclarationDescriptor]
 
 	/// Creates an enum descriptor.
 	///
@@ -50,7 +50,7 @@ public struct AnyEnumDescriptor: Sendable {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		cases: [AnyEnumCaseDescriptor] = [],
-		members: [TypeMemberDescriptor] = [],
+		members: [DeclarationDescriptor] = [],
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -119,8 +119,14 @@ public struct EnumCaseAssociatedValueDescriptor: Sendable {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: AnyEnumDescriptor) -> [T] {
 		[.enum(expression)]
+	}
+}
+
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: AnyEnumDescriptor) -> [T] {
+		[.member(.enum(expression))]
 	}
 }

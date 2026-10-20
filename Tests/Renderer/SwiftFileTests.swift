@@ -32,13 +32,13 @@ import Testing
 				),
 			],
 		) {
-			TypeMemberDescriptor.function(name: "greeting", returns: .string) {
+			DeclarationDescriptor.function(name: "greeting", returns: .string) {
 				StatementDescriptor.return(.literal(.string("Hello")))
 			}
 
 			StructDescriptor("Person") {}
 
-			TypeMemberDescriptor.enum("Status") {
+			DeclarationDescriptor.enum("Status") {
 				"active"
 			}
 		}
@@ -47,6 +47,31 @@ import Testing
 			descriptor.render(),
 			matches: Fixtures.url("SwiftFileTests_renderFile"),
 		)
+	}
+
+	@Test("Render extensions alongside other top-level declarations") func renderExtensions() {
+		let file = SwiftFile {
+			StructDescriptor("Point") {}
+
+			ExtensionDescriptor("Point", conformances: [.equatable])
+
+			TopLevelDeclarationDescriptor.extension("Point") {
+				.mark("Helpers")
+			}
+		}
+
+		let output = String(decoding: file.render(), as: UTF8.self)
+
+		expectRendered(output, equals: """
+			struct Point {}
+			
+			extension Point: Equatable {}
+			
+			extension Point {
+			    // MARK: Helpers
+			}
+			
+			""")
 	}
 
 	@Test("Render a complex file sourced from this repo") func renderComplexFile() throws {
@@ -115,14 +140,14 @@ import Testing
 						type: .generic("OrderedSet", arguments: ["TypeReference"]),
 					)
 
-					TypeMemberDescriptor.property(.let(
+					DeclarationDescriptor.property(.let(
 						"members",
 						comment: "The member declarations contained within the protocol.",
 						accessModifier: .public,
 						type: .array("ProtocolMemberDescriptor"),
 					))
 
-					TypeMemberDescriptor.initializer(
+					DeclarationDescriptor.initializer(
 						comment: "Creates a protocol descriptor using a result builder to define its members.",
 						parameters: ParametersList {
 							Parameter("identifier", label: "_", type: .string)
@@ -144,7 +169,7 @@ import Testing
 							StatementDescriptor.assignment(target: "self.members", expression: .raw("members"))
 						}
 
-					TypeMemberDescriptor.initializer(
+					DeclarationDescriptor.initializer(
 						comment: """
 							Creates a protocol descriptor using a result builder to define its members.
 							
@@ -251,7 +276,7 @@ import Testing
 					type: .identifier("ProtocolPropertyAccessorSpecifier")
 				)
 
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates a protocol property requirement.",
 					accessModifier: .public,
 					parameters: ParametersList {
@@ -274,7 +299,7 @@ import Testing
 					}
 			}
 
-			TypeMemberDescriptor.enum(
+			DeclarationDescriptor.enum(
 				"ProtocolPropertyAccessorSpecifier",
 				comment: "The accessors required by a protocol property.",
 				accessModifier: .public,
@@ -291,7 +316,7 @@ import Testing
 				accessModifier: .public,
 				conformances: [.sendable]
 			) {
-				TypeMemberDescriptor.enum("Kind", comment: "A constraint applied to an associated type.", accessModifier: .public, conformances: [.sendable]) {
+				DeclarationDescriptor.enum("Kind", comment: "A constraint applied to an associated type.", accessModifier: .public, conformances: [.sendable]) {
 					AssociatedValueEnumCaseDescriptor(
 						"conformsTo",
 						associatedValues: [.init(type: "TypeComposition")],
@@ -306,7 +331,7 @@ import Testing
 				PropertyDescriptor.let("name", comment: "The associated type's name.", accessModifier: .public, type: .string)
 				PropertyDescriptor.let(
 					"kind",
-					comment: "The associated type's conformance or same-type requirement, if any.",
+					comment: "The associated type's conformance requirement or default type, if any.",
 					accessModifier: .public,
 					type: .optional(.identifier("Kind"))
 				)
@@ -317,7 +342,7 @@ import Testing
 					type: .bool
 				)
 
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates an unconstrained associated type requirement.",
 					accessModifier: .public,
 					parameters: ParametersList {
@@ -327,7 +352,7 @@ import Testing
 						StatementDescriptor.assignment(target: "self.kind", expression: .literal(nil))
 						StatementDescriptor.assignment(target: "self.isPrimary", expression: .literal(false))
 					}
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type.",
 					accessModifier: .public,
 					parameters: ParametersList {
@@ -349,11 +374,11 @@ import Testing
 						StatementDescriptor.assignment(
 							target: "self.kind",
 							expression: .functionCall(
-								.identifier("Kind.conformsTo"),
+								"Kind.conformsTo",
 								ArgumentsList {
 									Argument(
 										value: .functionCall(
-											.identifier("TypeComposition"),
+											"TypeComposition",
 											ArgumentsList {
 												Argument(value: .identifier("other"))
 											}
@@ -364,7 +389,7 @@ import Testing
 						)
 						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
 					}
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type.",
 					accessModifier: .public,
 					parameters: ParametersList {
@@ -386,11 +411,11 @@ import Testing
 						StatementDescriptor.assignment(
 							target: "self.kind",
 							expression: .functionCall(
-								.identifier("Kind.conformsTo"),
+								["Kind", "conformsTo"],
 								ArgumentsList([
 									Argument(
 										value: .functionCall(
-											.identifier("TypeComposition"),
+											"TypeComposition",
 											ArgumentsList {
 												Argument(value: .identifier("others"))
 											}
@@ -401,7 +426,7 @@ import Testing
 						)
 						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
 					}
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type composition.",
 					accessModifier: .public,
 					parameters: ParametersList {
@@ -413,7 +438,7 @@ import Testing
 						StatementDescriptor.assignment(
 							target: "self.kind",
 							expression: .functionCall(
-								.identifier("Kind.conformsTo"),
+								["Kind", "conformsTo"],
 								[
 									Argument(value: .identifier("constraint"))
 								]
@@ -421,19 +446,19 @@ import Testing
 						)
 						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
 					}
-				TypeMemberDescriptor.initializer(
+				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to be another type.",
 					accessModifier: .public,
 					parameters: ParametersList {
 						Parameter("name", label: "_", type: .string, comment: "The associated type's name.")
-						Parameter("other", label: "sameTypeAs", type: "TypeReference", comment: "The type the associated type must be identical to.")
+						Parameter("defaultType", type: "TypeReference", comment: "The type the associated type must be identical to.")
 						Parameter("isPrimary", type: .bool, defaultValue: .literal(false), comment: "Whether this is a primary associated type.")
 					}) {
 						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
 						StatementDescriptor.assignment(
 							target: "self.kind",
-							expression: .functionCall(.identifier("Kind.defaultType"), [
-								Argument(value: .identifier("other"))
+							expression: .functionCall("Kind.defaultType", [
+								Argument(value: .identifier("defaultType"))
 							])
 						)
 						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
@@ -447,9 +472,15 @@ import Testing
 				conformances: [.sendable]
 			) {
 				PropertyDescriptor.let("descriptor", type: "TypealiasDescriptor")
+
 				PropertyDescriptor.computed("name", comment: "The alias name.", accessModifier: .public, type: .string) {
 					StatementDescriptor.return(.raw("descriptor.name"))
 				}
+
+				PropertyDescriptor.computed("genericParameters", comment: "The generic parameters declared by the alias.", accessModifier: .public, type: .array("GenericParameterDescriptor")) {
+					StatementDescriptor.return(.raw("descriptor.genericParameters"))
+				}
+
 				PropertyDescriptor.computed("assignedType", comment: "The type this alias refers to.", accessModifier: .public, type: "TypeComposition") {
 					StatementDescriptor.return(.raw("descriptor.assignedType"))
 				}
@@ -461,21 +492,23 @@ import Testing
 				]
 
 				for assignedType in supportedAssignedTypes {
-					TypeMemberDescriptor.initializer(accessModifier: .public, parameters: ParametersList {
+					DeclarationDescriptor.initializer(accessModifier: .public, parameters: ParametersList {
 						Parameter("name", label: "_", type: .string)
 						Parameter("attributes", type: .generic("Array", arguments: ["AttributeDescriptor"]), defaultValue: .literal(.array))
+						Parameter("genericParameters", type: .generic("OrderedSet", arguments: ["GenericParameterDescriptor"]), defaultValue: .literal(.array))
 						Parameter(assignedType.name, type: assignedType.type)
 					}) {
-						StatementDescriptor.assignment(target: "self.descriptor", expression: .functionCall(.identifier("TypealiasDescriptor"), [
+						StatementDescriptor.assignment(target: "self.descriptor", expression: .functionCall("TypealiasDescriptor", [
 							Argument(value: .identifier("name")),
 							Argument(label: "attributes", value: .identifier("attributes")),
+							Argument(label: "genericParameters", value: .identifier("genericParameters")),
 							Argument(label: assignedType.name, value: .identifier(.init(assignedType.name))),
 						]))
 					}
 				}
 			}
 
-			TypeMemberDescriptor.enum(
+			DeclarationDescriptor.enum(
 				"ProtocolMemberDescriptor",
 				comment: "A declaration that can appear as a protocol member.",
 				accessModifier: .public,
@@ -502,12 +535,114 @@ import Testing
 					)
 				}
 
-			TypeMemberDescriptor.typealias(TypealiasDescriptor(
+			DeclarationDescriptor.typealias(TypealiasDescriptor(
 				"ProtocolMemberBuilder",
 				accessModifier: .public,
 				assignedType: .generic("ArrayBuilder", arguments: ["ProtocolMemberDescriptor"]),
 				comment: "A result builder for assembling protocol member declarations.",
 			))
+
+			ExtensionDescriptor("ProtocolMemberBuilder") {
+				let supporting = [
+					("ProtocolAssociatedtypeDescriptor", "associatedtype"),
+					("ProtocolPropertyDescriptor", "property"),
+					("FunctionSignatureDescriptor", "function"),
+					("ProtocolTypealiasDescriptor", "typealias"),
+				] as [(type: String, member: String)]
+
+				for support in supporting {
+					DeclarationDescriptor.function(
+						accessModifier: .public,
+						name: "buildExpression",
+						returns: "Result",
+						isStatic: true,
+						parameters: ParametersList {
+							Parameter("expression", label: "_", type: .identifier(support.type))
+						}) {
+							StatementDescriptor.return(
+								.functionCall(
+									"Array",
+									ArgumentsList {
+										Argument(
+											label: "arrayLiteral",
+											value: .functionCall(
+												TypeIdentifier(["T", support.member]),
+												ArgumentsList {
+													Argument(value: .identifier("expression"))
+												}
+											)
+										)
+									})
+							)
+						}
+				}
+
+			}
+
+			TopLevelDeclarationDescriptor.extension(
+				"ArrayBuilder",
+				accessModifier: .public,
+				genericRequirements: [
+					TypeConstraintDescriptor("T", sameType: "DeclarationDescriptor"),
+				]) {
+					DeclarationDescriptor.function(
+						name: "buildExpression",
+						returns: .array("T"),
+						isStatic: true,
+						parameters: ParametersList {
+							Parameter("expression", label: "_", type: "ProtocolDescriptor")
+						}) {
+							StatementDescriptor.return(
+								.functionCall(
+									"Array",
+									ArgumentsList {
+										Argument(
+											label: "arrayLiteral",
+											value: .functionCall(
+												TypeIdentifier(["T", "protocol"]),
+												ArgumentsList {
+													Argument(value: .identifier("expression"))
+												}
+											)
+										)
+									})
+							)
+						}
+				}
+
+			TopLevelDeclarationDescriptor.extension(
+				"ArrayBuilder",
+				accessModifier: .public,
+				genericRequirements: [
+					TypeConstraintDescriptor("T", sameType: "TopLevelDeclarationDescriptor"),
+				]) {
+					DeclarationDescriptor.function(
+						name: "buildExpression",
+						returns: .array("T"),
+						isStatic: true,
+						parameters: ParametersList {
+							Parameter("expression", label: "_", type: "ProtocolDescriptor")
+						}) {
+							let declProtocol = ExpressionDescriptor.functionCall(
+								TypeIdentifier(["DeclarationDescriptor", "protocol"]),
+								ArgumentsList {
+									Argument(value: .identifier("expression"))
+								}
+							)
+							let topDeclMember = ExpressionDescriptor.functionCall(
+								TypeIdentifier(["T", "member"]),
+								ArgumentsList {
+									Argument(value: declProtocol)
+								}
+							)
+							let arrayConstruct = ExpressionDescriptor.functionCall(
+								"Array",
+								ArgumentsList {
+									Argument(label: "arrayLiteral", value: topDeclMember)
+								})
+							StatementDescriptor.return(arrayConstruct)
+						}
+				}
 		}
 
 		try ReferenceTest.assert(

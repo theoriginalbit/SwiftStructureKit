@@ -108,7 +108,7 @@ public extension FunctionDescriptor {
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension DeclarationDescriptor {
 	/// Creates a member descriptor for an initializer.
 	///
 	/// - Parameters:
@@ -196,8 +196,14 @@ public extension TypeMemberDescriptor {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: FunctionDescriptor) -> [T] {
 		[.function(expression)]
+	}
+}
+
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: FunctionDescriptor) -> [T] {
+		[.member(.function(expression))]
 	}
 }

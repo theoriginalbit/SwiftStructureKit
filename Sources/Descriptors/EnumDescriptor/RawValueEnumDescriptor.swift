@@ -38,7 +38,7 @@ public struct RawValueEnumDescriptor<TypeRef: RawValueEnumValueType>: Sendable {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<RawValueEnumCaseDescriptor<TypeRef>> cases: () -> [RawValueEnumCaseDescriptor<TypeRef>],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) {
 		// make sure the first conformance is the raw value type
 		var conformances = conformances
@@ -136,19 +136,25 @@ public extension RawValueEnumCaseDescriptor where TypeRef == String {
 
 // MARK: - Construction Conveniences
 
-public extension ArrayBuilder where T == RawValueEnumCaseDescriptor<String> {
+public extension ArrayBuilder<RawValueEnumCaseDescriptor<String>> {
 	static func buildExpression(_ statement: String) -> [T] {
 		[T(statement)]
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: RawValueEnumDescriptor<some RawValueEnumValueType>) -> [T] {
 		[.enum(expression.descriptor)]
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: RawValueEnumDescriptor<some RawValueEnumValueType>) -> [T] {
+		[.member(.enum(expression.descriptor))]
+	}
+}
+
+public extension DeclarationDescriptor {
 	/// Creates an enum with raw values descriptor.
 	///
 	/// - Parameters:
@@ -170,7 +176,7 @@ public extension TypeMemberDescriptor {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<RawValueEnumCaseDescriptor<RawValueType>> rawValueCases cases: () -> [RawValueEnumCaseDescriptor<RawValueType>],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) -> Self {
 		Self.enum(RawValueEnumDescriptor<RawValueType>(
 			identifier,

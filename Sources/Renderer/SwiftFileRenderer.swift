@@ -32,7 +32,9 @@ enum SwiftFileRenderer {
 
 		if !descriptor.declarations.isEmpty {
 			beginSection()
-			TypeMemberRenderer.render(descriptor.declarations, to: &writer)
+			writer.writeSeparated(descriptor.declarations) { declaration, writer in
+				render(declaration, to: &writer)
+			}
 		}
 	}
 
@@ -66,6 +68,15 @@ enum SwiftFileRenderer {
 				line.punctuation(.period)
 				line.token(submodule)
 			}
+		}
+	}
+
+	private static func render(_ declaration: TopLevelDeclarationDescriptor, to writer: inout CodeWriter) {
+		switch declaration {
+		case let .member(descriptor):
+			DeclarationDescriptorRenderer.render(descriptor, to: &writer)
+		case let .extension(descriptor):
+			ExtensionRenderer.render(descriptor, to: &writer)
 		}
 	}
 }

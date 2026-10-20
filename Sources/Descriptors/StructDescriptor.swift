@@ -26,7 +26,7 @@ public struct StructDescriptor: Sendable {
 	public let conformances: [TypeReference]
 
 	/// The member declarations contained within the struct.
-	public let members: [TypeMemberDescriptor]
+	public let members: [DeclarationDescriptor]
 
 	/// Creates a struct descriptor using a result builder to define its members.
 	///
@@ -45,7 +45,7 @@ public struct StructDescriptor: Sendable {
 		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) {
 		self.comment = comment
 		self.accessModifier = accessModifier
@@ -58,13 +58,19 @@ public struct StructDescriptor: Sendable {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: StructDescriptor) -> [T] {
 		[.struct(expression)]
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: StructDescriptor) -> [T] {
+		[.member(.struct(expression))]
+	}
+}
+
+public extension DeclarationDescriptor {
 	/// Creates a member descriptor for a struct.
 	///
 	/// - Parameters:
@@ -84,7 +90,7 @@ public extension TypeMemberDescriptor {
 		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) -> Self {
 		.struct(StructDescriptor(
 			identifier,

@@ -91,6 +91,28 @@ import Testing
 		expectRendered(output, equals: expected)
 	}
 
+	@Test("De-duplicate conformances when rendering extension")
+	func deduplicateExtensionConformances() {
+		let descriptor = ExtensionDescriptor(
+			"Widget",
+			conformances: [
+				.sendable,
+				.equatable,
+				.sendable, // should be removed
+				.identifier("CustomStringConvertible"),
+				.equatable, // should be removed
+			]
+		) {}
+		let output = RenderTest.render { writer in
+			ExtensionRenderer.render(descriptor, to: &writer)
+		}
+		let expected = """
+			extension Widget: Sendable, Equatable, CustomStringConvertible {}
+
+			"""
+		expectRendered(output, equals: expected)
+	}
+
 	// MARK: - Generic Parameters De-duplication
 
 	@Test("De-duplicate generic parameters when rendering struct")

@@ -2,8 +2,11 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+/// A result builder for composing type member declarations.
+public typealias DeclarationBuilder = ArrayBuilder<DeclarationDescriptor>
+
 /// A descriptor for a member of a type, such as a function or initializer.
-public enum TypeMemberDescriptor: Sendable {
+public enum DeclarationDescriptor: Sendable {
 	/// A member that is an enum, represented by its ``EnumDescriptor``.
 	case `enum`(AnyEnumDescriptor)
 

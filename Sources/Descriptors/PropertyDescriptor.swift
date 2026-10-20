@@ -274,13 +274,19 @@ public extension PropertyDescriptor {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: PropertyDescriptor) -> [T] {
 		[.property(expression)]
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: PropertyDescriptor) -> [T] {
+		[.member(.property(expression))]
+	}
+}
+
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: PropertyDescriptor) -> Result {
 		[.property(expression)]
 	}

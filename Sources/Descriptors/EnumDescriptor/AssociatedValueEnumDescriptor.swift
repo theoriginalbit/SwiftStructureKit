@@ -32,7 +32,7 @@ public struct AssociatedValueEnumDescriptor: Sendable {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> cases: () -> [AssociatedValueEnumCaseDescriptor],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) {
 		descriptor = AnyEnumDescriptor(
 			identifier,
@@ -81,19 +81,25 @@ public struct AssociatedValueEnumCaseDescriptor: Sendable {
 
 // MARK: - Construction Conveniences
 
-public extension ArrayBuilder where T == AssociatedValueEnumCaseDescriptor {
+public extension ArrayBuilder<AssociatedValueEnumCaseDescriptor> {
 	static func buildExpression(_ statement: String) -> [T] {
 		[T(statement)]
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: AssociatedValueEnumDescriptor) -> [T] {
 		[.enum(expression.descriptor)]
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: AssociatedValueEnumDescriptor) -> [T] {
+		[.member(.enum(expression.descriptor))]
+	}
+}
+
+public extension DeclarationDescriptor {
 	/// Creates an enum with associated values descriptor.
 	///
 	/// - Parameters:
@@ -115,7 +121,7 @@ public extension TypeMemberDescriptor {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<AssociatedValueEnumCaseDescriptor> associatedValueCases cases: () -> [AssociatedValueEnumCaseDescriptor],
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) -> Self {
 		Self.enum(AssociatedValueEnumDescriptor(
 			identifier,

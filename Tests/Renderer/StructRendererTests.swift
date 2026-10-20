@@ -82,12 +82,12 @@ import Testing
 	@Test("Render struct with members")
 	func renderStructWithMembers() {
 		let structDescriptor = StructDescriptor("User") {
-			TypeMemberDescriptor.initializer(
+			DeclarationDescriptor.initializer(
 				accessModifier: .public,
 				failable: false,
 				parameters: [.init("id", type: .string)]
 			) {}
-			TypeMemberDescriptor.function(
+			DeclarationDescriptor.function(
 				comment: "Gets the identifier.",
 				accessModifier: .public,
 				name: "getIdentifier",

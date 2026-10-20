@@ -2,7 +2,7 @@
 A lightweight Swift source code renderer. It provides a clean and declarative approach to defining Swift source code.
 
 ## Features
-- Generate Swift files containing imports, structs, protocols, enums, functions, properties, and type aliases.
+- Generate Swift files containing imports, structs, protocols, enums, extensions, functions, properties, and type aliases.
 - Describe statements, types, attributes, comments, and other source constructs via a declarative API.
 - Choose spaces or tabs for indentation.
 

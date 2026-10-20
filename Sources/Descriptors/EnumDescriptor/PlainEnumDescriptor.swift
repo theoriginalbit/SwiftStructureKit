@@ -32,7 +32,7 @@ public struct PlainEnumDescriptor: Sendable {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) {
 		descriptor = AnyEnumDescriptor(
 			identifier,
@@ -79,19 +79,25 @@ public struct PlainEnumCaseDescriptor: Sendable {
 
 // MARK: - Construction Conveniences
 
-public extension ArrayBuilder where T == PlainEnumCaseDescriptor {
+public extension ArrayBuilder<PlainEnumCaseDescriptor> {
 	static func buildExpression(_ statement: String) -> [T] {
 		[T(statement)]
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: PlainEnumDescriptor) -> [T] {
 		[.enum(expression.descriptor)]
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: PlainEnumDescriptor) -> [T] {
+		[.member(.enum(expression.descriptor))]
+	}
+}
+
+public extension DeclarationDescriptor {
 	/// Creates a plain enum descriptor.
 	///
 	/// - Note: Uninhabited enum creation will go down this path.
@@ -114,7 +120,7 @@ public extension TypeMemberDescriptor {
 		genericRequirements: [TypeConstraintDescriptor] = [],
 		conformances: [TypeReference] = [],
 		@ArrayBuilder<PlainEnumCaseDescriptor> cases: () -> [PlainEnumCaseDescriptor] = { [] },
-		@TypeMembersBuilder members: () -> [TypeMemberDescriptor] = { [] },
+		@DeclarationBuilder members: () -> [DeclarationDescriptor] = { [] },
 	) -> Self {
 		Self.enum(PlainEnumDescriptor(
 			identifier,

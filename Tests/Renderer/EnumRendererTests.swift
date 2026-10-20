@@ -183,7 +183,7 @@ import Testing
 				PlainEnumCaseDescriptor("inactive")
 			},
 			members: {
-				TypeMemberDescriptor.function(
+				DeclarationDescriptor.function(
 					accessModifier: .public,
 					name: "toggle",
 					returns: .identifier("State")
@@ -250,10 +250,10 @@ import Testing
 	@Test("Render namespace enum")
 	func renderNamespaceEnum() throws {
 		let enumDescriptor = PlainEnumDescriptor("L10n") {} members: {
-			TypeMemberDescriptor.mark("Screen-based localization")
+			DeclarationDescriptor.mark("Screen-based localization")
 
-			TypeMemberDescriptor.enum("Screen") {} members: {
-				TypeMemberDescriptor.function(
+			DeclarationDescriptor.enum("Screen") {} members: {
+				DeclarationDescriptor.function(
 					name: "okay",
 					returns: .string,
 					isStatic: true,
@@ -262,10 +262,10 @@ import Testing
 				}
 			}
 
-			TypeMemberDescriptor.mark("Ran out of ideas", sectionBreak: true)
+			DeclarationDescriptor.mark("Ran out of ideas", sectionBreak: true)
 
-			TypeMemberDescriptor.struct("Foo") {
-				TypeMemberDescriptor.function(
+			DeclarationDescriptor.struct("Foo") {
+				DeclarationDescriptor.function(
 					name: "bar",
 					returns: .string,
 				) {
@@ -274,7 +274,7 @@ import Testing
 				}
 			}
 
-			TypeMemberDescriptor.enum("CodingKeys") {
+			DeclarationDescriptor.enum("CodingKeys") {
 				"key"
 				RawValueEnumCaseDescriptor("localizationValue", rawValue: "loc_value")
 			}

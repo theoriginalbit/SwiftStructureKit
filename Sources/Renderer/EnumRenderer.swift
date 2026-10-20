@@ -33,7 +33,7 @@ enum EnumRenderer {
 				}
 			}
 
-			TypeMemberRenderer.render(descriptor.members, to: &writer)
+			DeclarationDescriptorRenderer.render(descriptor.members, to: &writer)
 		}
 	}
 

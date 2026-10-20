@@ -98,8 +98,14 @@ public struct TypealiasDescriptor: Sendable {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: TypealiasDescriptor) -> [T] {
 		[.typealias(expression)]
+	}
+}
+
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: TypealiasDescriptor) -> [T] {
+		[.member(.typealias(expression))]
 	}
 }

@@ -35,7 +35,16 @@ enum CodeRenderingSupport {
 	) {
 		guard !requirements.isEmpty else { return }
 		line.token("where")
-		line.token(requirements.map(renderedConstraint(_:)).joined(separator: ", "))
+		line.token(TokenWriter.render { writer in
+			var iterator = requirements.makeIterator()
+			if let first = iterator.next() {
+				writer.write(renderedConstraint(first))
+				while let next = iterator.next() {
+					writer.write(.comma)
+					writer.write(renderedConstraint(next))
+				}
+			}
+		})
 	}
 
 	static func renderTypeDeclaration(
@@ -50,6 +59,32 @@ enum CodeRenderingSupport {
 		to writer: inout CodeWriter,
 		body: (inout CodeWriter) -> Void,
 	) {
+		Self.renderTypeDeclaration(
+			comment: comment,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			typeKeyword: typeKeyword,
+			identifier: .identifier([identifier]), // pass as components to avoid splitting by '.' and let the sanitizer replace
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
+			conformances: conformances,
+			to: &writer,
+			body: body
+		)
+	}
+
+	static func renderTypeDeclaration(
+		comment: DocCommentDescriptor?,
+		accessModifier: AccessModifierDescriptor?,
+		attributes: [AttributeDescriptor],
+		typeKeyword: String,
+		identifier: TypeReference,
+		genericParameters: [GenericParameterDescriptor],
+		genericRequirements: [TypeConstraintDescriptor],
+		conformances: [TypeReference],
+		to writer: inout CodeWriter,
+		body: (inout CodeWriter) -> Void,
+	) {
 		CommentRenderer.renderDocComment(comment, to: &writer)
 		AttributeRenderer.render(attributes, to: &writer)
 
@@ -59,7 +94,7 @@ enum CodeRenderingSupport {
 			}
 
 			line.token(typeKeyword)
-			line.token(SwiftIdentifier.sanitized(identifier))
+			line.token(Self.renderedType(identifier))
 			renderGenericSignature(genericParameters, to: &line)
 
 			if !conformances.isEmpty {
@@ -80,7 +115,12 @@ enum CodeRenderingSupport {
 		case .throws:
 			return "throws"
 		case let .typed(type):
-			return "throws(\(renderedType(type)))"
+			return TokenWriter.render { writer in
+				writer.write("throws")
+				writer.write(.leftParen)
+				writer.write(renderedType(type))
+				writer.write(.rightParen)
+			}
 		}
 	}
 
@@ -112,18 +152,30 @@ enum CodeRenderingSupport {
 		case let .raw(value):
 			return value
 		case let .functionCall(callee, arguments):
-			let renderedArguments = arguments.map { argument in
-				let expression = renderedExpression(argument.value)
-				return if let label = argument.label {
-					"\(SwiftIdentifier.sanitized(label, position: .argumentLabel)): \(expression)"
-				} else {
-					expression
+			var writer = TokenWriter()
+			writer.write(renderedExpression(callee))
+			writer.write(.leftParen)
+			var iterator = arguments.makeIterator()
+			if let first = iterator.next() {
+				renderArgument(first, into: &writer)
+				while let next = iterator.next() {
+					writer.write(.comma)
+					renderArgument(next, into: &writer)
 				}
 			}
-			return "\(renderedExpression(callee))(\(renderedArguments.joined(separator: ", ")))"
+			writer.write(.rightParen)
+			return writer.finish()
 		case let .identifier(identifier):
 			return renderedIdentifier(identifier)
 		}
+	}
+
+	private static func renderArgument(_ argument: Argument, into writer: inout TokenWriter) {
+		if let label = argument.label {
+			writer.write(SwiftIdentifier.sanitized(label, position: .argumentLabel))
+			writer.write(.colon)
+		}
+		writer.write(renderedExpression(argument.value))
 	}
 
 	static func renderedLiteral(_ literal: LiteralDescriptor) -> String {
@@ -147,10 +199,21 @@ enum CodeRenderingSupport {
 		case .nil:
 			"nil"
 		case .array:
-			"[]"
+			emptyArray
 		case .dictionary:
-			"[:]"
+			emptyDictionary
 		}
+	}
+
+	private static let emptyArray = TokenWriter.render { writer in
+		writer.write(.leftBracket)
+		writer.write(.rightBracket)
+	}
+
+	private static let emptyDictionary = TokenWriter.render { writer in
+		writer.write(.leftBracket)
+		writer.write(.colon)
+		writer.write(.rightBracket)
 	}
 
 	static func renderedType(_ type: TypeReference) -> String {
@@ -158,19 +221,19 @@ enum CodeRenderingSupport {
 		case let .identifier(identifier):
 			renderedIdentifier(identifier, as: .type)
 		case let .generic(identifier, arguments):
-			"\(renderedIdentifier(identifier, as: .type))<\(renderedTypesList(arguments))>"
+			renderedGenericTypeIdentifier(renderedIdentifier(identifier, as: .type), arguments)
 		case let .array(element):
-			"Array<\(renderedType(element))>"
+			renderedGenericTypeIdentifier("Array", [element])
 		case let .dictionary(key, value):
-			"Dictionary<\(renderedType(key)), \(renderedType(value))>"
+			renderedGenericTypeIdentifier("Dictionary", [key, value])
 		case let .optional(value):
-			"Optional<\(renderedType(value))>"
+			renderedGenericTypeIdentifier("Optional", [value])
 		case let .any(value):
 			"any \(renderedType(value))"
 		case let .some(value):
 			"some \(renderedType(value))"
 		case let .tuple(elements):
-			"(\(elements.map(rendered(_:)).joined(separator: ", ")))"
+			renderedTuple(elements)
 		case let .closure(parameters, returns, isEscaping, attributes, effects):
 			renderedClosure(
 				parameters: parameters,
@@ -180,6 +243,32 @@ enum CodeRenderingSupport {
 				effects: effects
 			)
 		}
+	}
+
+	private static func renderedGenericTypeIdentifier(_ type: String, _ types: [TypeReference]) -> String {
+		var writer = TokenWriter()
+		writer.write(type)
+		writer.write(.leftAngle)
+		writer.write(renderedTypesList(types))
+		writer.write(.rightAngle)
+		return writer.finish()
+	}
+
+	private static func renderedTuple(
+		_ elements: [TupleElementDescriptor]
+	) -> String {
+		var writer = TokenWriter()
+		writer.write(.leftParen)
+		var iterator = elements.makeIterator()
+		if let first = iterator.next() {
+			writer.write(rendered(first))
+			while let next = iterator.next() {
+				writer.write(.comma)
+				writer.write(rendered(next))
+			}
+		}
+		writer.write(.rightParen)
+		return writer.finish()
 	}
 
 	private static func renderedClosure(
@@ -268,11 +357,11 @@ enum CodeRenderingSupport {
 	}
 
 	static func renderedIdentifier(_ identifier: TypeIdentifier, as context: IdentifierContext = .expression) -> String {
-		var writer = TokenWriter()
 		var iterator = identifier.components.makeIterator()
 		guard let first = iterator.next() else {
 			return ""
 		}
+		var writer = TokenWriter()
 		writer.write(SwiftIdentifier.sanitized(first, position: context.leadingPosition))
 		while let next = iterator.next() {
 			writer.write(.period)
@@ -282,13 +371,28 @@ enum CodeRenderingSupport {
 	}
 
 	static func renderedGenericParameter(_ parameter: GenericParameterDescriptor) -> String {
+		var writer = TokenWriter()
 		let identifier = renderedIdentifier(parameter.identifier, as: .type)
-		guard let constraint = parameter.constraint else { return identifier }
-		return "\(identifier): \(renderedComposition(constraint))"
+		writer.write(identifier)
+		if let constraint = parameter.constraint {
+			writer.write(.colon)
+			writer.write(renderedComposition(constraint))
+		}
+		return writer.finish()
 	}
 
 	static func renderedConstraint(_ constraint: TypeConstraintDescriptor) -> String {
-		"\(renderedIdentifier(constraint.type, as: .type)): \(renderedComposition(constraint.constraint))"
+		var writer = TokenWriter()
+		writer.write(renderedIdentifier(constraint.type, as: .type))
+		switch constraint.kind {
+		case let .conformsTo(composition):
+			writer.write(.colon)
+			writer.write(renderedComposition(composition))
+		case let .sameType(composition):
+			writer.write(.equality)
+			writer.write(renderedComposition(composition))
+		}
+		return writer.finish()
 	}
 
 	static func rendered(_ element: TupleElementDescriptor) -> String {
@@ -298,16 +402,38 @@ enum CodeRenderingSupport {
 	}
 
 	static func renderedTypesList(_ types: some Collection<TypeReference>) -> String {
-		types.lazy
-			.map(renderedType(_:))
-			.joined(separator: ", ")
+		var iterator = types.makeIterator()
+		guard let first = iterator.next() else {
+			return ""
+		}
+		var writer = TokenWriter()
+		writer.write(renderedType(first))
+		
+		while let next = iterator.next() {
+			writer.write(.comma)
+			writer.write(renderedType(next))
+		}
+		return writer.finish()
 	}
 
 	static func renderedComposition(_ types: some Collection<TypeReference>) -> String {
-		types.lazy
-			.map(renderedType(_:))
-			.removingDuplicates()
-			.joined(separator: " & ")
+		var iterator = types.makeIterator()
+		guard let first = iterator.next() else {
+			return ""
+		}
+		var writer = TokenWriter()
+		writer.write(renderedType(first))
+
+		var seen: Set<TypeReference> = [first]
+		while let next = iterator.next() {
+			if seen.contains(next) {
+				continue
+			}
+			seen.insert(next)
+			writer.write(.ampersand)
+			writer.write(renderedType(next))
+		}
+		return writer.finish()
 	}
 
 	static func renderedComposition(_ composition: TypeComposition) -> String {

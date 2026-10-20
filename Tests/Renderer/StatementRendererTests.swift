@@ -56,7 +56,7 @@ import Testing
 		let input = StatementDescriptor.assignment(
 			target: "self.descriptor",
 			expression: .functionCall(
-				.identifier("TypealiasDescriptor"),
+				"TypealiasDescriptor",
 				[
 					.init(value: .raw("name")),
 					.init(label: "attributes", value: .raw("attributes")),
@@ -74,21 +74,21 @@ import Testing
 	@Test func expressionStatementWithNestedFunctionCall() {
 		let block = CodeBlockDescriptor {
 			ExpressionDescriptor.functionCall(
-				.identifier("self.init"),
+				"self.init",
 				ArgumentsList {
 					Argument(value: .identifier("identifier"))
 					Argument(label: "comment", value: .raw("comment"))
-					Argument(label: "members", value: .functionCall(.raw("members")))
+					Argument(label: "members", value: .functionCall("members"))
 				}
 			)
 			StatementDescriptor.assignment(
 				target: "self.kind",
 				expression: .functionCall(
-					.raw(".conformsTo"),
+					"Kind.conformsTo",
 					ArgumentsList([
 						.init(
 							value: .functionCall(
-								.raw("TypeComposition"),
+								"TypeComposition",
 								[.init(value: .raw("other"))],
 							),
 						),
@@ -102,7 +102,7 @@ import Testing
 
 		expectRendered(output, equals: """
 			self.init(identifier, comment: comment, members: members())
-			self.kind = .conformsTo(TypeComposition(other))
+			self.kind = Kind.conformsTo(TypeComposition(other))
 
 			""")
 	}

@@ -348,13 +348,19 @@ extension ArrayBuilder where T == ProtocolMemberDescriptor {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: ProtocolDescriptor) -> [T] {
 		[.protocol(expression)]
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: ProtocolDescriptor) -> [T] {
+		[.member(.protocol(expression))]
+	}
+}
+
+public extension DeclarationDescriptor {
 	/// Creates a member descriptor for a protocol.
 	///
 	/// - Parameters:

@@ -34,4 +34,10 @@ struct TokenWriter: ~Copyable {
 	consuming func finish() -> String {
 		buffer
 	}
+
+	static func render(_ work: (inout Self) -> Void) -> String {
+		var writer = Self()
+		work(&writer)
+		return writer.finish()
+	}
 }

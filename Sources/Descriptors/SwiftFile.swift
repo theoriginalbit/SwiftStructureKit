@@ -13,9 +13,12 @@ public struct SwiftFile: Sendable {
 	public let imports: [ImportDescriptor]
 
 	/// The top-level declarations contained in the file.
-	public let declarations: [TypeMemberDescriptor]
+	public let declarations: [TopLevelDeclarationDescriptor]
 
 	/// Creates a file descriptor using a result builder to define its declarations.
+	///
+	/// The builder accepts every descriptor a type body does (``DeclarationBuilder``), plus
+	/// an ``ExpressionDescriptor`` which is only permitted at the file scope.
 	///
 	/// - Parameters:
 	///   - headerComment: An optional comment rendered at the beginning of the file.
@@ -24,7 +27,7 @@ public struct SwiftFile: Sendable {
 	public init(
 		headerComment: FileHeaderCommentDescriptor? = nil,
 		imports: [ImportDescriptor] = [],
-		@TypeMembersBuilder declarations: () -> [TypeMemberDescriptor],
+		@TopLevelDeclarationBuilder declarations: () -> [TopLevelDeclarationDescriptor],
 	) {
 		self.headerComment = headerComment
 		self.imports = imports

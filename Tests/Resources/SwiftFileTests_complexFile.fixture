@@ -127,7 +127,7 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	/// The associated type's name.
 	public let name: String
 
-	/// The associated type's conformance or same-type requirement, if any.
+	/// The associated type's conformance requirement or default type, if any.
 	public let kind: Optional<Kind>
 
 	/// Whether this associated type is a primary associated type.
@@ -177,11 +177,11 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	///
 	/// - Parameters:
 	///   - name: The associated type's name.
-	///   - other: The type the associated type must be identical to.
+	///   - defaultType: The type the associated type must be identical to.
 	///   - isPrimary: Whether this is a primary associated type.
-	public init(_ name: String, sameTypeAs other: TypeReference, isPrimary: Bool = false) {
+	public init(_ name: String, defaultType: TypeReference, isPrimary: Bool = false) {
 		self.name = name
-		self.kind = Kind.defaultType(other)
+		self.kind = Kind.defaultType(defaultType)
 		self.isPrimary = isPrimary
 	}
 }
@@ -195,21 +195,26 @@ public struct ProtocolTypealiasDescriptor: Sendable {
 		return descriptor.name
 	}
 
+	/// The generic parameters declared by the alias.
+	public var genericParameters: Array<GenericParameterDescriptor> {
+		return descriptor.genericParameters
+	}
+
 	/// The type this alias refers to.
 	public var assignedType: TypeComposition {
 		return descriptor.assignedType
 	}
 
-	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], assignedType: TypeReference) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
+	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], genericParameters: OrderedSet<GenericParameterDescriptor> = [], assignedType: TypeReference) {
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, genericParameters: genericParameters, assignedType: assignedType)
 	}
 
-	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], assignedTypes: OrderedSet<TypeReference>) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedTypes: assignedTypes)
+	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], genericParameters: OrderedSet<GenericParameterDescriptor> = [], assignedTypes: OrderedSet<TypeReference>) {
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, genericParameters: genericParameters, assignedTypes: assignedTypes)
 	}
 
-	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], assignedType: TypeComposition) {
-		self.descriptor = TypealiasDescriptor(name, attributes: attributes, assignedType: assignedType)
+	public init(_ name: String, attributes: Array<AttributeDescriptor> = [], genericParameters: OrderedSet<GenericParameterDescriptor> = [], assignedType: TypeComposition) {
+		self.descriptor = TypealiasDescriptor(name, attributes: attributes, genericParameters: genericParameters, assignedType: assignedType)
 	}
 }
 
@@ -230,3 +235,33 @@ public enum ProtocolMemberDescriptor: Sendable {
 
 /// A result builder for assembling protocol member declarations.
 public typealias ProtocolMemberBuilder = ArrayBuilder<ProtocolMemberDescriptor>
+
+extension ProtocolMemberBuilder {
+	public static func buildExpression(_ expression: ProtocolAssociatedtypeDescriptor) -> Result {
+		return Array(arrayLiteral: T.associatedtype(expression))
+	}
+
+	public static func buildExpression(_ expression: ProtocolPropertyDescriptor) -> Result {
+		return Array(arrayLiteral: T.property(expression))
+	}
+
+	public static func buildExpression(_ expression: FunctionSignatureDescriptor) -> Result {
+		return Array(arrayLiteral: T.function(expression))
+	}
+
+	public static func buildExpression(_ expression: ProtocolTypealiasDescriptor) -> Result {
+		return Array(arrayLiteral: T.typealias(expression))
+	}
+}
+
+public extension ArrayBuilder where T == DeclarationDescriptor {
+	static func buildExpression(_ expression: ProtocolDescriptor) -> Array<T> {
+		return Array(arrayLiteral: T.protocol(expression))
+	}
+}
+
+public extension ArrayBuilder where T == TopLevelDeclarationDescriptor {
+	static func buildExpression(_ expression: ProtocolDescriptor) -> Array<T> {
+		return Array(arrayLiteral: T.member(DeclarationDescriptor.protocol(expression)))
+	}
+}

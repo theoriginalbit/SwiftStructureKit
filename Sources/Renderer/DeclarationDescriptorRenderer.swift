@@ -2,12 +2,12 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-enum TypeMemberRenderer {
-	static func render(_ declarations: [TypeMemberDescriptor], to writer: inout CodeWriter) {
+enum DeclarationDescriptorRenderer {
+	static func render(_ declarations: [DeclarationDescriptor], to writer: inout CodeWriter) {
 		writer.writeSeparated(declarations, render(_:to:))
 	}
 
-	static func render(_ member: TypeMemberDescriptor, to writer: inout CodeWriter) {
+	static func render(_ member: DeclarationDescriptor, to writer: inout CodeWriter) {
 		switch member {
 		case let .enum(descriptor):
 			EnumRenderer.render(descriptor, to: &writer)

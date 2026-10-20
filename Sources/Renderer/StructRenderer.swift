@@ -15,7 +15,7 @@ enum StructRenderer {
 			conformances: descriptor.conformances,
 			to: &writer
 		) { writer in
-			TypeMemberRenderer.render(descriptor.members, to: &writer)
+			DeclarationDescriptorRenderer.render(descriptor.members, to: &writer)
 		}
 	}
 }

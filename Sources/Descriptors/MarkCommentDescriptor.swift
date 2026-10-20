@@ -28,7 +28,7 @@ extension MarkCommentDescriptor: ExpressibleByStringLiteral {
 	}
 }
 
-public extension TypeMemberDescriptor {
+public extension DeclarationDescriptor {
 	/// Creates a mark-comment member.
 	///
 	/// - Parameters:
@@ -40,8 +40,14 @@ public extension TypeMemberDescriptor {
 	}
 }
 
-public extension ArrayBuilder<TypeMemberDescriptor> {
+public extension ArrayBuilder<DeclarationDescriptor> {
 	static func buildExpression(_ expression: MarkCommentDescriptor) -> [T] {
 		[.mark(expression)]
+	}
+}
+
+public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	static func buildExpression(_ expression: MarkCommentDescriptor) -> [T] {
+		[.member(.mark(expression))]
 	}
 }
