@@ -44,13 +44,8 @@ enum StatementRenderer {
 		case let .diagnostic(descriptor):
 			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
 
-		case let .return(descriptor):
-			writer.writeLine { line in
-				line.token("return")
-				if let expression = descriptor.expression {
-					line.token(CodeRenderingSupport.renderedExpression(expression))
-				}
-			}
+		case let .unaryKeyword(descriptor):
+			CodeRenderingSupport.renderUnaryKeyword(descriptor, to: &writer)
 
 		case let .if(descriptor):
 			render(descriptor.branches, to: &writer)

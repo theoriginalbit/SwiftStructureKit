@@ -22,8 +22,8 @@ public enum StatementDescriptor: Sendable {
 	/// A `#warning` or `#error` compiler diagnostic directive.
 	case diagnostic(DiagnosticDirectiveDescriptor)
 
-	/// A return statement with an optional return expression.
-	case `return`(ReturnStatementDescriptor)
+	/// A statement that places a keyword before an expression.
+	case unaryKeyword(UnaryKeywordDescriptor)
 
 	/// An `if` statement with zero or more `else if` branches.
 	case `if`(IfStatementDescriptor)
@@ -36,10 +36,33 @@ public enum StatementDescriptor: Sendable {
 }
 
 public extension StatementDescriptor {
-	/// Creates a return statement with an optional return expression.
+	/// Creates a `return` statement with an optional return expression.
 	///
 	/// - Parameter expression: The optional expression to return.
 	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
-		.return(ReturnStatementDescriptor(expression))
+		.unaryKeyword(.return(expression))
+	}
+
+	/// Creates a `try` statement with an expression and specifies if it needs `?`.
+	///
+	/// - Parameters:
+	///   - hasPostfixQuestionMark: Whether this should be `try?`.
+	///	  - expression: The expression try.
+	static func `try`(hasPostfixQuestionMark: Bool = false, _ expression: ExpressionDescriptor) -> Self {
+		.unaryKeyword(.try(hasPostfixQuestionMark: hasPostfixQuestionMark, expression))
+	}
+
+	/// Creates an `await` statement with an expression.
+	///
+	/// - Parameter expression: The expression to await.
+	static func `await`(_ expression: ExpressionDescriptor) -> Self {
+		.unaryKeyword(.await(expression))
+	}
+
+	/// Creates a `throw` statement with an expression.
+	///
+	/// - Parameter expression: The expression to throw.
+	static func `throw`(_ expression: ExpressionDescriptor) -> Self {
+		.unaryKeyword(.throw(expression))
 	}
 }

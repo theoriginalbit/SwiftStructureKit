@@ -178,6 +178,30 @@ enum CodeRenderingSupport {
 		writer.write(renderedExpression(argument.value))
 	}
 
+	static func renderUnaryKeyword(_ descriptor: UnaryKeywordDescriptor, to writer: inout CodeWriter) {
+		writer.writeLine { line in
+			switch descriptor {
+			case let .return(expression):
+				line.token("return")
+				if let expression {
+					line.token(renderedExpression(expression))
+				}
+			case let .try(hasPostfixQuestionMark, expression):
+				line.token("try")
+				if hasPostfixQuestionMark {
+					line.punctuation(.questionMark)
+				}
+				line.token(renderedExpression(expression))
+			case let .await(expression):
+				line.token("await")
+				line.token(renderedExpression(expression))
+			case let .throw(expression):
+				line.token("throw")
+				line.token(renderedExpression(expression))
+			}
+		}
+	}
+
 	static func renderedLiteral(_ literal: LiteralDescriptor) -> String {
 		return switch literal {
 		case let .string(value):
