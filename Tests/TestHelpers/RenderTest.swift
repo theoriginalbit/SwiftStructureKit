@@ -11,6 +11,14 @@ enum RenderTest {
 		block(&writer)
 		return String(decoding: writer.rendered(), as: UTF8.self)
 	}
+
+	static func renderLine(indentUsing style: CodeIndentStyle = .tabs, _ block: (inout LineWriter) -> Void) -> String {
+		render(indentUsing: style) { writer in
+			writer.writeLine { line in
+				block(&line)
+			}
+		}
+	}
 }
 
 /// Asserts that rendered output matches `expected`.

@@ -23,6 +23,10 @@ public indirect enum ExpressionDescriptor: Sendable {
 
 	/// A tuple expression.
 	case tuple([ExpressionDescriptor])
+
+	case `if`(IfExpressionDescriptor)
+
+	case ifElse(IfElseExpressionDescriptor)
 }
 
 public extension ExpressionDescriptor {

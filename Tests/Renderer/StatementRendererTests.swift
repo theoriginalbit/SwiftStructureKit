@@ -52,6 +52,25 @@ import Testing
 		expectRendered(output, equals: "self.name = name\n")
 	}
 
+	@Test func assignmentIfExpression() {
+		let input = StatementDescriptor.assignment(
+			target: "self.name",
+			expression: .if(.raw("name.isEmpty"), .literal(.string("User")), else: .identifier("name")),
+		)
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			self.name = if name.isEmpty {
+				"User"
+			} else {
+				name
+			}
+			
+			""")
+	}
+
 	@Test func assignmentWithFunctionCallExpression() {
 		let input = StatementDescriptor.assignment(
 			target: "self.descriptor",

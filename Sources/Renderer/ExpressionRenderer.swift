@@ -23,6 +23,12 @@ enum ExpressionRenderer {
 		case let .tuple(descriptors):
 			renderTuple(descriptors, to: &writer)
 
+		case let .if(descriptor):
+			renderCondition(descriptor.branches, to: &writer)
+
+		case let .ifElse(descriptor):
+			renderCondition(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
+
 		}
 	}
 
@@ -73,5 +79,31 @@ enum ExpressionRenderer {
 			}
 		}
 		writer.punctuation(.rightParen)
+	}
+
+	private static func renderCondition(_ branches: [IfExpressionDescriptor.Branch], elseBody: ExpressionDescriptor? = nil, to writer: inout LineWriter) {
+		// The whole chain is one logical line: each block's closing
+		// brace is followed by the next `else` on the same physical line.
+		for (index, branch) in branches.enumerated() {
+			if index > 0 {
+				writer.token("else")
+			}
+			writer.token("if")
+			ExpressionRenderer.render(branch.condition, to: &writer)
+			writer.block { writer in
+				writer.writeLine { line in
+					ExpressionRenderer.render(branch.body, to: &line)
+				}
+			}
+		}
+
+		if let elseBody {
+			writer.token("else")
+			writer.block { writer in
+				writer.writeLine { line in
+					ExpressionRenderer.render(elseBody, to: &line)
+				}
+			}
+		}
 	}
 }
