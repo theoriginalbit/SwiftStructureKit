@@ -119,4 +119,52 @@ import Testing
 
 		#expect(CodeRenderingSupport.renderedType(closure) == expected)
 	}
+
+	@Test(arguments: [
+		(Double.infinity, "Double.infinity"),
+		(-Double.infinity, "-Double.infinity"),
+		(Double.pi, "Double.pi"),
+		(-Double.pi, "-Double.pi"),
+		(Double.zero, "Double.zero"),
+		(-Double.zero, "-Double.zero"),
+		(Double.ulpOfOne, "Double.ulpOfOne"),
+		(Double.greatestFiniteMagnitude, "Double.greatestFiniteMagnitude"),
+		(-Double.greatestFiniteMagnitude, "-Double.greatestFiniteMagnitude"),
+		(Double.leastNonzeroMagnitude, "Double.leastNonzeroMagnitude"),
+		(Double.leastNormalMagnitude, "Double.leastNormalMagnitude"),
+	])
+	func namedConstants(value: Double, expected: String) {
+		#expect(CodeRenderingSupport.renderedLiteral(.double(value)) == expected)
+	}
+
+	@Test func nan() {
+		#expect(CodeRenderingSupport.renderedLiteral(.double(.nan)) == "Double.nan")
+	}
+
+	@Test func signalingNaN() {
+		#expect(CodeRenderingSupport.renderedLiteral(.double(.signalingNaN)) == "Double.signalingNaN")
+	}
+
+	@Test func negativeNaNHasNoSign() {
+		#expect(CodeRenderingSupport.renderedLiteral(.double(-Double.nan)) == "Double.nan")
+	}
+
+	@Test(arguments: [1.0, -1.0, 1.5, -1.5, 0.1, 1e-5, 1e300, -1e300, 123456789.123456789])
+	func ordinaryValuesRoundTrip(value: Double) throws {
+		let output = CodeRenderingSupport.renderedLiteral(.double(value))
+		#expect(!output.hasPrefix("--"))
+		let parsed = try #require(Double(output))
+		#expect(parsed == value)
+	}
+
+	@Test(arguments: [0.5, 2.0, 1e-5])
+	func negativeHasExactlyOneMinus(value: Double) {
+		let pos = CodeRenderingSupport.renderedLiteral(.double(value))
+		#expect(CodeRenderingSupport.renderedLiteral(.double(-value)) == "-" + pos)
+	}
+
+	@Test(arguments: [.nan, .infinity, -.infinity, 0, -0.0, 42])
+	func outputIsAlwaysNonEmpty(value: Double) {
+		#expect(!CodeRenderingSupport.renderedLiteral(.double(value)).isEmpty)
+	}
 }

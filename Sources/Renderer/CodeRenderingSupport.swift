@@ -176,21 +176,13 @@ enum CodeRenderingSupport {
 	static func renderedLiteral(_ literal: LiteralDescriptor) -> String {
 		return switch literal {
 		case let .string(value):
-			if value.contains(where: \.isNewline) {
-				#"""
-				"""
-				\#(value)
-				"""
-				"""#
-			} else {
-				#""\#(value)""#
-			}
+			renderedStringLiteral(value)
 		case let .integer(value):
 			String(value)
 		case let .boolean(value):
 			String(value)
 		case let .double(value):
-			String(value)
+			renderedDouble(value)
 		case .nil:
 			"nil"
 		case .array:
@@ -198,6 +190,41 @@ enum CodeRenderingSupport {
 		case .dictionary:
 			emptyDictionary
 		}
+	}
+
+	private static func renderedStringLiteral(_ value: String) -> String {
+		if value.contains(where: \.isNewline) {
+			#"""
+			"""
+			\#(value)
+			"""
+			"""#
+		} else {
+			#""\#(value)""#
+		}
+	}
+
+	private static func renderedDouble(_ value: Double) -> String {
+		var writer = TokenWriter()
+		if value.isNaN {
+			writer.write(value.isSignalingNaN ? "Double.signalingNaN" : "Double.nan")
+			return writer.finish()
+		}
+		if value.sign == .minus {
+			writer.write(.minus)
+		}
+		let rendered = switch value.magnitude {
+		case .infinity: "Double.infinity"
+		case .pi: "Double.pi"
+		case .zero: "Double.zero"
+		case .ulpOfOne: "Double.ulpOfOne"
+		case .greatestFiniteMagnitude: "Double.greatestFiniteMagnitude"
+		case .leastNonzeroMagnitude: "Double.leastNonzeroMagnitude"
+		case .leastNormalMagnitude: "Double.leastNormalMagnitude"
+		default: String(value.magnitude)
+		}
+		writer.write(rendered)
+		return writer.finish()
 	}
 
 	private static let emptyArray = TokenWriter.render { writer in
