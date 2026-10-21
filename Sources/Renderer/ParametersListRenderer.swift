@@ -35,7 +35,7 @@ enum ParametersListRenderer {
 		line.token(CodeRenderingSupport.renderedType(parameter.type))
 		if let defaultValue = parameter.defaultValue {
 			line.punctuation(.equal)
-			line.token(ExpressionRenderer.rendered(defaultValue))
+			ExpressionRenderer.render(defaultValue, to: &line)
 		}
 	}
 }

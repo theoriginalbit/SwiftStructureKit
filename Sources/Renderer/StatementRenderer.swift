@@ -15,12 +15,12 @@ enum StatementRenderer {
 			writer.writeLine { line in
 				line.token(CodeRenderingSupport.renderedIdentifier(descriptor.target))
 				line.punctuation(.equal)
-				line.token(ExpressionRenderer.rendered(descriptor.expression))
+				ExpressionRenderer.render(descriptor.expression, to: &line)
 			}
 
 		case let .expression(expression):
 			writer.writeLine { line in
-				line.token(ExpressionRenderer.rendered(expression))
+				ExpressionRenderer.render(expression, to: &line)
 			}
 
 		case let .declaration(descriptor):
@@ -56,7 +56,7 @@ enum StatementRenderer {
 		case let .guard(descriptor):
 			writer.writeLine { line in
 				line.token("guard")
-				line.token(ExpressionRenderer.rendered(descriptor.condition))
+				ExpressionRenderer.render(descriptor.condition, to: &line)
 				line.token("else")
 				line.block(descriptor.elseBody)
 			}
@@ -73,7 +73,7 @@ enum StatementRenderer {
 					line.token("else")
 				}
 				line.token("if")
-				line.token(ExpressionRenderer.rendered(branch.condition))
+				ExpressionRenderer.render(branch.condition, to: &line)
 				line.block(branch.body)
 			}
 

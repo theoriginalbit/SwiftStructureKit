@@ -151,20 +151,20 @@ enum CodeRenderingSupport {
 			case let .return(expression):
 				line.token("return")
 				if let expression {
-					line.token(ExpressionRenderer.rendered(expression))
+					ExpressionRenderer.render(expression, to: &line)
 				}
 			case let .try(hasPostfixQuestionMark, expression):
 				line.token("try")
 				if hasPostfixQuestionMark {
 					line.punctuation(.questionMark)
 				}
-				line.token(ExpressionRenderer.rendered(expression))
+				ExpressionRenderer.render(expression, to: &line)
 			case let .await(expression):
 				line.token("await")
-				line.token(ExpressionRenderer.rendered(expression))
+				ExpressionRenderer.render(expression, to: &line)
 			case let .throw(expression):
 				line.token("throw")
-				line.token(ExpressionRenderer.rendered(expression))
+				ExpressionRenderer.render(expression, to: &line)
 			}
 		}
 	}

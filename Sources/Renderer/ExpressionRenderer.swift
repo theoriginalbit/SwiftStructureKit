@@ -3,76 +3,75 @@
 //
 
 enum ExpressionRenderer {
-	static func rendered(_ expression: ExpressionDescriptor) -> String {
+	static func render(_ expression: ExpressionDescriptor, to writer: inout LineWriter) {
 		switch expression {
 		case let .literal(literal):
-			return CodeRenderingSupport.renderedLiteral(literal)
+			writer.token(CodeRenderingSupport.renderedLiteral(literal))
 
 		case let .raw(value):
-			return value
+			writer.token(value)
 
 		case let .functionCall(descriptor):
-			return renderedFunctionCall(descriptor)
+			renderFunctionCall(descriptor, to: &writer)
 
 		case let .memberAccess(descriptor):
-			return renderedMemberAccess(descriptor)
+			renderMemberAccess(descriptor, to: &writer)
 
 		case let .identifier(identifier):
-			return CodeRenderingSupport.renderedIdentifier(identifier)
+			writer.token(CodeRenderingSupport.renderedIdentifier(identifier))
 
 		case let .tuple(descriptors):
-			return renderedTuple(descriptors)
+			renderTuple(descriptors, to: &writer)
+
 		}
 	}
 
-	private static func renderedFunctionCall(_ descriptor: FunctionCallDescriptor) -> String {
-		var writer = TokenWriter()
-		writer.write(rendered(descriptor.calledExpression))
-		writer.write(.leftParen)
+	private static func renderFunctionCall(_ descriptor: FunctionCallDescriptor, to writer: inout LineWriter) {
+		render(descriptor.calledExpression, to: &writer)
+		writer.punctuation(.leftParen)
 
 		var iterator = descriptor.arguments.makeIterator()
 		if let first = iterator.next() {
-			renderArgument(first, into: &writer)
+			renderArgument(first, to: &writer)
 			while let next = iterator.next() {
-				writer.write(.comma)
-				renderArgument(next, into: &writer)
+				writer.punctuation(.comma)
+				renderArgument(next, to: &writer)
 			}
 		}
-
-		writer.write(.rightParen)
-		return writer.finish()
+		writer.punctuation(.rightParen)
 	}
 
-	private static func renderArgument(_ argument: Argument, into writer: inout TokenWriter) {
+	private static func renderArgument(_ argument: Argument, to writer: inout LineWriter) {
 		if let label = argument.label {
-			writer.write(SwiftIdentifier.sanitized(label, position: .argumentLabel))
-			writer.write(.colon)
+			writer.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
+			writer.punctuation(.colon)
 		}
-		writer.write(rendered(argument.value))
+		render(argument.value, to: &writer)
 	}
 
-	private static func renderedMemberAccess(_ descriptor: MemberAccessDescriptor) -> String {
-		var writer = TokenWriter()
+	private static func renderMemberAccess(_ descriptor: MemberAccessDescriptor, to writer: inout LineWriter) {
 		if let left = descriptor.left {
-			writer.write(rendered(left))
+			render(left, to: &writer)
+		} else {
+			// force a space when there was no left expression since `.` doesn't
+			// allow space before it. If we accept a space before this token we end
+			// up with a double space.
+			writer.token(" ", acceptsSpaceBefore: false)
 		}
-		writer.write(.period)
-		writer.write(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
-		return writer.finish()
+		writer.punctuation(.period)
+		writer.token(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
 	}
 
-	private static func renderedTuple(_ descriptors: [ExpressionDescriptor]) -> String {
-		var writer = TokenWriter()
-		writer.write(.leftParen)
+	private static func renderTuple(_ descriptors: [ExpressionDescriptor], to writer: inout LineWriter) {
+		writer.punctuation(.leftParen)
 		var iterator = descriptors.makeIterator()
 		if let first = iterator.next() {
-			writer.write(rendered(first))
+			render(first, to: &writer)
 			while let next = iterator.next() {
-				writer.write(.comma)
-				writer.write(rendered(next))
+				writer.punctuation(.comma)
+				render(next, to: &writer)
 			}
 		}
-		writer.write(.rightParen)
-		return writer.finish()
+		writer.punctuation(.rightParen)
 	}
 }

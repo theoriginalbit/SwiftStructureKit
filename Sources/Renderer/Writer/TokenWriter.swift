@@ -2,8 +2,6 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-import Foundation
-
 struct TokenWriter: ~Copyable {
 	private static let space = " "
 
