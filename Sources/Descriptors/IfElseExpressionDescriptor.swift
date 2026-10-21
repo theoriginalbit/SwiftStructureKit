@@ -47,9 +47,6 @@ public extension ExpressionDescriptor {
 }
 
 extension ArrayBuilder<ExpressionDescriptor> {
-	/// Allows an ``IfElseExpressionDescriptor`` to be used directly inside a code block builder, wrapping it in ``ExpressionDescriptor/ifElse(_:)``.
-	///
-	/// - Parameter expression: The `if`/`else` statement to include.
 	public static func buildExpression(_ expression: IfElseExpressionDescriptor) -> Result {
 		[.ifElse(expression)]
 	}

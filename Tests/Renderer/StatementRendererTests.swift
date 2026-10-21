@@ -42,8 +42,8 @@ import Testing
 
 	@Test func assignmentStatement() {
 		let input = StatementDescriptor.assignment(
-			target: "self.name",
-			expression: .raw("name"),
+			.selfMember("name"),
+			.identifier("name"),
 		)
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(input, to: &writer)
@@ -54,8 +54,8 @@ import Testing
 
 	@Test func assignmentIfExpression() {
 		let input = StatementDescriptor.assignment(
-			target: "self.name",
-			expression: .if(.raw("name.isEmpty"), .literal(.string("User")), else: .identifier("name")),
+			.memberAccess("self", "name"),
+			.if(.memberAccess("name", "isEmpty"), .literal(.string("User")), else: .identifier("name")),
 		)
 		let output = RenderTest.render(indentUsing: .tabs) { writer in
 			StatementRenderer.render(input, to: &writer)
@@ -73,8 +73,8 @@ import Testing
 
 	@Test func assignmentWithFunctionCallExpression() {
 		let input = StatementDescriptor.assignment(
-			target: "self.descriptor",
-			expression: .functionCall(
+			"self.descriptor",
+			.functionCall(
 				"TypealiasDescriptor",
 				[
 					.init(value: .raw("name")),
@@ -101,8 +101,8 @@ import Testing
 				}
 			)
 			StatementDescriptor.assignment(
-				target: "self.kind",
-				expression: .functionCall(
+				"self.kind",
+				.functionCall(
 					"Kind.conformsTo",
 					ArgumentsList([
 						.init(
@@ -222,19 +222,41 @@ import Testing
 			""")
 	}
 
+	@Test func ifWithElse() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.if(.raw("isEnabled")) {
+				StatementDescriptor.return()
+			} else: {
+				StatementDescriptor.expression(.functionCall("performWork"))
+			}
+		}
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			if isEnabled {
+				return
+			} else {
+				performWork()
+			}
+
+			""")
+	}
+
 	@Test func ifWithoutElse() {
 		let block = CodeBlockDescriptor {
 			StatementDescriptor.if(.raw("isEnabled")) {
 				StatementDescriptor.return()
 			}
 		}
-		let output = RenderTest.render { writer in
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
 			StatementRenderer.render(block.statements, to: &writer)
 		}
 
 		expectRendered(output, equals: """
 			if isEnabled {
-			    return
+				return
 			}
 
 			""")

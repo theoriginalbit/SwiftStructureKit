@@ -5,13 +5,24 @@
 /// An import statement in a Swift source file.
 public struct ImportDescriptor: Sendable {
 	/// The kind of declaration being imported, when the import is kind-qualified.
-	public enum Kind: String, Sendable {
-		case classType = "class"
-		case enumeration = "enum"
-		case function = "func"
-		case `protocol` = "protocol"
-		case structure = "struct"
-		case `typealias` = "typealias"
+	public enum Kind: Sendable {
+		/// A class declaration, as in `import class Module.Type`.
+		case `class`
+
+		/// An enum declaration, as in `import enum Module.Type`.
+		case `enum`
+
+		/// A function declaration, as in `import func Module.function`.
+		case function
+
+		/// A protocol declaration, as in `import protocol Module.Protocol`.
+		case `protocol`
+
+		/// A struct declaration, as in `import struct Module.Type`.
+		case `struct`
+
+		/// A typealias declaration, as in `import typealias Module.Name`.
+		case `typealias`
 	}
 
 	/// The module being imported.
@@ -35,7 +46,7 @@ public struct ImportDescriptor: Sendable {
 	///   - moduleName: The module to import.
 	///   - submodule: An optional submodule or symbol within the module.
 	///   - accessModifier: An optional access level modifier for the import.
-	///   - attributes: Attributes attached to the import. The leading `@` is optional.
+	///   - attributes: Attributes attached to the import.
 	///   - kind: An optional declaration kind for a kind-qualified import.
 	public init(
 		_ moduleName: String,

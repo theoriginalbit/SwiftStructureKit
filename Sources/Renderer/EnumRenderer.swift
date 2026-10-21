@@ -54,7 +54,7 @@ enum EnumRenderer {
 					line.token(CodeRenderingSupport.renderedType(associatedValue.type))
 
 					if let defaultValue = associatedValue.defaultValue {
-						line.punctuation(.equal)
+						line.punctuation(.assign)
 						ExpressionRenderer.render(defaultValue, to: &line)
 					}
 
@@ -66,7 +66,7 @@ enum EnumRenderer {
 			}
 
 			if let rawValue = descriptor.rawValue {
-				line.punctuation(.equal)
+				line.punctuation(.assign)
 				line.token(CodeRenderingSupport.renderedLiteral(rawValue))
 			}
 		}

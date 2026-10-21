@@ -6,8 +6,11 @@
 public struct DiagnosticDirectiveDescriptor: Sendable {
 	/// The kind of diagnostic directive to render.
 	public enum Kind: Sendable {
-		/// Emits a compiler warning.
-		case warning, error
+		/// Emits a compiler warning (`#warning`).
+		case warning
+
+		/// Emits a compiler error (`#error`).
+		case error
 	}
 
 	/// The diagnostic directive to emit.
@@ -45,7 +48,7 @@ public extension DiagnosticDirectiveDescriptor {
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: DiagnosticDirectiveDescriptor) -> Result {
 		[.diagnostic(expression)]
 	}

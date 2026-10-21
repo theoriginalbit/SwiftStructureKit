@@ -26,7 +26,6 @@ public struct CodeBlockDescriptor: Sendable {
 }
 
 extension CodeBlockDescriptor: ExpressibleByArrayLiteral {
-	/// Creates a code block from an array literal of statements.
 	public init(arrayLiteral elements: StatementDescriptor...) {
 		self.statements = elements
 	}

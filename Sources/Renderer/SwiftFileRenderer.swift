@@ -59,8 +59,21 @@ enum SwiftFileRenderer {
 
 			line.token("import")
 
-			if let kind = descriptor.kind {
-				line.token(kind.rawValue)
+			switch descriptor.kind {
+			case .none:
+				break
+			case .class:
+				line.token("class")
+			case .enum:
+				line.token("enum")
+			case .function:
+				line.token("func")
+			case .protocol:
+				line.token("protocol")
+			case .struct:
+				line.token("struct")
+			case .typealias:
+				line.token("typealias")
 			}
 
 			line.token(descriptor.moduleName)

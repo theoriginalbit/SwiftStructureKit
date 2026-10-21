@@ -10,13 +10,55 @@ public struct FunctionDescriptor: Sendable {
 	/// The body definition of the function.
 	public let body: CodeBlockDescriptor
 
-	/// Creates a function descriptor with a signature and result builder body.
+	/// A function descriptor.
+	///
+	/// - Parameters:
+	///   - signature: The function signature.
+	///   - body: The statements in the function body.
 	public init(
 		signature: FunctionSignatureDescriptor,
 		@CodeBlockBuilder body: () -> [StatementDescriptor],
 	) {
 		self.signature = signature
 		self.body = CodeBlockDescriptor(body)
+	}
+
+	/// A function descriptor.
+	///
+	/// - Parameters:
+	///   - comment: An optional documentation comment for the function.
+	///   - accessModifier: An optional access modifier for the function.
+	///   - attributes: The attributes applied to the function.
+	///   - kind: Whether the declaration is an initializer, named function, or subscript.
+	///   - parameters: The parameters accepted by the function.
+	///   - genericParameters: The generic parameters declared by the function.
+	///   - genericRequirements: The generic `where` requirements declared by the function.
+	///   - effects: The function's `async` and throwing specifiers.
+	///   - body: The statements in the function body.
+	public init(
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		kind: FunctionSignatureDescriptor.Kind,
+		parameters: ParametersList = [],
+		genericParameters: [GenericParameterDescriptor] = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
+		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
+		@CodeBlockBuilder body: () -> [StatementDescriptor],
+	) {
+		self.init(
+			signature: .init(
+				comment: comment,
+				accessModifier: accessModifier,
+				attributes: attributes,
+				kind: kind,
+				parameters: parameters,
+				genericParameters: genericParameters,
+				genericRequirements: genericRequirements,
+				effects: effects,
+			),
+			body: body,
+		)
 	}
 }
 
@@ -133,17 +175,15 @@ public extension DeclarationDescriptor {
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
 	) -> Self {
-		Self.function(FunctionDescriptor(
-			signature: .init(
-				comment: comment,
-				accessModifier: accessModifier,
-				attributes: attributes,
-				kind: .initializer(failable: failable),
-				parameters: parameters,
-				genericParameters: genericParameters,
-				genericRequirements: genericRequirements,
-				effects: effects,
-			),
+		Self.function(FunctionDescriptor.initializer(
+			comment: comment,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			failable: failable,
+			parameters: parameters,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
+			effects: effects,
 			body: body,
 		))
 	}
@@ -176,21 +216,17 @@ public extension DeclarationDescriptor {
 		effects: EffectSpecifiers<FunctionThrowingSpecifier> = .none,
 		@CodeBlockBuilder body: () -> [StatementDescriptor] = { [] },
 	) -> Self {
-		Self.function(FunctionDescriptor(
-			signature: .init(
-				comment: comment,
-				accessModifier: accessModifier,
-				attributes: attributes,
-				kind: .function(
-					name,
-					returns: returns,
-					isStatic: isStatic
-				),
-				parameters: parameters,
-				genericParameters: genericParameters,
-				genericRequirements: genericRequirements,
-				effects: effects,
-			),
+		Self.function(FunctionDescriptor.function(
+			comment: comment,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			name: name,
+			returns: returns,
+			isStatic: isStatic,
+			parameters: parameters,
+			genericParameters: genericParameters,
+			genericRequirements: genericRequirements,
+			effects: effects,
 			body: body,
 		))
 	}

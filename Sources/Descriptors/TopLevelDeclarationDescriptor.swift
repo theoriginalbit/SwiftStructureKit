@@ -23,7 +23,7 @@ public enum TopLevelDeclarationDescriptor: Sendable {
 /// a file body can read the same as a type body while additionally accepting extensions.
 public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
 	/// Allows a ``DeclarationDescriptor`` to be used directly inside a top-level declaration
-	/// builder. Wrapping it in ``TopLevelDeclarationDescriptor\member(_:)``
+	/// builder. Wrapping it in ``TopLevelDeclarationDescriptor/member(_:)``
 	static func buildExpression(_ expression: DeclarationDescriptor) -> [T] {
 		[.member(expression)]
 	}

@@ -216,13 +216,18 @@ public struct ProtocolAssociatedtypeDescriptor: Sendable {
 	}
 
 	/// Creates an associated type requirement constrained to conform to a type composition.
+	///
+	/// - Parameters:
+	///   - name: The associated type's name.
+	///   - constraint: The type composition the associated type must conform to.
+	///   - isPrimary: Whether this is a primary associated type.
 	public init(_ name: String, conformsTo constraint: TypeComposition, isPrimary: Bool = false) {
 		self.name = name
 		self.kind = .conformsTo(constraint)
 		self.isPrimary = isPrimary
 	}
 
-	/// Creates an associated type requirement constrained to be another type.
+	/// Creates an associated type requirement with a default type.
 	///
 	/// - Parameters:
 	///   - name: The associated type's name.

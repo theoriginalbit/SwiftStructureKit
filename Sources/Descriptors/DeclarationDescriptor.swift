@@ -7,7 +7,7 @@ public typealias DeclarationBuilder = ArrayBuilder<DeclarationDescriptor>
 
 /// A descriptor for a member of a type, such as a function or initializer.
 public enum DeclarationDescriptor: Sendable {
-	/// A member that is an enum, represented by its ``EnumDescriptor``.
+	/// A member that is an enum, represented by its ``AnyEnumDescriptor``.
 	case `enum`(AnyEnumDescriptor)
 
 	/// A member that is a function, represented by its ``FunctionDescriptor``.

@@ -35,6 +35,9 @@ public struct SwiftFile: Sendable {
 	}
 
 	/// Renders the file descriptor as UTF-8 source data.
+	///
+	/// - Parameter style: The indentation style to use when rendering.
+	/// - Returns: The rendered source as UTF-8 `Data`.
 	public func render(indentUsing style: CodeIndentStyle = .spaces(4)) -> Data {
 		var writer = CodeWriter(indentUsing: style)
 		SwiftFileRenderer.render(self, to: &writer)

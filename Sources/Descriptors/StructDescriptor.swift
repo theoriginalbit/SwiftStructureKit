@@ -34,7 +34,40 @@ public struct StructDescriptor: Sendable {
 	///   - identifier: The name of the struct.
 	///   - comment: An optional documentation comment for the struct.
 	///   - accessModifier: An optional access level modifier for the struct.
+	///   - attributes: The attributes applied to the struct.
 	///   - genericParameters: The generic parameters associated with the struct.
+	///   - genericRequirements: The generic `where` requirements declared by the struct.
+	///   - conformances: The types or protocols the struct conforms to.
+	///   - members: A result builder closure producing the struct's member declarations.
+	public init(
+		_ identifier: String,
+		comment: DocCommentDescriptor? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		genericParameters: [GenericParameterDescriptor] = [],
+		genericRequirements: [TypeConstraintDescriptor] = [],
+		conformances: [TypeReference] = [],
+		members: [DeclarationDescriptor] = [],
+	) {
+		self.comment = comment
+		self.accessModifier = accessModifier
+		self.attributes = attributes
+		self.identifier = identifier
+		self.genericParameters = genericParameters
+		self.genericRequirements = genericRequirements
+		self.conformances = conformances
+		self.members = members
+	}
+
+	/// Creates a struct descriptor using a result builder to define its members.
+	///
+	/// - Parameters:
+	///   - identifier: The name of the struct.
+	///   - comment: An optional documentation comment for the struct.
+	///   - accessModifier: An optional access level modifier for the struct.
+	///   - attributes: The attributes applied to the struct.
+	///   - genericParameters: The generic parameters associated with the struct.
+	///   - genericRequirements: The generic `where` requirements declared by the struct.
 	///   - conformances: The types or protocols the struct conforms to.
 	///   - members: A result builder closure producing the struct's member declarations.
 	public init(

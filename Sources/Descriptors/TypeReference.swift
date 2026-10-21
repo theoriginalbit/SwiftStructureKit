@@ -3,7 +3,7 @@
 //
 
 /// A reference to a type representation in Swift.
-public indirect enum TypeReference: Hashable, Sendable, ExpressibleByStringLiteral {
+public indirect enum TypeReference: Hashable, Sendable {
 	/// Creates a type reference from a qualified identifier.
 	case identifier(TypeIdentifier)
 
@@ -43,7 +43,9 @@ public indirect enum TypeReference: Hashable, Sendable, ExpressibleByStringLiter
 		attributes: [AttributeDescriptor] = [],
 		effects: EffectSpecifiers<ThrowingSpecifier> = .none
 	)
+}
 
+extension TypeReference: ExpressibleByStringLiteral {
 	public init(stringLiteral value: StringLiteralType) {
 		self = .identifier(value)
 	}
@@ -58,6 +60,10 @@ public struct TupleElementDescriptor: Hashable, Sendable {
 	public let type: TypeReference
 
 	/// Creates a tuple element.
+	///
+	/// - Parameters:
+	///   - label: The optional label of the tuple element.
+	///   - type: The type of the tuple element.
 	public init(label: String? = nil, type: TypeReference) {
 		self.label = label
 		self.type = type
@@ -134,6 +140,10 @@ public extension TypeReference {
 
 	/// A type reference to `Void`.
 	static var void: Self {
+		// hello reader, did you know that Void is declared as a
+		// typealias to an empty tuple?
+		//
+		// public typealias Void = ()
 		.tuple([])
 	}
 }

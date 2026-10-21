@@ -59,7 +59,7 @@ enum CodeRenderingSupport {
 		to writer: inout CodeWriter,
 		body: (inout CodeWriter) -> Void,
 	) {
-		Self.renderTypeDeclaration(
+		renderTypeDeclaration(
 			comment: comment,
 			accessModifier: accessModifier,
 			attributes: attributes,
@@ -94,7 +94,7 @@ enum CodeRenderingSupport {
 			}
 
 			line.token(typeKeyword)
-			line.token(Self.renderedType(identifier))
+			line.token(renderedType(identifier))
 			renderGenericSignature(genericParameters, to: &line)
 
 			if !conformances.isEmpty {
@@ -194,11 +194,11 @@ enum CodeRenderingSupport {
 
 	private static func renderedStringLiteral(_ value: String) -> String {
 		if value.contains(where: \.isNewline) {
-			#"""
-			"""
-			\#(value)
-			"""
-			"""#
+   #"""
+   """
+   \#(value)
+   """
+   """#
 		} else {
 			#""\#(value)""#
 		}
@@ -347,7 +347,7 @@ enum CodeRenderingSupport {
 		renderedEffects(effects, renderThrowingSpecifier: renderedThrowingSpecifier)
 	}
 
-	private static func renderedEffects<Throwing: Hashable & Sendable>(
+	private static func renderedEffects<Throwing: ThrowingSpecifierDescriptor>(
 		_ effects: EffectSpecifiers<Throwing>,
 		renderThrowingSpecifier: (Throwing) -> String,
 	) -> String {
@@ -417,7 +417,7 @@ enum CodeRenderingSupport {
 			writer.write(.colon)
 			writer.write(renderedComposition(composition))
 		case let .sameType(composition):
-			writer.write(.equality)
+			writer.write(.equals)
 			writer.write(renderedComposition(composition))
 		}
 		return writer.finish()
@@ -430,7 +430,7 @@ enum CodeRenderingSupport {
 		}
 		var writer = TokenWriter()
 		writer.write(renderedType(first))
-		
+
 		while let next = iterator.next() {
 			writer.write(.comma)
 			writer.write(renderedType(next))

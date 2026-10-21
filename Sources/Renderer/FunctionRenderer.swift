@@ -3,7 +3,6 @@
 //
 
 enum FunctionRenderer {
-	/// Renders a function and it's body.
 	static func render(_ function: FunctionDescriptor, to writer: inout CodeWriter) {
 		renderDocComment(for: function.signature, to: &writer)
 

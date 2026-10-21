@@ -43,21 +43,25 @@ public enum AttributeDescriptor: Hashable, Sendable {
 	/// The `@_exported` attribute.
 	case exported
 
-	/// A custom attribute name
+	/// A custom attribute name.
+	///
+	/// - Parameter value: The attribute name. A leading `@` is optional and is not duplicated when rendered.
 	public init(_ value: String) {
 		self = .rawValue(value)
+	}
+}
+
+public extension AttributeDescriptor {
+	/// An Objective-C attribute, optionally naming the Objective-C declaration.
+	///
+	/// - Parameter name: The optional Objective-C name of the declaration.
+	static func objc(name: String? = nil) -> Self {
+		.objectiveC(name: name)
 	}
 }
 
 extension AttributeDescriptor: ExpressibleByStringLiteral {
 	public init(stringLiteral value: StringLiteralType) {
 		self = .rawValue(value)
-	}
-}
-
-public extension AttributeDescriptor {
-	/// Creates an Objective-C attribute with an optional name.
-	static func objc(name: String? = nil) -> Self {
-		.objectiveC(name: name)
 	}
 }

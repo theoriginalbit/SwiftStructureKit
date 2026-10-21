@@ -78,6 +78,11 @@ public enum PropertyAccessorDescriptor {
 			self.body = CodeBlockDescriptor(body)
 		}
 
+		/// Creates a `willSet` observer.
+		///
+		/// - Parameters:
+		///   - parameterName: An optional name for the incoming value.
+		///   - body: A result builder closure producing the observer body.
 		public static func willSet(
 			parameterName: String? = nil,
 			@CodeBlockBuilder body: () -> [StatementDescriptor]
@@ -85,6 +90,11 @@ public enum PropertyAccessorDescriptor {
 			Self(.willSet(parameterName: parameterName), body: body)
 		}
 
+		/// Creates a `didSet` observer.
+		///
+		/// - Parameters:
+		///   - parameterName: An optional name for the previous value.
+		///   - body: A result builder closure producing the observer body.
 		public static func didSet(
 			parameterName: String? = nil,
 			@CodeBlockBuilder body: () -> [StatementDescriptor]

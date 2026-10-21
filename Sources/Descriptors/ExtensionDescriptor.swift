@@ -17,7 +17,7 @@
 /// - It is only valid at the file scope and therefore is not part of ``DeclarationDescriptor``.
 ///
 /// - Note: Extensions cannot declare stored instance properties. This descriptor does not currently prevent
-///			their inclusion as a ``member``.
+///			their inclusion in ``members``.
 public struct ExtensionDescriptor: Sendable {
 	/// The documentation comment attached to the extension, if any.
 	public let comment: DocCommentDescriptor?
@@ -74,7 +74,7 @@ public struct ExtensionDescriptor: Sendable {
 	/// Creates an extension that adds members to a type, optionally at a default access level.
 	///
 	/// An extension with an access level modifier cannot also declare conformances; use
-	/// ``init(_:comment:attributes:conformances:genericRequirements:memebrs:)``
+	/// ``init(_:comment:attributes:conformances:genericRequirements:members:)``
 	///
 	/// - Parameters:
 	///   - extendedType: The type being extended.
@@ -200,7 +200,7 @@ public extension TopLevelDeclarationDescriptor {
 
 public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
 	/// Allows an ``ExtensionDescriptor`` to be used directly inside a top-level declaration
-	/// builder. Wrapping it in ``TopLevelDeclarationDescriptor\extension(_:)``
+	/// builder. Wrapping it in ``TopLevelDeclarationDescriptor/extension(_:)``
 	static func buildExpression(_ expression: ExtensionDescriptor) -> [T] {
 		[.extension(expression)]
 	}

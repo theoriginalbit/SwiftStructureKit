@@ -48,6 +48,8 @@ public struct FunctionSignatureDescriptor: Sendable {
 	///   - attributes: The attributes applied to the function.
 	///   - kind: Whether the declaration is an initializer, named function, or subscript.
 	///   - parameters: The parameters accepted by the function.
+	///   - genericParameters: The generic parameters declared by the function.
+	///   - genericRequirements: The generic `where` requirements declared by the function.
 	///   - effects: The function's `async` and throwing specifiers.
 	public init(
 		comment: DocCommentDescriptor? = nil,

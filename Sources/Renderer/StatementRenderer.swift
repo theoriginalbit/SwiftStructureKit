@@ -13,9 +13,9 @@ enum StatementRenderer {
 		switch statement {
 		case let .assignment(descriptor):
 			writer.writeLine { line in
-				line.token(CodeRenderingSupport.renderedIdentifier(descriptor.target))
-				line.punctuation(.equal)
-				ExpressionRenderer.render(descriptor.expression, to: &line)
+				ExpressionRenderer.render(descriptor.left, to: &line)
+				line.punctuation(.assign)
+				ExpressionRenderer.render(descriptor.right, to: &line)
 			}
 
 		case let .expression(expression):

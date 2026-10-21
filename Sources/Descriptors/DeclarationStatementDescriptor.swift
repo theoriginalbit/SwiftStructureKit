@@ -2,7 +2,7 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-/// An declaration statement that declares a variable or constant.
+/// A statement that declares a variable or constant.
 public struct DeclarationStatementDescriptor: Sendable {
 	public enum Kind: Sendable {
 		case `var`
@@ -21,7 +21,7 @@ public struct DeclarationStatementDescriptor: Sendable {
 	/// An optional initial value expression assigned to the declaration.
 	public let expression: ExpressionDescriptor?
 
-	/// An assignment statement, declaring a variable or constant.
+	/// A declaration statement.
 	///
 	/// - Parameters:
 	///   - kind: Whether the declaration is `var` `let`.
@@ -41,7 +41,7 @@ public struct DeclarationStatementDescriptor: Sendable {
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: DeclarationStatementDescriptor) -> Result {
 		[.declaration(expression)]
 	}
@@ -49,6 +49,11 @@ extension ArrayBuilder where T == StatementDescriptor {
 
 public extension StatementDescriptor {
 	/// Creates a mutable variable declaration.
+	///
+	/// - Parameters:
+	///   - identifier: The variable or constant identifier.
+	///   - type: The type reference of the variable or constant.
+	///   - expression: An optional initial value expression assigned to the declaration.
 	static func `var`(
 		_ identifier: String,
 		type: TypeReference,
@@ -63,6 +68,11 @@ public extension StatementDescriptor {
 	}
 
 	/// Creates an immutable constant declaration.
+	///
+	/// - Parameters:
+	///   - identifier: The variable or constant identifier.
+	///   - type: The type reference of the variable or constant.
+	///   - expression: An optional initial value expression assigned to the declaration.
 	static func `let`(
 		_ identifier: String,
 		type: TypeReference,

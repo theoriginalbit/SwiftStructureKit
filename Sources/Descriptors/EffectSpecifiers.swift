@@ -33,7 +33,7 @@ public struct EffectSpecifiers<Throwing: ThrowingSpecifierDescriptor>: Hashable,
 	/// The throwing behavior, if any.
 	public let throwingSpecifier: Throwing?
 
-	/// Whether there are no effect specifiers.
+	/// Whether there are any effect specifiers present.
 	public var hasEffects: Bool {
 		isAsync || throwingSpecifier != nil
 	}
@@ -53,31 +53,34 @@ public extension EffectSpecifiers {
 	/// No effect specifiers.
 	static var none: Self { Self() }
 
-	/// An `async` effect specifier.
+	/// An `async` effect specifier without a throwing specifier.
 	static var async: Self { Self(isAsync: true) }
 }
 
 public extension EffectSpecifiers where Throwing == ThrowingSpecifier {
-	/// A `throws` effect specifier.
+	/// A `throws` effect specifier without an async specifier.
 	static var `throws`: Self { Self(throwingSpecifier: .throws) }
 
 	/// An `async throws` effect specifier.
 	static var asyncThrows: Self { Self(isAsync: true, throwingSpecifier: .throws) }
 
-	/// An effect specifier that declares throws a specific error type (`throws(MyError)`).
+	/// An effect specifier that declares throws a specific error type (`throws(MyError)`) without an async specifier.
 	static func `throws`(_ type: TypeReference) -> Self { Self(throwingSpecifier: .typed(type)) }
 }
 
 public extension EffectSpecifiers where Throwing == FunctionThrowingSpecifier {
-	/// A `thros` effect specifier.
+	/// A `throws` effect specifier without an async specifier.
 	static var `throws`: Self { Self(throwingSpecifier: .throws) }
 
-	/// A `rethrows` effect specifier.
+	/// A `rethrows` effect specifier without an async specifier.
 	static var `rethrows`: Self { Self(throwingSpecifier: .rethrows) }
 
 	/// An `async throws` effect specifier.
 	static var asyncThrows: Self { Self(isAsync: true, throwingSpecifier: .throws) }
 
-	/// An effect specifier that declares throws a specific error type (`throws(MyError)`).
+	/// An `async rethrows` effect specifier.
+	static var asyncRethrows: Self { Self(isAsync: true, throwingSpecifier: .rethrows) }
+
+	/// An effect specifier that declares throws a specific error type (`throws(MyError)`) without an async specifier.
 	static func `throws`(_ type: TypeReference) -> Self { Self(throwingSpecifier: .typed(type)) }
 }

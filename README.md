@@ -13,7 +13,7 @@ import SwiftStructureKit
 
 let file = SwiftFile(headerComment: """
   An example for SwiftStructureKit.
-  
+
   This serves as a simple example to demonstrate the fundamentals
   of the API surface. It does not get much more complex than this.
   There are lots of declarative conveniences for construction 
@@ -23,7 +23,7 @@ let file = SwiftFile(headerComment: """
     "Namespace",
     comment: """
     Comments are optional.
-    
+
     They support multiline string literals.
     As seen further down, function comments will also collect
     all the comments for parameters for it's DocC.
@@ -41,7 +41,10 @@ let file = SwiftFile(headerComment: """
         comment: "The current heading",
         accessModifier: .public,
         type: "Vector2D") {
-          StatementDescriptor.return(.raw("Vector2D(x: 1, y: 4)"))
+          StatementDescriptor.return(.functionCall("Vector2D", ArgumentsList {
+            Argument(label: "x", value: .literal(.integer(1)))
+            Argument(label: "y", value: .literal(.integer(4)))
+          }))
         }
 
       FunctionDescriptor.initializer(accessModifier: .public)
@@ -53,7 +56,10 @@ let file = SwiftFile(headerComment: """
         parameters: ParametersList {
           Parameter("subject", label: "for", type: .string, comment: "The subject the greeting is being addressed to.")
         }) {
-          StatementDescriptor.return(.raw("String(format: message, arguments: [subject])"))
+          StatementDescriptor.return(.functionCall("String", ArgumentsList {
+            Argument(label: "format", value: .identifier("message"))
+            Argument(label: "arguments", value: .raw("[subject]"))
+          }))
         }
     }
   }
@@ -67,7 +73,7 @@ The rendered source is:
 ```swift
 //
 // An example for SwiftStructureKit.
-// 
+//
 // This serves as a simple example to demonstrate the fundamentals
 // of the API surface. It does not get much more complex than this.
 // There are lots of declarative conveniences for construction 
@@ -75,7 +81,7 @@ The rendered source is:
 //
 
 /// Comments are optional.
-/// 
+///
 /// They support multiline string literals.
 /// As seen further down, function comments will also collect
 /// all the comments for parameters for it's DocC.
@@ -88,17 +94,17 @@ enum Namespace {
       return Vector2D(x: 1, y: 4)
     }
 
-    public init() {
-    }
-
+    public init() {}
+    
     /// Creates a greeting for the specified subject
     ///
     /// - Parameter subject: The subject the greeting is being addressed to.
-    func greeting(`for` subject: String) -> String {
+    func greeting(for subject: String) -> String {
       return String(format: message, arguments: [subject])
     }
   }
 }
+
 ```
 
 > [!NOTE]

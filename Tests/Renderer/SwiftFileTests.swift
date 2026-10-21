@@ -28,7 +28,7 @@ import Testing
 				ImportDescriptor(
 					"Foundation",
 					submodule: "Date",
-					kind: .structure,
+					kind: .struct,
 				),
 			],
 		) {
@@ -159,14 +159,14 @@ import Testing
 							Parameter("conformances", type: .generic("OrderedSet", arguments: ["TypeReference"]))
 							Parameter("members", type: .generic("Array", arguments: ["ProtocolMemberDescriptor"]))
 						}) {
-							StatementDescriptor.assignment(target: "self.comment", expression: .raw("comment"))
-							StatementDescriptor.assignment(target: "self.accessModifier", expression: .raw("accessModifier"))
-							StatementDescriptor.assignment(target: "self.attributes", expression: .raw("attributes"))
-							StatementDescriptor.assignment(target: "self.identifier", expression: .raw("identifier"))
-							StatementDescriptor.assignment(target: "self.genericParameters", expression: .raw("genericParameters"))
-							StatementDescriptor.assignment(target: "self.genericRequirements", expression: .raw("genericRequirements"))
-							StatementDescriptor.assignment(target: "self.conformances", expression: .raw("conformances"))
-							StatementDescriptor.assignment(target: "self.members", expression: .raw("members"))
+							StatementDescriptor.assignment("self.comment", .identifier("comment"))
+							StatementDescriptor.assignment("self.accessModifier", .identifier("accessModifier"))
+							StatementDescriptor.assignment("self.attributes", .identifier("attributes"))
+							StatementDescriptor.assignment("self.identifier", .identifier("identifier"))
+							StatementDescriptor.assignment("self.genericParameters", .identifier("genericParameters"))
+							StatementDescriptor.assignment("self.genericRequirements", .identifier("genericRequirements"))
+							StatementDescriptor.assignment("self.conformances", .identifier("conformances"))
+							StatementDescriptor.assignment("self.members", .identifier("members"))
 						}
 
 					DeclarationDescriptor.initializer(
@@ -291,11 +291,11 @@ import Testing
 						Parameter("type", type: "TypeReference", comment: "The property's type.")
 						Parameter("accessorSpecifier", type: "ProtocolPropertyAccessorSpecifier", comment: "The required property accessors.")
 					}) {
-						StatementDescriptor.assignment(target: "self.comment", expression: .raw("comment"))
-						StatementDescriptor.assignment(target: "self.attributes", expression: .raw("attributes"))
-						StatementDescriptor.assignment(target: "self.identifier", expression: .raw("identifier"))
-						StatementDescriptor.assignment(target: "self.type", expression: .raw("type"))
-						StatementDescriptor.assignment(target: "self.accessorSpecifier", expression: .raw("accessorSpecifier"))
+						StatementDescriptor.assignment("self.comment", .identifier("comment"))
+						StatementDescriptor.assignment("self.attributes", .identifier("attributes"))
+						StatementDescriptor.assignment("self.identifier", .identifier("identifier"))
+						StatementDescriptor.assignment("self.type", .identifier("type"))
+						StatementDescriptor.assignment("self.accessorSpecifier", .identifier("accessorSpecifier"))
 					}
 			}
 
@@ -348,9 +348,9 @@ import Testing
 					parameters: ParametersList {
 						Parameter("name", label: "_", type: .string, comment: "The associated type's name.")
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
-						StatementDescriptor.assignment(target: "self.kind", expression: .literal(nil))
-						StatementDescriptor.assignment(target: "self.isPrimary", expression: .literal(false))
+						StatementDescriptor.assignment("self.name", .identifier("name"))
+						StatementDescriptor.assignment("self.kind", .literal(nil))
+						StatementDescriptor.assignment("self.isPrimary", .literal(false))
 					}
 				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type.",
@@ -370,10 +370,10 @@ import Testing
 							comment: "Whether this is a primary associated type."
 						)
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .identifier("name"))
+						StatementDescriptor.assignment("self.name", .identifier("name"))
 						StatementDescriptor.assignment(
-							target: "self.kind",
-							expression: .functionCall(
+							.memberAccess("self", "kind"),
+							.functionCall(
 								.memberAccess(nil, "conformsTo"),
 								ArgumentsList {
 									Argument(
@@ -387,7 +387,7 @@ import Testing
 								}
 							)
 						)
-						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
+						StatementDescriptor.assignment("self.isPrimary", .identifier("isPrimary"))
 					}
 				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type.",
@@ -407,10 +407,10 @@ import Testing
 							comment: "Whether this is a primary associated type.",
 						)
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
+						StatementDescriptor.assignment("self.name", .identifier("name"))
 						StatementDescriptor.assignment(
-							target: "self.kind",
-							expression: .functionCall(
+							.selfMember("kind"),
+							.functionCall(
 								["Kind", "conformsTo"],
 								ArgumentsList([
 									Argument(
@@ -424,7 +424,7 @@ import Testing
 								])
 							)
 						)
-						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
+						StatementDescriptor.assignment("self.isPrimary", .identifier("isPrimary"))
 					}
 				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to conform to a type composition.",
@@ -434,17 +434,17 @@ import Testing
 						Parameter("constraint",label: "conformsTo", type: "TypeComposition")
 						Parameter("isPrimary", type: .bool, defaultValue: .literal(false))
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
+						StatementDescriptor.assignment("self.name", .identifier("name"))
 						StatementDescriptor.assignment(
-							target: "self.kind",
-							expression: .functionCall(
+							"self.kind",
+							.functionCall(
 								["Kind", "conformsTo"],
 								[
 									Argument(value: .identifier("constraint"))
 								]
 							)
 						)
-						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
+						StatementDescriptor.assignment("self.isPrimary", .identifier("isPrimary"))
 					}
 				DeclarationDescriptor.initializer(
 					comment: "Creates an associated type requirement constrained to be another type.",
@@ -454,14 +454,14 @@ import Testing
 						Parameter("defaultType", type: "TypeReference", comment: "The type the associated type must be identical to.")
 						Parameter("isPrimary", type: .bool, defaultValue: .literal(false), comment: "Whether this is a primary associated type.")
 					}) {
-						StatementDescriptor.assignment(target: "self.name", expression: .raw("name"))
+						StatementDescriptor.assignment(.selfMember("name"), .identifier("name"))
 						StatementDescriptor.assignment(
-							target: "self.kind",
-							expression: .functionCall(.memberAccess(nil, "defaultType"), [
+							"self.kind",
+							.functionCall(.memberAccess(nil, "defaultType"), [
 								Argument(value: .identifier("defaultType"))
 							])
 						)
-						StatementDescriptor.assignment(target: "self.isPrimary", expression: .raw("isPrimary"))
+						StatementDescriptor.assignment("self.isPrimary",  .identifier("isPrimary"))
 					}
 			}
 
@@ -498,11 +498,11 @@ import Testing
 						Parameter("genericParameters", type: .generic("OrderedSet", arguments: ["GenericParameterDescriptor"]), defaultValue: .literal(.array))
 						Parameter(assignedType.name, type: assignedType.type)
 					}) {
-						StatementDescriptor.assignment(target: "self.descriptor", expression: .functionCall("TypealiasDescriptor", [
+						StatementDescriptor.assignment("self.descriptor", .functionCall("TypealiasDescriptor", [
 							Argument(value: .identifier("name")),
 							Argument(label: "attributes", value: .identifier("attributes")),
 							Argument(label: "genericParameters", value: .identifier("genericParameters")),
-							Argument(label: assignedType.name, value: .identifier(.init(assignedType.name))),
+							Argument(label: assignedType.name, value: .identifier(assignedType.name)),
 						]))
 					}
 				}

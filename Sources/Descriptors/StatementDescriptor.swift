@@ -66,3 +66,12 @@ public extension StatementDescriptor {
 		.unaryKeyword(.throw(expression))
 	}
 }
+
+extension ArrayBuilder<StatementDescriptor> {
+	/// Allows an ``ExpressionDescriptor`` to be used directly inside a code block builder, wrapping it in ``StatementDescriptor/expression(_:)``.
+	///
+	/// - Parameter expression: The expression to evaluate as a statement.
+	public static func buildExpression(_ expression: ExpressionDescriptor) -> Result {
+		[.expression(expression)]
+	}
+}

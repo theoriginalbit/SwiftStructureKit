@@ -23,4 +23,28 @@ public struct MemberAccessDescriptor: Sendable {
 		self.left = left
 		self.right = right
 	}
+
+	/// A member access expression.
+	///
+	/// For example `foo.bar`.
+	public static func memberAccess(_ left: ExpressionDescriptor?, _ right: String) -> Self {
+		MemberAccessDescriptor(left, right)
+	}
+
+	/// A member access expression.
+	///
+	/// For example `foo.bar`.
+	public static func memberAccess(_ left: String?, _ right: String) -> Self {
+		MemberAccessDescriptor(
+			left.map(ExpressionDescriptor.identifier(_:)),
+			right
+		)
+	}
+
+	/// A member access expression.
+	///
+	/// For example `foo.bar`.
+	public static func selfMember(_ right: String) -> Self {
+		MemberAccessDescriptor(.identifier("self"), right)
+	}
 }

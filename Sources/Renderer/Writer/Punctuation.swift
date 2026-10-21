@@ -58,10 +58,10 @@ struct Punctuation: Equatable {
 	static let period = Self(".", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
 
 	/// The `=` punctuation mark.
-	static let equal = Self("=", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+	static let assign = Self("=", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
 	/// The `==` punctuation mark.
-	static let equality = Self("==", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+	static let equals = Self("==", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
 	/// The `->` punctuation mark.
 	static let arrow = Self("->", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
@@ -71,4 +71,7 @@ struct Punctuation: Equatable {
 
 	/// The `#` punctuation mark.
 	static let pound = Self("#", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
+
+	/// The `-` punctuation mark.
+	static let minus = Self("-", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 }

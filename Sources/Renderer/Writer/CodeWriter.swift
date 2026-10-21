@@ -18,9 +18,14 @@ struct CodeWriter: ~Copyable {
 	private static let space = UInt8(ascii: " ")
 	private static let tab = UInt8(ascii: "\t")
 
-	/// Pre-built runs of indentation characters. Appending a slice of these is cheaper than
-	/// appending a `repeatElement` sequence, which goes through the generic sequence path.
+	/// Pre-built run of space characters for indentation.
+	///
+	/// Appending a slice of these is cheaper than appending a `repeatElement` sequence, which goes through the generic sequence path.
 	private static let spaceRun = Data(repeating: space, count: 128)
+
+	/// Pre-built run of tab characters for indentation.
+	///
+	/// Appending a slice of these is cheaper than appending a `repeatElement` sequence, which goes through the generic sequence path.
 	private static let tabRun = Data(repeating: tab, count: 64)
 
 	private var buffer: Data

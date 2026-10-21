@@ -88,6 +88,7 @@ extension Bool: RawValueEnumValueType {
 }
 
 /// A descriptor representing a enum case declaration that has a raw value.
+@dynamicMemberLookup
 public struct RawValueEnumCaseDescriptor<TypeRef: RawValueEnumValueType>: Sendable {
 	let descriptor: AnyEnumCaseDescriptor
 

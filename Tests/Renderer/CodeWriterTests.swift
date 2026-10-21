@@ -1,9 +1,13 @@
+//
+// Copyright © 2026 SwiftStructureKit. All rights reserved.
+//
+
 import Testing
 @testable import SwiftStructureKit
 
 @Suite(.tags(.renderer)) struct CodeWriterTests {
 	@Test("Test all major functions of the writer")
-	func wholeContract() async throws {
+	func wholeContract() throws {
 		var writer = CodeWriter(indentUsing: .spaces(4))
 
 		writer.writeLine("import Foundation")
@@ -38,7 +42,7 @@ import Testing
 						writer.writeLine { line in
 							line.token("let")
 							line.token("closure")
-							line.punctuation(.equal)
+							line.punctuation(.assign)
 							line.token("{\n    print(\"Hello, world 6!\")\n}")
 						}
 						writer.writeLine(#"""
