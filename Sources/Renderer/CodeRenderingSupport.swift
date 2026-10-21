@@ -165,6 +165,10 @@ enum CodeRenderingSupport {
 			case let .throw(expression):
 				line.token("throw")
 				ExpressionRenderer.render(expression, to: &line)
+			case .continue:
+				line.token("continue")
+			case .break:
+				line.token("break")
 			}
 		}
 	}

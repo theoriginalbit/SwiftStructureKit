@@ -2,17 +2,33 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-/// An expression that places a keyword before an expression.
+/// A keyword expression, optionally followed by an expression.
 public enum UnaryKeywordDescriptor: Sendable {
-	/// The return keyword.
+	/// Returns from the current function or closure.
+	///
+	/// - Parameter expression: The value to return, or `nil` for a bare `return`.
 	case `return`(ExpressionDescriptor?)
 
-	/// The try keyword.
+	/// Evaluates a throwing expression.
+	///
+	/// - Parameters:
+	///   - hasPostfixQuestionMark: Whether to use optional `try?` rather than `try`.
+	///   - expression: The expression to evaluate.
 	case `try`(hasPostfixQuestionMark: Bool, ExpressionDescriptor)
 
-	/// The await keyword.
+	/// Awaits the result of an asynchronous expression.
+	///
+	/// - Parameter expression: The asynchronous expression to evaluate.
 	case `await`(ExpressionDescriptor)
 
-	/// The throw keyword.
+	/// Throws an error from the current function or closure.
+	///
+	/// - Parameter expression: The error expression to throw.
 	case `throw`(ExpressionDescriptor)
+
+	/// Continues with the next iteration of the current loop.
+	case `continue`
+
+	/// Exits the current loop or switch statement.
+	case `break`
 }
