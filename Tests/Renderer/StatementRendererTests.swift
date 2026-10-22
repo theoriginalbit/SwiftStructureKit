@@ -331,4 +331,84 @@ import Testing
 
 			""")
 	}
+
+	@Test func `labeled do`() {
+		let input = StatementDescriptor.labeled("outer", .do {
+			StatementDescriptor.if(.functionCall("doTheThing")) {
+				.break("outer")
+			}
+		})
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			outer: do {
+				if doTheThing() {
+					break outer
+				}
+			}
+
+			""")
+	}
+
+	@Test func `labeled do with catch`() {
+		let input = StatementDescriptor.labeled("outer", .do {
+			StatementDescriptor.try(.functionCall("doTheThing"))
+		} catch: {
+			StatementDescriptor.try(.functionCall("attemptRecovery"))
+			StatementDescriptor.continue("outer")
+		})
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			outer: do {
+				try doTheThing()
+			} catch {
+				try attemptRecovery()
+				continue outer
+			}
+
+			""")
+	}
+
+	// MARK: - Do/catch statement
+
+	@Test func `do without catch`() {
+		let input = StatementDescriptor.do {
+			StatementDescriptor.functionCall("doTheThing")
+		}
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			do {
+				doTheThing()
+			}
+
+			""")
+	}
+
+	@Test func `do with catch`() {
+		let input = StatementDescriptor.do {
+			StatementDescriptor.try(.functionCall("doTheThing"))
+		} catch: {
+			StatementDescriptor.functionCall("doTheFallbackThing")
+		}
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			do {
+				try doTheThing()
+			} catch {
+				doTheFallbackThing()
+			}
+
+			""")
+	}
 }

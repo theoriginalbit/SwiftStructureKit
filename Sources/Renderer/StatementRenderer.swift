@@ -39,6 +39,9 @@ enum StatementRenderer {
 
 		case let .labeled(descriptor):
 			renderLabeled(descriptor, to: &writer)
+
+		case let .do(descriptor):
+			renderDo(descriptor, to: &writer)
 		}
 	}
 
@@ -115,10 +118,7 @@ enum StatementRenderer {
 		// The whole chain is one logical line: each block's closing
 		// brace is followed by the next `else` on the same physical line.
 		writer.writeLine { line in
-			if let label {
-				line.token(label)
-				line.punctuation(.colon)
-			}
+			renderLabel(label, to: &line)
 
 			for (index, branch) in branches.enumerated() {
 				if index > 0 {
@@ -141,8 +141,32 @@ enum StatementRenderer {
 		switch descriptor.statement {
 		case let .if(descriptor):
 			renderIfConditional(descriptor.branches, label: label, to: &writer)
+
 		case let .ifElse(descriptor):
 			renderIfConditional(descriptor.branches, elseBody: descriptor.elseBody, label: label, to: &writer)
+
+		case let .do(descriptor):
+			renderDo(descriptor, label: label, to: &writer)
+		}
+	}
+
+	private static func renderLabel(_ label: String?, to line: inout LineWriter) {
+		if let label {
+			line.token(label)
+			line.punctuation(.colon)
+		}
+	}
+
+	private static func renderDo(_ descriptor: DoStatementDescriptor, label: String? = nil, to writer: inout CodeWriter) {
+		writer.writeLine { line in
+			renderLabel(label, to: &line)
+
+			line.token("do")
+			line.block(descriptor.body)
+			if let catchBody = descriptor.catchBody {
+				line.token("catch")
+				line.block(catchBody)
+			}
 		}
 	}
 }

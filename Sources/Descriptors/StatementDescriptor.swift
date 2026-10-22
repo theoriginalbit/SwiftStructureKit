@@ -30,6 +30,9 @@ public enum StatementDescriptor: Sendable {
 
 	/// A statement prefixed with a label.
 	case labeled(LabeledStatementDescriptor)
+
+	/// A `do` statement with a `catch` body.
+	case `do`(DoStatementDescriptor)
 }
 
 extension ArrayBuilder<StatementDescriptor> {

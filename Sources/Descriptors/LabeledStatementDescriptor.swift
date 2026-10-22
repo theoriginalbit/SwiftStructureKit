@@ -18,6 +18,9 @@ public struct LabeledStatementDescriptor: Sendable {
 		/// The associated descriptor stores the conditional branches in source order and the body
 		/// executed when none of their conditions hold.
 		case ifElse(IfElseStatementDescriptor)
+
+		/// A `do` statement with a `catch` body.
+		case `do`(DoStatementDescriptor)
 	}
 
 	/// The label for the statement.
@@ -66,6 +69,16 @@ public extension StatementDescriptor {
 	/// - Returns: A labeled statement descriptor containing the `if`/`else` statement.
 	static func labeled(_ label: String, _ statement: IfElseStatementDescriptor) -> Self {
 		.labeled(LabeledStatementDescriptor(label: label, statement: .ifElse(statement)))
+	}
+
+	/// Creates a labeled statement from a `do` statement.
+	///
+	/// - Parameters:
+	///   - label: The label to attach to the statement.
+	///   - statement: The `do` statement to label.
+	/// - Returns: A labeled statement descriptor containing the `do` statement.
+	static func labeled(_ label: String, _ statement: DoStatementDescriptor) -> Self {
+		.labeled(LabeledStatementDescriptor(label: label, statement: .do(statement)))
 	}
 }
 
