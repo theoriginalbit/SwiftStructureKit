@@ -269,10 +269,10 @@ struct LineWriter: ~Copyable {
 	///
 	/// Embedded newlines are preserved and each continuation line is indented to the current
 	/// level, so a multi-line raw expressions will keep their structure.
-	mutating func token(_ value: String, acceptsSpaceBefore: Bool = true) {
+	mutating func token(_ value: String) {
 		writer.writeContent(
 			value.utf8,
-			acceptsSpaceBefore: acceptsSpaceBefore,
+			acceptsSpaceBefore: true,
 			acceptsSpaceAfter: true
 		)
 	}

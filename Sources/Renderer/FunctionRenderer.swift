@@ -63,7 +63,7 @@ enum FunctionRenderer {
 		case let .initializer(failable):
 			line.token("init")
 			if failable {
-				line.punctuation(.questionMark)
+				line.punctuation(.Postfix.questionMark)
 			}
 		case let .function(name, _, isStatic):
 			if isStatic {

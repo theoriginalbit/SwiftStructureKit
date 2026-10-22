@@ -51,9 +51,6 @@ struct Punctuation: Equatable {
 	/// The `,` punctuation mark.
 	static let comma = Self(",", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 
-	/// The `&` punctuation mark.
-	static let ampersand = Self("&", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
-
 	/// The `.` punctuation mark.
 	static let period = Self(".", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
 
@@ -66,12 +63,35 @@ struct Punctuation: Equatable {
 	/// The `->` punctuation mark.
 	static let arrow = Self("->", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
-	/// The `?` punctuation mark.
-	static let questionMark = Self("?", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
-
-	/// The `#` punctuation mark.
-	static let pound = Self("#", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
-
 	/// The `-` punctuation mark.
-	static let minus = Self("-", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+	static let minus = Self("-", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+
+	/// Punctuation that is used as a token prefix. They may exist in ``Punctuation`` with different spacing rules.
+	enum Prefix {
+		/// The `&` punctuation mark.
+		static let ampersand = Punctuation("&", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+		/// The `#` punctuation mark.
+		static let pound = Punctuation("#", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
+
+		/// The `.` punctuation mark that allows space before it unlike ``Punctuation/period``.
+		static let period = Punctuation(".", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+		/// The `-` punctuation mark.
+		static let minus = Punctuation("-", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+	}
+
+	/// Punctuation that is used as a token postfix. They may exist in ``Punctuation`` with different spacing rules.
+	enum Postfix {
+		/// The `?` punctuation mark.
+		static let questionMark = Punctuation("?", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
+	}
+
+	/// Punctuation that is used as an operator such as bitwise or boolean logic. Typically an infix between two tokens and allows for
+	/// spacing on both sides.
+	///
+	/// The value may exist in ``Punctuation`` with a different name and/or spacing rules.
+	enum Operator {
+		static let bitwiseAnd = Punctuation("&", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+	}
 }

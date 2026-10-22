@@ -76,4 +76,15 @@ import Testing
 
 			""")
 	}
+
+	@Test func inOut() {
+		let input = ExpressionDescriptor.inOut(.identifier("writer"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			&writer
+
+			""")
+	}
 }

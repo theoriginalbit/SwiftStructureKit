@@ -5,7 +5,7 @@
 enum DiagnosticDirectiveRenderer {
 	static func render(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
-			line.punctuation(.pound)
+			line.punctuation(.Prefix.pound)
 			switch descriptor.kind {
 			case .warning: line.token("warning")
 			case .error: line.token("error")

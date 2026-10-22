@@ -183,7 +183,7 @@ enum CodeRenderingSupport {
 			return writer.finish()
 		}
 		if value.sign == .minus {
-			writer.write(.minus)
+			writer.write(.Prefix.minus)
 		}
 		let rendered = switch value.magnitude {
 		case .infinity: "Double.infinity"
@@ -424,7 +424,7 @@ enum CodeRenderingSupport {
 				continue
 			}
 			seen.insert(next)
-			writer.write(.ampersand)
+			writer.write(.Operator.bitwiseAnd)
 			writer.write(renderedType(next))
 		}
 		return writer.finish()

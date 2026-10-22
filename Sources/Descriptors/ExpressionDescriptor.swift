@@ -27,6 +27,11 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// For example: `foo.bar` or `.bar`.
 	case memberAccess(MemberAccessDescriptor)
 
+	/// An inout expression, which provides a reference to a variable.
+	///
+	/// For example, `&foo` passes a reference to the `foo` variable.
+	case inOut(ExpressionDescriptor)
+
 	/// A type identifier.
 	case identifier(TypeIdentifier)
 

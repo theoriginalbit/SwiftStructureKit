@@ -7,7 +7,7 @@ enum CommentRenderer {
 		writer.writeLine { line in
 			line.token("// MARK:")
 			if descriptor.sectionBreak {
-				line.token("-")
+				line.punctuation(.minus)
 			}
 			if let value = descriptor.value, !value.isEmpty {
 				// A MARK comment is only recognised by Xcode when it occupies a single line, so

@@ -17,6 +17,10 @@ enum ExpressionRenderer {
 		case let .memberAccess(descriptor):
 			renderMemberAccess(descriptor, to: &writer)
 
+		case let .inOut(expression):
+			writer.punctuation(.Prefix.ampersand)
+			render(expression, to: &writer)
+
 		case let .identifier(identifier):
 			writer.token(CodeRenderingSupport.renderedIdentifier(identifier))
 
@@ -63,13 +67,10 @@ enum ExpressionRenderer {
 	private static func renderMemberAccess(_ descriptor: MemberAccessDescriptor, to writer: inout LineWriter) {
 		if let left = descriptor.left {
 			render(left, to: &writer)
+			writer.punctuation(.period)
 		} else {
-			// force a space when there was no left expression since `.` doesn't
-			// allow space before it. If we accept a space before this token we end
-			// up with a double space.
-			writer.token(" ", acceptsSpaceBefore: false)
+			writer.punctuation(.Prefix.period)
 		}
-		writer.punctuation(.period)
 		writer.token(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
 	}
 
@@ -115,7 +116,7 @@ enum ExpressionRenderer {
 	private static func renderTry(_ hasPostfixQuestionMark: Bool, _ expression: ExpressionDescriptor, to writer: inout LineWriter) {
 		writer.token("try")
 		if hasPostfixQuestionMark {
-			writer.punctuation(.questionMark)
+			writer.punctuation(.Postfix.questionMark)
 		}
 		render(expression, to: &writer)
 	}
