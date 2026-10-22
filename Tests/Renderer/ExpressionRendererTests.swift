@@ -36,15 +36,18 @@ import Testing
 
 		let input = ExpressionDescriptor.if(
 			.identifier("isEnabled"),
-			.literal(.boolean(true))
+			.literal(.integer(1)),
+			else: .literal(.integer(2)),
 		)
 		let output = RenderTest.renderLine { writer in
-			ExpressionRenderer.render(.if(input), to: &writer)
+			ExpressionRenderer.render(input, to: &writer)
 		}
 
 		expectRendered(output, equals: """
 			if isEnabled {
-				true
+				1
+			} else {
+				2
 			}
 
 			""")

@@ -87,7 +87,8 @@ public extension ExpressionDescriptor {
 }
 
 extension ArrayBuilder<ExpressionDescriptor> {
+	@available(*, unavailable, message: "If must have an unconditional 'else' to be used as an expression")
 	public static func buildExpression(_ expression: IfExpressionDescriptor) -> Result {
-		[.`if`(expression)]
+		fatalError("If must have an unconditional 'else' to be used as an expression")
 	}
 }

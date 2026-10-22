@@ -8,7 +8,6 @@ Define your Swift source files with a lightweight and declarative API and render
 	   source: "swiftStructureKit-icon",
 	   alt: "A technology icon representing the SwiftStructureKit framework.")
 	@PageColor(purple)
-	@TechnologyRoot()
 }
 
 ## Overview
