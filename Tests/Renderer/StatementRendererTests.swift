@@ -246,7 +246,7 @@ import Testing
 
 	@Test func ifWithoutElse() {
 		let block = CodeBlockDescriptor {
-			StatementDescriptor.if(.raw("isEnabled")) {
+			StatementDescriptor.if(.identifier("isEnabled")) {
 				StatementDescriptor.return()
 			}
 		}
@@ -278,6 +278,56 @@ import Testing
 			    return
 			}
 			return value
+
+			""")
+	}
+
+	// MARK: - Labeled statements
+
+	@Test func labeledIf() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.if(.identifier("isEnabled")) {
+				StatementDescriptor.return()
+			}
+			.labeled("outer")
+		}
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			outer: if isEnabled {
+				return
+			}
+
+			""")
+	}
+
+	@Test func labeledIfElseIfElse() {
+		let block = CodeBlockDescriptor {
+			StatementDescriptor.if(.raw("value > 0")) {
+				StatementDescriptor.return(.literal(.integer(1)))
+			}
+			.elseIf(.raw("value < 0")) {
+				StatementDescriptor.return(.literal(.integer(-1)))
+			}
+			.else {
+				StatementDescriptor.return(.literal(.integer(0)))
+			}
+			.labeled("check")
+		}
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(block.statements, to: &writer)
+		}
+
+		expectRendered(output, equals: """
+			check: if value > 0 {
+				return 1
+			} else if value < 0 {
+				return -1
+			} else {
+				return 0
+			}
 
 			""")
 	}

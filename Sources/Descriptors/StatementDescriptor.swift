@@ -27,6 +27,9 @@ public enum StatementDescriptor: Sendable {
 
 	/// An `if`, `if`/`else`, or `guard` statement.
 	case conditional(ConditionalStatementDescriptor)
+
+	/// A statement prefixed with a label.
+	case labeled(LabeledStatementDescriptor)
 }
 
 extension ArrayBuilder<StatementDescriptor> {

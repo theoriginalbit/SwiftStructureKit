@@ -10,11 +10,11 @@ public enum ControlFlowDescriptor: Sendable {
 	/// A `throw` statement with an expression.
 	case `throw`(ExpressionDescriptor)
 
-	/// A `continue` statement.
-	case `continue`
+	/// A `continue` statement with an optional statement label continue.
+	case `continue`(String? = nil)
 
-	/// A `break` statement.
-	case `break`
+	/// A `break` statement with an optional statement label to break.
+	case `break`(String? = nil)
 
 	/// A `fallthrough` statement.
 	case `fallthrough`
@@ -24,6 +24,16 @@ public extension ControlFlowDescriptor {
 	/// Creates a `return` statement.
 	static var `return`: Self {
 		.return(nil)
+	}
+
+	/// A `continue` statement.
+	static var `continue`: Self {
+		.continue(nil)
+	}
+
+	/// A `break` statement
+	static var `break`: Self {
+		.break(nil)
 	}
 }
 
@@ -47,9 +57,23 @@ public extension StatementDescriptor {
 		.controlFlow(.throw(expression))
 	}
 
+	/// A `continue` statement with an optional statement label continue.
+	///
+	/// - Parameter label: The label to continue.
+	static func `continue`(_ label: String? = nil) -> Self {
+		.controlFlow(.continue(label))
+	}
+
 	/// A `continue` statement.
 	static var `continue`: Self {
 		.controlFlow(.continue)
+	}
+
+	/// A `break` statement with an optional statement label to break.
+	///
+	/// - Parameter label: The label to break.
+	static func `break`(_ label: String? = nil) -> Self {
+		.controlFlow(.break(label))
 	}
 
 	/// A `break` statement.
