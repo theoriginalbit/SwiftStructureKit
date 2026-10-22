@@ -264,11 +264,10 @@ import Testing
 
 	@Test func guardWithContinuation() {
 		let block = CodeBlockDescriptor {
-			StatementDescriptor.guard(.raw("isValid")) {
-				StatementDescriptor.return(.raw("value"))
-			} else: {
+			StatementDescriptor.guard(.identifier("isValid")) {
 				StatementDescriptor.return()
 			}
+			StatementDescriptor.return(.raw("value"))
 		}
 		let output = RenderTest.render { writer in
 			StatementRenderer.render(block.statements, to: &writer)

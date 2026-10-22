@@ -88,7 +88,6 @@ enum StatementRenderer {
 				line.token("else")
 				line.block(descriptor.elseBody)
 			}
-			render(descriptor.body.statements, to: &writer)
 		}
 	}
 
