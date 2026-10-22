@@ -29,6 +29,11 @@ enum ExpressionRenderer {
 		case let .ifElse(descriptor):
 			renderCondition(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
 
+		case let .try(hasPostfixQuestionMark, expression):
+			renderTry(hasPostfixQuestionMark, expression, to: &writer)
+
+		case let .await(expression):
+			renderAwait(expression, to: &writer)
 		}
 	}
 
@@ -89,10 +94,10 @@ enum ExpressionRenderer {
 				writer.token("else")
 			}
 			writer.token("if")
-			ExpressionRenderer.render(branch.condition, to: &writer)
+			render(branch.condition, to: &writer)
 			writer.block { writer in
 				writer.writeLine { line in
-					ExpressionRenderer.render(branch.body, to: &line)
+					render(branch.body, to: &line)
 				}
 			}
 		}
@@ -101,9 +106,22 @@ enum ExpressionRenderer {
 			writer.token("else")
 			writer.block { writer in
 				writer.writeLine { line in
-					ExpressionRenderer.render(elseBody, to: &line)
+					render(elseBody, to: &line)
 				}
 			}
 		}
+	}
+
+	private static func renderTry(_ hasPostfixQuestionMark: Bool, _ expression: ExpressionDescriptor, to writer: inout LineWriter) {
+		writer.token("try")
+		if hasPostfixQuestionMark {
+			writer.punctuation(.questionMark)
+		}
+		render(expression, to: &writer)
+	}
+
+	private static func renderAwait(_ expression: ExpressionDescriptor, to writer: inout LineWriter) {
+		writer.token("await")
+		render(expression, to: &writer)
 	}
 }

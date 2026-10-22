@@ -44,14 +44,14 @@ enum StatementRenderer {
 		case let .diagnostic(descriptor):
 			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
 
-		case let .unaryKeyword(descriptor):
-			CodeRenderingSupport.renderUnaryKeyword(descriptor, to: &writer)
+		case let .controlFlow(descriptor):
+			renderControlFlow(descriptor, to: &writer)
 
 		case let .if(descriptor):
-			render(descriptor.branches, to: &writer)
+			renderCondition(descriptor.branches, to: &writer)
 
 		case let .ifElse(descriptor):
-			render(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
+			renderCondition(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
 
 		case let .guard(descriptor):
 			writer.writeLine { line in
@@ -64,7 +64,28 @@ enum StatementRenderer {
 		}
 	}
 
-	private static func render(_ branches: [IfStatementDescriptor.Branch], elseBody: CodeBlockDescriptor? = nil, to writer: inout CodeWriter) {
+	private static func renderControlFlow(_ descriptor: ControlFlowDescriptor, to writer: inout CodeWriter) {
+		writer.writeLine { line in
+			switch descriptor {
+			case let .return(expression):
+				line.token("return")
+				if let expression {
+					ExpressionRenderer.render(expression, to: &line)
+				}
+			case let .throw(expression):
+				line.token("throw")
+				ExpressionRenderer.render(expression, to: &line)
+			case .continue:
+				line.token("continue")
+			case .break:
+				line.token("break")
+			case .fallthrough:
+				line.token("fallthrough")
+			}
+		}
+	}
+
+	private static func renderCondition(_ branches: [IfStatementDescriptor.Branch], elseBody: CodeBlockDescriptor? = nil, to writer: inout CodeWriter) {
 		// The whole chain is one logical line: each block's closing
 		// brace is followed by the next `else` on the same physical line.
 		writer.writeLine { line in

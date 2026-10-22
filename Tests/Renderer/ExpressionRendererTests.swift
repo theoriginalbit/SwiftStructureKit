@@ -52,4 +52,28 @@ import Testing
 
 			""")
 	}
+
+	@Test func `composing try await with control flow`() {
+		let input = StatementDescriptor.return(
+			.try(.await(.functionCall("fn")))
+		)
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			return try await fn()
+
+			""")
+	}
+
+	@Test func `optional try`() {
+		let input = ExpressionDescriptor.try(hasPostfixQuestionMark: true, .functionCall("fn"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			try? fn()
+
+			""")
+	}
 }

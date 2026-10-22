@@ -68,6 +68,18 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// Use ``StatementDescriptor`` when you want an `if` statement rather than
 	/// an expression.
 	case ifElse(IfElseExpressionDescriptor)
+
+	/// Evaluates a throwing expression.
+	///
+	/// - Parameters:
+	///   - hasPostfixQuestionMark: Whether to use optional `try?` rather than `try`.
+	///   - expression: The expression to evaluate.
+	case `try`(hasPostfixQuestionMark: Bool = false, ExpressionDescriptor)
+
+	/// Awaits the result of an asynchronous expression.
+	///
+	/// - Parameter expression: The asynchronous expression to evaluate.
+	case `await`(ExpressionDescriptor)
 }
 
 public extension ExpressionDescriptor {
@@ -95,5 +107,31 @@ public extension ExpressionDescriptor {
 	/// A tuple expression.
 	static func tuple(@ArrayBuilder<ExpressionDescriptor> _ values: () -> [ExpressionDescriptor]) -> Self {
 		.tuple(values())
+	}
+}
+
+public extension StatementDescriptor {
+	/// Evaluates a throwing expression.
+	///
+	/// - Parameters:
+	///   - hasPostfixQuestionMark: Whether to use optional `try?` rather than `try`.
+	///   - expression: The expression to evaluate.
+	static func `try`(hasPostfixQuestionMark: Bool, _ expression: ExpressionDescriptor) -> Self {
+		.expression(.try(hasPostfixQuestionMark: hasPostfixQuestionMark, expression))
+	}
+
+	/// Evaluates a throwing expression.
+	///
+	/// - Parameters:
+	///   - expression: The expression to evaluate.
+	static func `try`(_ expression: ExpressionDescriptor) -> Self {
+		.expression(.try(hasPostfixQuestionMark: false, expression))
+	}
+
+	/// Awaits the result of an asynchronous expression.
+	///
+	/// - Parameter expression: The asynchronous expression to evaluate.
+	static func `await`(_ expression: ExpressionDescriptor) -> Self {
+		.expression(.await(expression))
 	}
 }
