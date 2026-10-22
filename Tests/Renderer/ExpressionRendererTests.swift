@@ -66,7 +66,7 @@ import Testing
 			""")
 	}
 
-	@Test func `optional try`() {
+	@Test func optionalTry() {
 		let input = ExpressionDescriptor.try(hasPostfixQuestionMark: true, .functionCall("fn"))
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
@@ -84,6 +84,31 @@ import Testing
 		}
 		expectRendered(output, equals: """
 			&writer
+
+			""")
+	}
+
+	@Test func optionalChaining() {
+		let input = ExpressionDescriptor.memberAccess(
+			.optionalChaining(.identifier("provider")),
+			"value"
+		)
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			provider?.value
+
+			""")
+	}
+
+	@Test func `optional chaining invokes an optional closure`() {
+		let input = ExpressionDescriptor.functionCall(.optionalChaining(.identifier("completionHandler")))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			completionHandler?()
 
 			""")
 	}

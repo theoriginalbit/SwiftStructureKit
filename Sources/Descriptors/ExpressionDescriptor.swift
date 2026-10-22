@@ -16,6 +16,9 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// A literal expression.
 	case literal(LiteralDescriptor)
 
+	/// A type identifier.
+	case identifier(TypeIdentifier)
+
 	/// A source expression rendered without modification.
 	case raw(String)
 
@@ -32,8 +35,10 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// For example, `&foo` passes a reference to the `foo` variable.
 	case inOut(ExpressionDescriptor)
 
-	/// A type identifier.
-	case identifier(TypeIdentifier)
+	/// An optional chaining expression.
+	///
+	/// For example, in `foo?`, the supplied expression `foo`.
+	case optionalChaining(ExpressionDescriptor)
 
 	/// A tuple expression.
 	case tuple([ExpressionDescriptor])

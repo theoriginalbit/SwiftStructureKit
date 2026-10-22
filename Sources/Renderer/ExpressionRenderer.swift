@@ -8,6 +8,9 @@ enum ExpressionRenderer {
 		case let .literal(literal):
 			writer.token(CodeRenderingSupport.renderedLiteral(literal))
 
+		case let .identifier(identifier):
+			writer.token(CodeRenderingSupport.renderedIdentifier(identifier))
+
 		case let .raw(value):
 			writer.token(value)
 
@@ -21,8 +24,9 @@ enum ExpressionRenderer {
 			writer.punctuation(.Prefix.ampersand)
 			render(expression, to: &writer)
 
-		case let .identifier(identifier):
-			writer.token(CodeRenderingSupport.renderedIdentifier(identifier))
+		case let .optionalChaining(expression):
+			render(expression, to: &writer)
+			writer.punctuation(.Postfix.questionMark)
 
 		case let .tuple(descriptors):
 			renderTuple(descriptors, to: &writer)
