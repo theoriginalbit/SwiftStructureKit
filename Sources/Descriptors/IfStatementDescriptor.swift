@@ -86,6 +86,29 @@ public struct IfStatementDescriptor: Sendable {
 	}
 }
 
+public extension ConditionalStatementDescriptor {
+	/// Creates an `if` statement.
+	///
+	/// The result is an ``IfStatementDescriptor`` rather than a ``StatementDescriptor`` so that
+	/// `elseIf(_:body:)` and `else(body:)` can be chained.
+	///
+	/// - Parameters:
+	///   - condition: The condition of the `if` branch.
+	///   - body: A result builder closure producing the statements executed when the condition holds.
+	static func `if`(
+		_ condition: ExpressionDescriptor,
+		@CodeBlockBuilder body: () -> [StatementDescriptor],
+	) -> IfStatementDescriptor {
+		IfStatementDescriptor(condition, body: body)
+	}
+}
+
+extension ArrayBuilder<ConditionalStatementDescriptor> {
+	public static func buildExpression(_ expression: IfStatementDescriptor) -> Result {
+		[.if(expression)]
+	}
+}
+
 public extension StatementDescriptor {
 	/// Creates an `if` statement.
 	///
@@ -103,8 +126,8 @@ public extension StatementDescriptor {
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: IfStatementDescriptor) -> Result {
-		[.`if`(expression)]
+		[.conditional(.if(expression))]
 	}
 }

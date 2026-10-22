@@ -26,7 +26,7 @@ public struct GuardStatementDescriptor: Sendable {
 	}
 }
 
-public extension StatementDescriptor {
+public extension ConditionalStatementDescriptor {
 	/// Creates a `guard` statement, its successful continuation, and its required `else` body.
 	///
 	/// - Parameters:
@@ -46,8 +46,24 @@ public extension StatementDescriptor {
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+public extension StatementDescriptor {
+	/// Creates a `guard` statement, its successful continuation, and its required `else` body.
+	///
+	/// - Parameters:
+	///   - condition: The condition that must hold for execution to continue.
+	///   - body: A result builder closure producing the statements rendered after the `guard`.
+	///   - elseBody: A result builder closure producing the statements in the `else` block.
+	static func `guard`(
+		_ condition: ExpressionDescriptor,
+		@CodeBlockBuilder _ body: () -> [StatementDescriptor],
+		@CodeBlockBuilder `else` elseBody: () -> [StatementDescriptor],
+	) -> Self {
+		.conditional(.guard(condition, body, else: elseBody))
+	}
+}
+
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: GuardStatementDescriptor) -> Result {
-		[.`guard`(expression)]
+		[.conditional(.guard(expression))]
 	}
 }

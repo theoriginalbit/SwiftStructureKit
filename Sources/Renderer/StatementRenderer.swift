@@ -47,20 +47,8 @@ enum StatementRenderer {
 		case let .controlFlow(descriptor):
 			renderControlFlow(descriptor, to: &writer)
 
-		case let .if(descriptor):
-			renderCondition(descriptor.branches, to: &writer)
-
-		case let .ifElse(descriptor):
-			renderCondition(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
-
-		case let .guard(descriptor):
-			writer.writeLine { line in
-				line.token("guard")
-				ExpressionRenderer.render(descriptor.condition, to: &line)
-				line.token("else")
-				line.block(descriptor.elseBody)
-			}
-			render(descriptor.body.statements, to: &writer)
+		case let .conditional(descriptor):
+			renderConditional(descriptor, to: &writer)
 		}
 	}
 
@@ -85,7 +73,30 @@ enum StatementRenderer {
 		}
 	}
 
-	private static func renderCondition(_ branches: [IfStatementDescriptor.Branch], elseBody: CodeBlockDescriptor? = nil, to writer: inout CodeWriter) {
+	private static func renderConditional(_ descriptor: ConditionalStatementDescriptor, to writer: inout CodeWriter) {
+		switch descriptor {
+		case let .if(descriptor):
+			renderIfConditional(descriptor.branches, to: &writer)
+
+		case let .ifElse(descriptor):
+			renderIfConditional(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
+
+		case let .guard(descriptor):
+			writer.writeLine { line in
+				line.token("guard")
+				ExpressionRenderer.render(descriptor.condition, to: &line)
+				line.token("else")
+				line.block(descriptor.elseBody)
+			}
+			render(descriptor.body.statements, to: &writer)
+		}
+	}
+
+	private static func renderIfConditional(
+		_ branches: [IfStatementDescriptor.Branch],
+		elseBody: CodeBlockDescriptor? = nil,
+		to writer: inout CodeWriter
+	) {
 		// The whole chain is one logical line: each block's closing
 		// brace is followed by the next `else` on the same physical line.
 		writer.writeLine { line in

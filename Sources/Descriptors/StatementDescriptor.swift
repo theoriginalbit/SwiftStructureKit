@@ -25,14 +25,8 @@ public enum StatementDescriptor: Sendable {
 	/// A statement that controls the flow of code, e.g. `return` or `continue`.
 	case controlFlow(ControlFlowDescriptor)
 
-	/// An `if` statement with zero or more `else if` branches.
-	case `if`(IfStatementDescriptor)
-
-	/// An `if` statement with an `else` branch.
-	case ifElse(IfElseStatementDescriptor)
-
-	/// A `guard` statement and its continuation.
-	case `guard`(GuardStatementDescriptor)
+	/// An `if`, `if`/`else`, or `guard` statement.
+	case conditional(ConditionalStatementDescriptor)
 }
 
 extension ArrayBuilder<StatementDescriptor> {

@@ -22,7 +22,7 @@ public struct IfElseStatementDescriptor: Sendable {
 	}
 }
 
-public extension StatementDescriptor {
+public extension ConditionalStatementDescriptor {
 	/// Creates an `if` statement with an `else` branch.
 	///
 	/// - Parameters:
@@ -46,8 +46,24 @@ public extension StatementDescriptor {
 	}
 }
 
-extension ArrayBuilder where T == StatementDescriptor {
+public extension StatementDescriptor {
+	/// Creates an `if` statement with an `else` branch.
+	///
+	/// - Parameters:
+	///   - condition: The condition of the `if` branch.
+	///   - body: A result builder closure producing the statements executed when the condition holds.
+	///   - elseBody: A result builder closure producing the statements executed when the condition does not hold.
+	static func `if`(
+		_ condition: ExpressionDescriptor,
+		@CodeBlockBuilder _ body: () -> [StatementDescriptor],
+		@CodeBlockBuilder `else` elseBody: () -> [StatementDescriptor],
+	) -> Self {
+		.conditional(.if(condition, body, else: elseBody))
+	}
+}
+
+extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: IfElseStatementDescriptor) -> Result {
-		[.ifElse(expression)]
+		[.conditional(.ifElse(expression))]
 	}
 }
