@@ -81,6 +81,12 @@ struct Punctuation: Equatable {
 		///
 		/// Example output: `-4`. ``Punctuation/minus`` would output as invalid `- 4`.
 		static let minus = Punctuation("-", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+		/// The `(` punctuation mark. Prefixed so as to allow a leading space.
+		///
+		/// Example output: `let x = (value ?? 0)`. ``Punctuation/leftParen`` would
+		/// output as `let x =(value ?? 0)`.
+		static let leftParen = Punctuation("(", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 	}
 
 	/// Punctuation that is used as a token postfix. They may exist in ``Punctuation`` with different spacing rules.
@@ -98,5 +104,7 @@ struct Punctuation: Equatable {
 	/// The value may exist in ``Punctuation`` with a different name and/or spacing rules.
 	enum Operator {
 		static let bitwiseAnd = Punctuation("&", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
+
+		static let nilCoalescing = Punctuation("??", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 	}
 }

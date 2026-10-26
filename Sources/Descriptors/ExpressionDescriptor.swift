@@ -43,6 +43,17 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// A tuple expression.
 	case tuple([ExpressionDescriptor])
 
+	/// A nil-coalescing expression: `lhs ?? rhs`.
+	///
+	/// - Note: No automatic detection to add parentheses based on precedence group has been
+	/// 		implemented. Use ``parenthesized(_:)`` to add explicit grouping.
+	case nilCoalescing(NilCoalescingDescriptor)
+
+	/// A parenthesised expression.
+	///
+	/// For example, `(expression)`.
+	case parenthesized(ExpressionDescriptor)
+
 	/// An `if` expression without an `else` branch.
 	///
 	/// This case is unavailable because Swift requires `if` expressions to have

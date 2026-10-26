@@ -31,6 +31,12 @@ enum ExpressionRenderer {
 		case let .tuple(descriptors):
 			renderTuple(descriptors, to: &writer)
 
+		case let .nilCoalescing(descriptor):
+			renderNilCoalescing(descriptor, to: &writer)
+
+		case let .parenthesized(descriptor):
+			renderParenthesized(descriptor, when: true, to: &writer)
+
 		case let .if(descriptor):
 			renderCondition(descriptor.branches, to: &writer)
 
@@ -91,6 +97,12 @@ enum ExpressionRenderer {
 		writer.punctuation(.rightParen)
 	}
 
+	private static func renderNilCoalescing(_ descriptor: NilCoalescingDescriptor, to writer: inout LineWriter) {
+		render(descriptor.left, to: &writer)
+		writer.punctuation(.Operator.nilCoalescing)
+		render(descriptor.right, to: &writer)
+	}
+
 	private static func renderCondition(_ branches: [IfExpressionDescriptor.Branch], elseBody: ExpressionDescriptor? = nil, to writer: inout LineWriter) {
 		// The whole chain is one logical line: each block's closing
 		// brace is followed by the next `else` on the same physical line.
@@ -135,5 +147,14 @@ enum ExpressionRenderer {
 	private static func renderAwait(_ expression: ExpressionDescriptor, to writer: inout LineWriter) {
 		writer.token("await")
 		render(expression, to: &writer)
+	}
+
+	private static func renderParenthesized(_ e: ExpressionDescriptor, when needsGrouping: Bool, to writer: inout LineWriter) {
+		guard needsGrouping else {
+			return render(e, to: &writer)
+		}
+		writer.punctuation(.Prefix.leftParen)
+		render(e, to: &writer)
+		writer.punctuation(.rightParen)
 	}
 }

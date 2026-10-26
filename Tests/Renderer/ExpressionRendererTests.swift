@@ -112,4 +112,24 @@ import Testing
 
 			""")
 	}
+
+	@Test(arguments: [
+		(.nilCoalescing("a", "b"), "a ?? b"),
+		(.nilCoalescing(.nilCoalescing("a", "b"), "c"), "a ?? b ?? c"),
+		(.nilCoalescing("a", .nilCoalescing("b", "c")), "a ?? b ?? c"),
+		(.memberAccess(.parenthesized(.nilCoalescing("a", .literal(.integer(6)))), "value"), "(a ?? 6).value"),
+		(
+			.memberAccess(.parenthesized(.optionalTry(.nilCoalescing("v", .literal(.integer(6))))), "hashValue"),
+			"(try? v ?? 6).hashValue"
+		),
+	] as [(ExpressionDescriptor, String)])
+	func nilCoalescing(input: ExpressionDescriptor, expected: String) {
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			\(expected)
+
+			""")
+	}
 }
