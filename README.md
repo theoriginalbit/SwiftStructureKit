@@ -1,4 +1,9 @@
 # SwiftStructureKit
+
+[![](https://img.shields.io/badge/docc-read_documentation-blue)](https://swiftpackageindex.com/theoriginalbit/SwiftStructureKit/documentation)
+[![](https://img.shields.io/github/v/release/theoriginalbit/SwiftStructureKit)](https://github.com/theoriginalbit/SwiftStructureKit/releases)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ftheoriginalbit%2FSwiftStructureKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/theoriginalbit/SwiftStructureKit)
+
 A lightweight Swift source code renderer. It provides a clean and declarative approach to defining Swift source code.
 
 ## Features
