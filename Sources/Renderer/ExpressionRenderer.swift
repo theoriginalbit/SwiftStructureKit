@@ -37,8 +37,8 @@ enum ExpressionRenderer {
 		case let .ifElse(descriptor):
 			renderCondition(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
 
-		case let .try(hasPostfixQuestionMark, expression):
-			renderTry(hasPostfixQuestionMark, expression, to: &writer)
+		case let .try(descriptor):
+			renderTry(descriptor, to: &writer)
 
 		case let .await(expression):
 			renderAwait(expression, to: &writer)
@@ -79,7 +79,7 @@ enum ExpressionRenderer {
 	}
 
 	private static func renderTuple(_ descriptors: [ExpressionDescriptor], to writer: inout LineWriter) {
-		writer.punctuation(.leftParen)
+		writer.punctuation(.Prefix.leftParen)
 		var iterator = descriptors.makeIterator()
 		if let first = iterator.next() {
 			render(first, to: &writer)
@@ -117,12 +117,19 @@ enum ExpressionRenderer {
 		}
 	}
 
-	private static func renderTry(_ hasPostfixQuestionMark: Bool, _ expression: ExpressionDescriptor, to writer: inout LineWriter) {
+	private static func renderTry(_ descriptor: TryDescriptor, to writer: inout LineWriter) {
 		writer.token("try")
-		if hasPostfixQuestionMark {
+		switch descriptor.variant {
+		case .none:
+			break
+
+		case .optional:
 			writer.punctuation(.Postfix.questionMark)
+
+		case .forced:
+			writer.punctuation(.Postfix.exclamationMark)
 		}
-		render(expression, to: &writer)
+		render(descriptor.expression, to: &writer)
 	}
 
 	private static func renderAwait(_ expression: ExpressionDescriptor, to writer: inout LineWriter) {

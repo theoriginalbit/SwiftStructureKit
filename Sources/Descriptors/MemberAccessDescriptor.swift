@@ -48,3 +48,19 @@ public struct MemberAccessDescriptor: Sendable {
 		MemberAccessDescriptor(.identifier("self"), right)
 	}
 }
+
+public extension ExpressionDescriptor {
+	/// A member access expression.
+	///
+	/// For example: `foo.bar` or `.bar`.
+	static func memberAccess(_ left: ExpressionDescriptor?, _ right: String) -> Self {
+		.memberAccess(MemberAccessDescriptor(left, right))
+	}
+
+	/// A member access expression.
+	///
+	/// For example: `foo.bar` or `.bar`.
+	static func memberAccess(_ left: String, _ right: String) -> Self {
+		.memberAccess(MemberAccessDescriptor(.identifier(left), right))
+	}
+}

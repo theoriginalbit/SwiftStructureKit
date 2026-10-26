@@ -77,7 +77,9 @@ struct Punctuation: Equatable {
 		/// The `.` punctuation mark that allows space before it unlike ``Punctuation/period``.
 		static let period = Punctuation(".", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 
-		/// The `-` punctuation mark.
+		/// The `-` punctuation mark. Prefixed for negative numbers.
+		///
+		/// Example output: `-4`. ``Punctuation/minus`` would output as invalid `- 4`.
 		static let minus = Punctuation("-", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 	}
 
@@ -85,6 +87,9 @@ struct Punctuation: Equatable {
 	enum Postfix {
 		/// The `?` punctuation mark.
 		static let questionMark = Punctuation("?", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
+
+		/// The `!` punctuation mark.
+		static let exclamationMark = Punctuation("!", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 	}
 
 	/// Punctuation that is used as an operator such as bitwise or boolean logic. Typically an infix between two tokens and allows for

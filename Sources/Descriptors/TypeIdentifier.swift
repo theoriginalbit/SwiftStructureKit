@@ -45,3 +45,12 @@ public struct TypeIdentifier: Hashable, Sendable, ExpressibleByStringLiteral, Ex
 		self.components = elements
 	}
 }
+
+public extension ExpressionDescriptor {
+	/// An identifier expression created from a dotted string, such as `"self.value"`.
+	///
+	/// - Parameter value: The dotted identifier string.
+	static func identifier(_ value: String) -> Self {
+		.identifier(TypeIdentifier(value))
+	}
+}

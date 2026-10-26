@@ -79,12 +79,8 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// an expression.
 	case ifElse(IfElseExpressionDescriptor)
 
-	/// Evaluates a throwing expression.
-	///
-	/// - Parameters:
-	///   - hasPostfixQuestionMark: Whether to use optional `try?` rather than `try`.
-	///   - expression: The expression to evaluate.
-	case `try`(hasPostfixQuestionMark: Bool = false, ExpressionDescriptor)
+	/// A throwing expression.
+	case `try`(TryDescriptor)
 
 	/// Awaits the result of an asynchronous expression.
 	///
@@ -93,27 +89,6 @@ public indirect enum ExpressionDescriptor: Sendable {
 }
 
 public extension ExpressionDescriptor {
-	/// A member access expression.
-	///
-	/// For example: `foo.bar` or `.bar`.
-	static func memberAccess(_ left: ExpressionDescriptor?, _ right: String) -> Self {
-		.memberAccess(MemberAccessDescriptor(left, right))
-	}
-
-	/// A member access expression.
-	///
-	/// For example: `foo.bar` or `.bar`.
-	static func memberAccess(_ left: String, _ right: String) -> Self {
-		.memberAccess(MemberAccessDescriptor(.identifier(left), right))
-	}
-
-	/// An identifier expression created from a dotted string, such as `"self.value"`.
-	///
-	/// - Parameter value: The dotted identifier string.
-	static func identifier(_ value: String) -> Self {
-		.identifier(TypeIdentifier(value))
-	}
-
 	/// A tuple expression.
 	static func tuple(@ArrayBuilder<ExpressionDescriptor> _ values: () -> [ExpressionDescriptor]) -> Self {
 		.tuple(values())
@@ -121,23 +96,6 @@ public extension ExpressionDescriptor {
 }
 
 public extension StatementDescriptor {
-	/// Evaluates a throwing expression.
-	///
-	/// - Parameters:
-	///   - hasPostfixQuestionMark: Whether to use optional `try?` rather than `try`.
-	///   - expression: The expression to evaluate.
-	static func `try`(hasPostfixQuestionMark: Bool, _ expression: ExpressionDescriptor) -> Self {
-		.expression(.try(hasPostfixQuestionMark: hasPostfixQuestionMark, expression))
-	}
-
-	/// Evaluates a throwing expression.
-	///
-	/// - Parameters:
-	///   - expression: The expression to evaluate.
-	static func `try`(_ expression: ExpressionDescriptor) -> Self {
-		.expression(.try(hasPostfixQuestionMark: false, expression))
-	}
-
 	/// Awaits the result of an asynchronous expression.
 	///
 	/// - Parameter expression: The asynchronous expression to evaluate.

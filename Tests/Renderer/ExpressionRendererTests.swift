@@ -67,7 +67,7 @@ import Testing
 	}
 
 	@Test func optionalTry() {
-		let input = ExpressionDescriptor.try(hasPostfixQuestionMark: true, .functionCall("fn"))
+		let input = ExpressionDescriptor.optionalTry(.functionCall("fn"))
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
