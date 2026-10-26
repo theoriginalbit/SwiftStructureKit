@@ -46,6 +46,30 @@ public extension ConditionalStatementDescriptor {
 	}
 }
 
+public extension CompilerConditionalStatementDescriptor {
+	/// Creates an `if` statement with an `else` branch.
+	///
+	/// - Parameters:
+	///   - condition: The condition of the `if` branch.
+	///   - body: A result builder closure producing the statements executed when the condition holds.
+	///   - elseBody: A result builder closure producing the statements executed when the condition does not hold.
+	static func `if`(
+		_ condition: ExpressionDescriptor,
+		@CodeBlockBuilder _ body: () -> [StatementDescriptor],
+		@CodeBlockBuilder `else` elseBody: () -> [StatementDescriptor],
+	) -> Self {
+		.ifElse(IfElseStatementDescriptor(
+			branches: [
+				IfStatementDescriptor.Branch(
+					condition: condition,
+					body: CodeBlockDescriptor(body)
+				),
+			],
+			elseBody: CodeBlockDescriptor(elseBody)
+		))
+	}
+}
+
 public extension StatementDescriptor {
 	/// Creates an `if` statement with an `else` branch.
 	///

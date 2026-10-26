@@ -19,8 +19,8 @@ public enum StatementDescriptor: Sendable {
 	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 	case comment(InlineCommentDescriptor)
 
-	/// A `#warning` or `#error` compiler diagnostic directive.
-	case diagnostic(DiagnosticDirectiveDescriptor)
+	/// A compiler control directive, such as a diagnostic directive or conditional compilation block.
+	case compilerControl(CompilerControlDescriptor)
 
 	/// A statement that controls the flow of code, e.g. `return` or `continue`.
 	case controlFlow(ControlFlowDescriptor)
@@ -33,13 +33,4 @@ public enum StatementDescriptor: Sendable {
 
 	/// A `do` statement with a `catch` body.
 	case `do`(DoStatementDescriptor)
-}
-
-extension ArrayBuilder<StatementDescriptor> {
-	/// Allows an ``ExpressionDescriptor`` to be used directly inside a code block builder, wrapping it in ``StatementDescriptor/expression(_:)``.
-	///
-	/// - Parameter expression: The expression to evaluate as a statement.
-	public static func buildExpression(_ expression: ExpressionDescriptor) -> Result {
-		[.expression(expression)]
-	}
 }

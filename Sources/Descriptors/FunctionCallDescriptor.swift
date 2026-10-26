@@ -41,6 +41,38 @@ public struct FunctionCallDescriptor: Sendable {
 			}
 		)
 	}
+
+	/// Creates a new function call description.
+	///
+	/// - Parameters:
+	///   - calledIdentifier: The identifier of the function being called.
+	///   - arguments: Arguments to be passed to the function.
+	init(
+		calledIdentifier: TypeIdentifier,
+		arguments: ArgumentsList = [],
+	) {
+		self.calledExpression = .identifier(calledIdentifier)
+		self.arguments = arguments
+	}
+
+	/// Creates a new function call description.
+	///
+	/// - Parameters:
+	///   - calledIdentifier: The identifier of the function being called.
+	///   - arguments: Arguments to be passed to the function.
+	init(
+		calledIdentifier: TypeIdentifier,
+		arguments: [ExpressionDescriptor],
+	) {
+		self.init(
+			calledIdentifier: calledIdentifier,
+			arguments: ArgumentsList {
+				for argument in arguments {
+					Argument(value: argument)
+				}
+			}
+		)
+	}
 }
 
 public extension ExpressionDescriptor {
@@ -140,5 +172,11 @@ public extension StatementDescriptor {
 			calledExpression: .identifier(calledIdentifier),
 			arguments: ArgumentsList(arguments())
 		)))
+	}
+}
+
+extension ArrayBuilder<StatementDescriptor> {
+	public static func buildExpression(_ expression: FunctionCallDescriptor) -> Result {
+		[.expression(.functionCall(expression))]
 	}
 }

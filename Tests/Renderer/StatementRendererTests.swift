@@ -411,4 +411,88 @@ import Testing
 
 			""")
 	}
+
+	// MARK: - Compiler directives
+
+	@Test("Render warning diagnostic directive")
+	func renderWarningDiagnosticDirective() {
+		let descriptor = DiagnosticDirectiveDescriptor.warning("This is my warning")
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(.compilerControl(.directive(descriptor)), to: &writer)
+		}
+		let expected = """
+			#warning("This is my warning")
+
+			"""
+		expectRendered(output, equals: expected)
+	}
+
+	@Test("Render error diagnostic directive")
+	func renderErrorDiagnosticDirective() {
+		let descriptor = DiagnosticDirectiveDescriptor.error("This is an error")
+		let output = RenderTest.render { writer in
+			StatementRenderer.render(.compilerControl(.directive(descriptor)), to: &writer)
+		}
+		let expected = """
+			#error("This is an error")
+
+			"""
+		expectRendered(output, equals: expected)
+	}
+
+	@Test("Render compiler conditional")
+	func renderCompilerConditional() {
+		let descriptor = StatementDescriptor.compilerControl(.conditional(
+			.if(.raw("DEBUG")) {
+				FunctionCallDescriptor(calledIdentifier: "doDebugThing")
+			} else: {
+				FunctionCallDescriptor(calledIdentifier: "doReleaseThing")
+			}))
+		let output = RenderTest.render(indentUsing: .tabs) { writer in
+			StatementRenderer.render(descriptor, to: &writer)
+		}
+		let expected = """
+			#if DEBUG
+			doDebugThing()
+			#else
+			doReleaseThing()
+			#endif
+
+			"""
+		expectRendered(output, equals: expected)
+	}
+
+	@Test("Rendered compiler conditional de-indents")
+	func renderCompilerConditionalDeIndents() {
+		typealias Decl = DeclarationDescriptor
+		typealias Stmt = StatementDescriptor
+
+		let file = SwiftFile {
+			Decl.struct("Worker") {
+				Decl.function(name: "performWork") {
+					Stmt.compilerControl(.conditional(
+						.if(.raw("DEBUG")) {
+							FunctionCallDescriptor(calledIdentifier: "doDebugThing")
+						} else: {
+							FunctionCallDescriptor(calledIdentifier: "doReleaseThing")
+						}))
+				}
+			}
+		}
+		let expected = """
+			struct Worker {
+				func performWork() {
+			#if DEBUG
+					doDebugThing()
+			#else
+					doReleaseThing()
+			#endif
+				}
+			}
+
+			"""
+		
+		let output = String(decoding: file.render(indentUsing: .tabs), as: UTF8.self)
+		expectRendered(output, equals: expected)
+	}
 }

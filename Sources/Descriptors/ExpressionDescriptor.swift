@@ -114,3 +114,9 @@ public extension StatementDescriptor {
 		.expression(.await(expression))
 	}
 }
+
+extension ArrayBuilder<StatementDescriptor> {
+	public static func buildExpression(_ expression: ExpressionDescriptor) -> Result {
+		[.expression(expression)]
+	}
+}

@@ -28,8 +28,11 @@ enum StatementRenderer {
 		case let .comment(descriptor):
 			CommentRenderer.renderInlineComment(descriptor, to: &writer)
 
-		case let .diagnostic(descriptor):
-			DiagnosticDirectiveRenderer.render(descriptor, to: &writer)
+		case let .compilerControl(.directive(descriptor)):
+			renderDirective(descriptor, to: &writer)
+
+		case let .compilerControl(.conditional(descriptor)):
+			renderCompilerControlConditional(descriptor, to: &writer)
 
 		case let .controlFlow(descriptor):
 			renderControlFlow(descriptor, to: &writer)
@@ -62,6 +65,85 @@ enum StatementRenderer {
 			),
 			to: &writer
 		)
+	}
+
+	private static func renderDirective(_ descriptor: DiagnosticDirectiveDescriptor, to writer: inout CodeWriter) {
+		writer.writeLine { line in
+			line.punctuation(.Prefix.pound)
+			switch descriptor.kind {
+			case .warning: line.token("warning")
+			case .error: line.token("error")
+			}
+			line.punctuation(.leftParen)
+			line.token(CodeRenderingSupport.renderedLiteral(.string(descriptor.message)))
+			line.punctuation(.rightParen)
+		}
+	}
+
+	private static func renderCompilerControlConditional(_ descriptor: CompilerConditionalStatementDescriptor, to writer: inout CodeWriter) {
+		switch descriptor {
+		case let .if(descriptor):
+			renderCompilerControlIfConditional(descriptor.branches, to: &writer)
+		case let .ifElse(descriptor):
+			renderCompilerControlIfConditional(descriptor.branches, elseBody: descriptor.elseBody, to: &writer)
+		}
+	}
+
+	private static func renderCompilerControlIfConditional(
+		_ branches: [IfStatementDescriptor.Branch],
+		elseBody: CodeBlockDescriptor? = nil,
+		to writer: inout CodeWriter
+	) {
+		var iterator = branches.makeIterator()
+		if let first = iterator.next() {
+			renderCompilerControlIfConditional(
+				"#if",
+				condition: first.condition,
+				statements: first.body.statements,
+				to: &writer
+			)
+
+			while let next = iterator.next() {
+				renderCompilerControlIfConditional(
+					"#elseif",
+					condition: next.condition,
+					statements: first.body.statements,
+					to: &writer
+				)
+			}
+
+			if let elseBody {
+				renderCompilerControlIfConditional(
+					"#else",
+					condition: nil,
+					statements: elseBody.statements,
+					to: &writer
+				)
+			}
+
+			writer.indented(to: 0) { writer in
+				writer.writeLine("#endif")
+			}
+		}
+	}
+
+	private static func renderCompilerControlIfConditional(
+		_ keyword: String,
+		condition: ExpressionDescriptor?,
+		statements: [StatementDescriptor],
+		to writer: inout CodeWriter
+	) {
+		writer.indented(to: 0) { writer in
+			if let condition {
+				writer.writeLine { line in
+					line.token(keyword)
+					ExpressionRenderer.render(condition, to: &line)
+				}
+			} else {
+				writer.writeLine(keyword)
+			}
+		}
+		render(statements, to: &writer)
 	}
 
 	private static func renderControlFlow(_ descriptor: ControlFlowDescriptor, to writer: inout CodeWriter) {
@@ -120,13 +202,13 @@ enum StatementRenderer {
 		writer.writeLine { line in
 			renderLabel(label, to: &line)
 
-			for (index, branch) in branches.enumerated() {
-				if index > 0 {
+			var iterator = branches.makeIterator()
+			if let first = iterator.next() {
+				renderIfConditional(branch: first, to: &line)
+				while let next = iterator.next() {
 					line.token("else")
+					renderIfConditional(branch: next, to: &line)
 				}
-				line.token("if")
-				ExpressionRenderer.render(branch.condition, to: &line)
-				line.block(branch.body)
 			}
 
 			if let elseBody {
@@ -134,6 +216,12 @@ enum StatementRenderer {
 				line.block(elseBody)
 			}
 		}
+	}
+
+	private static func renderIfConditional(branch: IfStatementDescriptor.Branch, to line: inout LineWriter) {
+		line.token("if")
+		ExpressionRenderer.render(branch.condition, to: &line)
+		line.block(branch.body)
 	}
 
 	private static func renderLabeled(_ descriptor: LabeledStatementDescriptor, to writer: inout CodeWriter) {

@@ -50,6 +50,6 @@ public extension DiagnosticDirectiveDescriptor {
 
 extension ArrayBuilder<StatementDescriptor> {
 	public static func buildExpression(_ expression: DiagnosticDirectiveDescriptor) -> Result {
-		[.diagnostic(expression)]
+		[.compilerControl(.directive(expression))]
 	}
 }
