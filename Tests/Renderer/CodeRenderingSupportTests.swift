@@ -167,4 +167,20 @@ import Testing
 	func outputIsAlwaysNonEmpty(value: Double) {
 		#expect(!CodeRenderingSupport.renderedLiteral(.double(value)).isEmpty)
 	}
+
+	@Test func decimalIntegerLiteral() {
+		#expect(CodeRenderingSupport.renderedLiteral(.integer(.decimal(1234))) == "1234")
+	}
+
+	@Test func hexadecimalIntegerLiteral() {
+		#expect(CodeRenderingSupport.renderedLiteral(.integer(.hexadecimal(0x4096Ee))) == "0x4096ee")
+	}
+
+	@Test func binaryIntegerLiteral() {
+		#expect(CodeRenderingSupport.renderedLiteral(.integer(.binary(0b100))) == "0b100")
+	}
+
+	@Test func octalIntegerLiteral() {
+		#expect(CodeRenderingSupport.renderedLiteral(.integer(.octal(0o12345))) == "0o12345")
+	}
 }

@@ -2,13 +2,20 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
+public enum IntegerLiteral: Equatable, Sendable {
+	case decimal(Int)
+	case hexadecimal(Int)
+	case binary(Int)
+	case octal(Int)
+}
+
 /// A descriptor representing a literal value in Swift source code.
 public enum LiteralDescriptor: Equatable, Sendable {
 	/// A string literal value.
 	case string(String)
 
 	/// An integer literal value.
-	case integer(Int)
+	case integer(IntegerLiteral)
 
 	/// A boolean literal value.
 	case boolean(Bool)
@@ -24,6 +31,11 @@ public enum LiteralDescriptor: Equatable, Sendable {
 
 	/// An empty dictionary literal value.
 	case dictionary
+
+	/// An integer literal value.
+	public static func integer(_ value: Int) -> Self {
+		.integer(.decimal(value))
+	}
 }
 
 extension LiteralDescriptor: ExpressibleByStringLiteral {

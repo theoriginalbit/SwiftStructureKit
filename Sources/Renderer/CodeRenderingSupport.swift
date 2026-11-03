@@ -149,8 +149,14 @@ enum CodeRenderingSupport {
 		return switch literal {
 		case let .string(value):
 			renderedStringLiteral(value)
-		case let .integer(value):
+		case let .integer(.decimal(value)):
 			String(value)
+		case let .integer(.hexadecimal(value)):
+			"0x" + String(value, radix: 16)
+		case let .integer(.octal(value)):
+			"0o" + String(value, radix: 8)
+		case let .integer(.binary(value)):
+			"0b" + String(value, radix: 2)
 		case let .boolean(value):
 			String(value)
 		case let .double(value):
