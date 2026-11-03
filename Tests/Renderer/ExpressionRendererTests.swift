@@ -132,4 +132,26 @@ import Testing
 
 			""")
 	}
+
+	@Test func selfMemberAccess() {
+		let input = ExpressionDescriptor.memberAccess(.selfMember("foo"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			self.foo
+
+			""")
+	}
+
+	@Test func superMemberAccess() {
+		let input = ExpressionDescriptor.memberAccess(.superMember("foo"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			super.foo
+
+			""")
+	}
 }

@@ -28,7 +28,7 @@ public struct StructDescriptor: Sendable {
 	/// The member declarations contained within the struct.
 	public let members: [DeclarationDescriptor]
 
-	/// Creates a struct descriptor using a result builder to define its members.
+	/// Creates a struct descriptor.
 	///
 	/// - Parameters:
 	///   - identifier: The name of the struct.
@@ -38,7 +38,7 @@ public struct StructDescriptor: Sendable {
 	///   - genericParameters: The generic parameters associated with the struct.
 	///   - genericRequirements: The generic `where` requirements declared by the struct.
 	///   - conformances: The types or protocols the struct conforms to.
-	///   - members: A result builder closure producing the struct's member declarations.
+	///   - members: The member declarations contained within the struct.
 	public init(
 		_ identifier: String,
 		comment: DocCommentDescriptor? = nil,

@@ -25,6 +25,9 @@ public enum DeclarationDescriptor: Sendable {
 	/// A member that is a struct, represented by its ``StructDescriptor``.
 	case `struct`(StructDescriptor)
 
+	/// A member that is a class, represented by its ``ClassDescriptor``.
+	case `class`(ClassDescriptor)
+
 	/// A member that is a typealias, represented by its ``TypealiasDescriptor``.
 	case `typealias`(TypealiasDescriptor)
 }

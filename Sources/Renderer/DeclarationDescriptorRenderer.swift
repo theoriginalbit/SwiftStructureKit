@@ -21,6 +21,8 @@ enum DeclarationDescriptorRenderer {
 			ProtocolRenderer.render(descriptor, to: &writer)
 		case let .struct(descriptor):
 			StructRenderer.render(descriptor, to: &writer)
+		case let .class(descriptor):
+			ClassRenderer.render(descriptor, to: &writer)
 		case let .typealias(descriptor):
 			TypealiasRenderer.render(descriptor, to: &writer)
 		}
