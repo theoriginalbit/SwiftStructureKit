@@ -25,12 +25,15 @@ import Testing
 			ProtocolAssociatedtypeDescriptor("Iterator")
 		}
 
+		// Validate primary associated types (PAT) are added to generic parameter list
+		// NOTE: duplication will still exist at this stage and are removed at render
 		#expect(Array(descriptor.genericParameters) == [
 			GenericParameterDescriptor("Index"),
 			GenericParameterDescriptor("Element"),
 			GenericParameterDescriptor("Element"),
 			GenericParameterDescriptor("SubSequence"),
 		])
+		// Validate PAT are still members
 		#expect(descriptor.members.count == 3)
 	}
 }

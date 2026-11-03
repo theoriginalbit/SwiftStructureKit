@@ -23,6 +23,12 @@ public struct ImportDescriptor: Sendable {
 
 		/// A typealias declaration, as in `import typealias Module.Name`.
 		case `typealias`
+
+		/// A variable, as in `import var Module.VARIABLE`
+		case `var`
+
+		/// A variable, as in `import let Module.VARIABLE`
+		case `let`
 	}
 
 	/// The module being imported.

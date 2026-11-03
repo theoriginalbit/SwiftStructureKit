@@ -3,7 +3,7 @@
 //
 
 /// A description of an access modifier.
-public enum AccessModifierDescriptor: Sendable {
+public enum AccessModifierDescriptor: CaseIterable, Sendable {
 	/// A declaration accessible outside of the module.
 	case `public`
 
