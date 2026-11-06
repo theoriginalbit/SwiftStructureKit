@@ -53,7 +53,7 @@ import Testing
 			""")
 	}
 
-	@Test func `composing try await with control flow`() {
+	@Test func `composing try await with control transfer`() {
 		let input = StatementDescriptor.return(
 			.try(.await(.functionCall("fn")))
 		)

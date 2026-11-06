@@ -2,8 +2,18 @@
 // Copyright © 2026 SwiftStructureKit. All rights reserved.
 //
 
-/// Describes a Swift control-flow statement such as `return`, `throw`, `break`, `continue`, or `fallthrough`.
-public enum ControlFlowDescriptor: Sendable {
+/// Describes a Swift control transfer statement such as `return`, `throw`, `break`, `continue`, or `fallthrough`.
+///
+/// > Grammar:
+/// > [](https://docs.swift.org/latest/documentation/the-swift-programming-language/statements/#Control-Transfer-Statements)
+@available(*, deprecated, renamed: "ControlTransferDescriptor")
+public typealias ControlFlowDescriptor = ControlTransferDescriptor
+
+/// Describes a Swift control transfer statement such as `return`, `throw`, `break`, `continue`, or `fallthrough`.
+///
+/// > Grammar:
+/// > [](https://docs.swift.org/latest/documentation/the-swift-programming-language/statements/#Control-Transfer-Statements)
+public enum ControlTransferDescriptor: Sendable {
 	/// A `return` statement with an optional return expression.
 	case `return`(ExpressionDescriptor?)
 
@@ -20,7 +30,7 @@ public enum ControlFlowDescriptor: Sendable {
 	case `fallthrough`
 }
 
-public extension ControlFlowDescriptor {
+public extension ControlTransferDescriptor {
 	/// Creates a `return` statement.
 	static var `return`: Self {
 		.return(nil)
@@ -42,47 +52,47 @@ public extension StatementDescriptor {
 	///
 	/// - Parameter expression: The optional expression to return.
 	static func `return`(_ expression: ExpressionDescriptor? = nil) -> Self {
-		.controlFlow(.return(expression))
+		.controlTransfer(.return(expression))
 	}
 
 	/// A `return` statement.
 	static var `return`: Self {
-		.controlFlow(.return)
+		.controlTransfer(.return)
 	}
 
 	/// A `throw` statement with an expression.
 	///
 	/// - Parameter expression: The expression to throw.
 	static func `throw`(_ expression: ExpressionDescriptor) -> Self {
-		.controlFlow(.throw(expression))
+		.controlTransfer(.throw(expression))
 	}
 
 	/// A `continue` statement with an optional statement label continue.
 	///
 	/// - Parameter label: The label to continue.
 	static func `continue`(_ label: String? = nil) -> Self {
-		.controlFlow(.continue(label))
+		.controlTransfer(.continue(label))
 	}
 
 	/// A `continue` statement.
 	static var `continue`: Self {
-		.controlFlow(.continue)
+		.controlTransfer(.continue)
 	}
 
 	/// A `break` statement with an optional statement label to break.
 	///
 	/// - Parameter label: The label to break.
 	static func `break`(_ label: String? = nil) -> Self {
-		.controlFlow(.break(label))
+		.controlTransfer(.break(label))
 	}
 
 	/// A `break` statement.
 	static var `break`: Self {
-		.controlFlow(.break)
+		.controlTransfer(.break)
 	}
 
 	/// A `fallthrough` statement.
 	static var `fallthrough`: Self {
-		.controlFlow(.fallthrough)
+		.controlTransfer(.fallthrough)
 	}
 }

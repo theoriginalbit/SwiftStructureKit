@@ -34,8 +34,8 @@ enum StatementRenderer {
 		case let .compilerControl(.conditional(descriptor)):
 			renderCompilerControlConditional(descriptor, to: &writer)
 
-		case let .controlFlow(descriptor):
-			renderControlFlow(descriptor, to: &writer)
+		case let .controlTransfer(descriptor):
+			renderControlTransfer(descriptor, to: &writer)
 
 		case let .conditional(descriptor):
 			renderConditional(descriptor, to: &writer)
@@ -146,7 +146,7 @@ enum StatementRenderer {
 		render(statements, to: &writer)
 	}
 
-	private static func renderControlFlow(_ descriptor: ControlFlowDescriptor, to writer: inout CodeWriter) {
+	private static func renderControlTransfer(_ descriptor: ControlTransferDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			switch descriptor {
 			case let .return(expression):
