@@ -20,7 +20,7 @@ enum ParametersListRenderer {
 		line.punctuation(.rightParen)
 	}
 
-	private static func render(_ parameter: ParametersList.Parameter, into line: inout LineWriter) {
+	private static func render(_ parameter: ParameterDescriptor, into line: inout LineWriter) {
 		for attribute in parameter.attributes {
 			AttributeRenderer.render(attribute, to: &line)
 		}
