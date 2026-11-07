@@ -68,3 +68,22 @@ public struct ImportDescriptor: Sendable {
 		self.kind = kind
 	}
 }
+
+public extension ImportDescriptor {
+	static var foundation: Self { Self("Foundation") }
+
+	static func foundation(
+		_ submodule: String? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		kind: Kind? = nil,
+	) -> Self {
+		Self(
+			"Foundation",
+			submodule: submodule,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			kind: kind
+		)
+	}
+}
