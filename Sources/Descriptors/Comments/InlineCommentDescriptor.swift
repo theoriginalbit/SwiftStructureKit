@@ -21,6 +21,8 @@ extension InlineCommentDescriptor: ExpressibleByStringLiteral {
 	}
 }
 
+extension InlineCommentDescriptor: ExpressibleByStringInterpolation {}
+
 extension ArrayBuilder where T == StatementDescriptor {
 	public static func buildExpression(_ expression: InlineCommentDescriptor) -> Result {
 		[.comment(expression)]

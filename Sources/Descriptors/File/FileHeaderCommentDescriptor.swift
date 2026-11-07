@@ -20,3 +20,5 @@ extension FileHeaderCommentDescriptor: ExpressibleByStringLiteral {
 		self.init(value)
 	}
 }
+
+extension FileHeaderCommentDescriptor: ExpressibleByStringInterpolation {}

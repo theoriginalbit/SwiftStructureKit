@@ -20,3 +20,5 @@ extension DocCommentDescriptor: ExpressibleByStringLiteral {
 		self.init(value)
 	}
 }
+
+extension DocCommentDescriptor: ExpressibleByStringInterpolation {}

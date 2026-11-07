@@ -28,6 +28,8 @@ extension MarkCommentDescriptor: ExpressibleByStringLiteral {
 	}
 }
 
+extension MarkCommentDescriptor: ExpressibleByStringInterpolation {}
+
 public extension DeclarationDescriptor {
 	/// Creates a mark-comment member.
 	///
