@@ -22,4 +22,9 @@ public struct DictionaryLiteralItemDescriptor: Sendable {
 		self.key = key
 		self.value = value
 	}
+
+	public init(key: LiteralDescriptor, value: LiteralDescriptor) {
+		self.key = .literal(key)
+		self.value = .literal(value)
+	}
 }
