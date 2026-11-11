@@ -13,11 +13,12 @@ enum RenderTest {
 	}
 
 	static func renderLine(indentUsing style: CodeIndentStyle = .tabs, _ block: (inout LineWriter) -> Void) -> String {
-		render(indentUsing: style) { writer in
+		let result = render(indentUsing: style) { writer in
 			writer.writeLine { line in
 				block(&line)
 			}
 		}
+		return String(result.dropLast())
 	}
 }
 

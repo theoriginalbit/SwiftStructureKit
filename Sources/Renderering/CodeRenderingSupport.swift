@@ -98,13 +98,13 @@ enum CodeRenderingSupport {
 			renderGenericSignature(genericParameters, to: &line)
 
 			if !conformances.isEmpty {
-				line.punctuation(.colon)
+				line.punctuation(.Postfix.colon)
 				let conformances = conformances.removingDuplicates()
 				line.token(renderedTypesList(conformances))
 			}
 
 			renderGenericRequirements(genericRequirements, to: &line)
-			line.block(body)
+			line.block(body: body)
 		}
 	}
 
@@ -145,38 +145,68 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	static func renderedLiteral(_ literal: LiteralDescriptor) -> String {
+	static func renderLiteral(_ literal: LiteralDescriptor, into lineWriter: inout LineWriter) {
 		return switch literal {
 		case let .string(value):
-			renderedStringLiteral(value)
+			lineWriter.token(renderedStringLiteral(value))
 		case let .integer(.decimal(value)):
-			String(value)
+			lineWriter.token(String(value))
 		case let .integer(.hexadecimal(value)):
-			"0x" + String(value, radix: 16)
+			lineWriter.token("0x" + String(value, radix: 16))
 		case let .integer(.octal(value)):
-			"0o" + String(value, radix: 8)
+			lineWriter.token("0o" + String(value, radix: 8))
 		case let .integer(.binary(value)):
-			"0b" + String(value, radix: 2)
+			lineWriter.token("0b" + String(value, radix: 2))
 		case let .boolean(value):
-			String(value)
+			lineWriter.token(String(value))
 		case let .double(value):
-			renderedDouble(value)
+			lineWriter.token(renderedDouble(value))
 		case .nil:
-			"nil"
-		case .array:
-			emptyArray
-		case .dictionary:
-			emptyDictionary
+			lineWriter.token("nil")
+		case let .array(values):
+			renderArrayLiteral(values, into: &lineWriter)
+		case let .dictionary(values):
+			renderDictionaryLiteral(values, into: &lineWriter)
+		}
+	}
+
+	private static func renderArrayLiteral(_ values: [ExpressionDescriptor], into lineWriter: inout LineWriter) {
+		lineWriter.block(.bracket) { writer in
+			for value in values {
+				writer.writeLine { line in
+					ExpressionRenderer.render(value, to: &line)
+					line.punctuation(.comma)
+				}
+			}
+		}
+	}
+
+	private static func renderDictionaryLiteral(_ values: [DictionaryLiteralItemDescriptor], into lineWriter: inout LineWriter) {
+		guard !values.isEmpty else {
+			lineWriter.punctuation(.leftBracket)
+			lineWriter.punctuation(.Postfix.colon)
+			lineWriter.punctuation(.rightBracket)
+			return
+		}
+		lineWriter.block(.bracket) { writer in
+			for value in values {
+				writer.writeLine { line in
+					ExpressionRenderer.render(value.key, to: &line)
+					line.punctuation(.Postfix.colon)
+					ExpressionRenderer.render(value.value, to: &line)
+					line.punctuation(.comma)
+				}
+			}
 		}
 	}
 
 	private static func renderedStringLiteral(_ value: String) -> String {
 		if value.contains(where: \.isNewline) {
-   #"""
-   """
-   \#(value)
-   """
-   """#
+			#"""
+			"""
+			\#(value)
+			"""
+			"""#
 		} else {
 			#""\#(value)""#
 		}
@@ -203,17 +233,6 @@ enum CodeRenderingSupport {
 		}
 		writer.write(rendered)
 		return writer.finish()
-	}
-
-	private static let emptyArray = TokenWriter.render { writer in
-		writer.write(.leftBracket)
-		writer.write(.rightBracket)
-	}
-
-	private static let emptyDictionary = TokenWriter.render { writer in
-		writer.write(.leftBracket)
-		writer.write(.colon)
-		writer.write(.rightBracket)
 	}
 
 	static func renderedType(_ type: TypeReference) -> String {
@@ -381,7 +400,7 @@ enum CodeRenderingSupport {
 		let identifier = renderedIdentifier(parameter.identifier, as: .type)
 		writer.write(identifier)
 		if let constraint = parameter.constraint {
-			writer.write(.colon)
+			writer.write(.Postfix.colon)
 			writer.write(renderedComposition(constraint))
 		}
 		return writer.finish()
@@ -392,7 +411,7 @@ enum CodeRenderingSupport {
 		writer.write(renderedIdentifier(constraint.type, as: .type))
 		switch constraint.kind {
 		case let .conformsTo(composition):
-			writer.write(.colon)
+			writer.write(.Postfix.colon)
 			writer.write(renderedComposition(composition))
 		case let .sameType(composition):
 			writer.write(.equals)

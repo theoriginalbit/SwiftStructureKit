@@ -3,7 +3,7 @@
 //
 
 /// A descriptor representing a literal value in Swift source code.
-public enum LiteralDescriptor: Equatable, Sendable {
+public enum LiteralDescriptor: Sendable {
 	/// A string literal value.
 	case string(String)
 
@@ -19,11 +19,11 @@ public enum LiteralDescriptor: Equatable, Sendable {
 	/// A `nil` literal value.
 	case `nil`
 
-	/// An empty array literal value.
-	case array
+	/// An array literal value.
+	case array([ExpressionDescriptor])
 
-	/// An empty dictionary literal value.
-	case dictionary
+	/// A dictionary literal value.
+	case dictionary([DictionaryLiteralItemDescriptor])
 }
 
 extension LiteralDescriptor: ExpressibleByStringLiteral {

@@ -28,7 +28,6 @@ import Testing
 			} else {
 				0
 			}
-
 			""")
 	}
 
@@ -49,7 +48,6 @@ import Testing
 			} else {
 				2
 			}
-
 			""")
 	}
 
@@ -71,10 +69,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			try? fn()
-
-			""")
+		expectRendered(output, equals: "try? fn()")
 	}
 
 	@Test func inOut() {
@@ -82,10 +77,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			&writer
-
-			""")
+		expectRendered(output, equals: "&writer")
 	}
 
 	@Test func forcedValue() {
@@ -96,10 +88,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-		   provider!.value
-
-		   """)
+		expectRendered(output, equals: "provider!.value")
 	}
 
 	@Test func optionalChaining() {
@@ -110,10 +99,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			provider?.value
-
-			""")
+		expectRendered(output, equals: "provider?.value")
 	}
 
 	@Test func `optional chaining invokes an optional closure`() {
@@ -121,10 +107,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			completionHandler?()
-
-			""")
+		expectRendered(output, equals: "completionHandler?()")
 	}
 
 	@Test(arguments: [
@@ -141,10 +124,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			\(expected)
-
-			""")
+		expectRendered(output, equals: expected)
 	}
 
 	@Test func selfMemberAccess() {
@@ -152,10 +132,7 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			self.foo
-
-			""")
+		expectRendered(output, equals: "self.foo")
 	}
 
 	@Test func superMemberAccess() {
@@ -163,9 +140,6 @@ import Testing
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
-		expectRendered(output, equals: """
-			super.foo
-
-			""")
+		expectRendered(output, equals: "super.foo")
 	}
 }

@@ -45,9 +45,6 @@ struct Punctuation: Equatable {
 	/// The `]` punctuation mark.
 	static let rightBracket = Self("]", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 
-	/// The `:` punctuation mark.
-	static let colon = Self(":", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
-
 	/// The `,` punctuation mark.
 	static let comma = Self(",", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 
@@ -96,6 +93,9 @@ struct Punctuation: Equatable {
 
 		/// The `!` punctuation mark.
 		static let exclamationMark = Punctuation("!", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
+
+		/// The `:` punctuation mark.
+		static let colon = Punctuation(":", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
 	}
 
 	/// Punctuation that is used as an operator such as bitwise or boolean logic. Typically an infix between two tokens and allows for

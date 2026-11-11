@@ -200,25 +200,25 @@ import Testing
 							Parameter(
 								"attributes",
 								type: .generic("Array", arguments: ["AttributeDescriptor"]),
-								defaultValue: .literal(.array),
+								defaultValue: .literal(.array([])),
 								comment: "Attributes applied to the protocol."
 							)
 							Parameter(
 								"genericParameters",
 								type: .generic("OrderedSet", arguments: ["GenericParameterDescriptor"]),
-								defaultValue: .literal(.array),
+								defaultValue: .literal(.array([])),
 								comment: "The generic parameters associated with the protocol."
 							)
 							Parameter(
 								"genericRequirements",
 								type: .generic("Array", arguments: ["TypeConstraintDescriptor"]),
-								defaultValue: .literal(.array),
+								defaultValue: .literal(.array([])),
 								comment: "The generic `where` requirements associated with the protocol."
 							)
 							Parameter(
 								"conformances",
 								type: .generic("OrderedSet", arguments: ["TypeReference"]),
-								defaultValue: .literal(.array),
+								defaultValue: .literal(.array([])),
 								comment: "The types or protocols the protocol inherits from."
 							)
 							Parameter(
@@ -284,7 +284,7 @@ import Testing
 						Parameter(
 							"attributes",
 							type: .generic("Array", arguments: ["AttributeDescriptor"]),
-							defaultValue: .literal(.array),
+							defaultValue: .literal(.array([])),
 							comment: "Attributes applied to the property."
 						)
 						Parameter("identifier", type: .string, comment: "The name of the property.")
@@ -494,8 +494,8 @@ import Testing
 				for assignedType in supportedAssignedTypes {
 					DeclarationDescriptor.initializer(accessModifier: .public, parameters: ParametersList {
 						Parameter("name", label: "_", type: .string)
-						Parameter("attributes", type: .generic("Array", arguments: ["AttributeDescriptor"]), defaultValue: .literal(.array))
-						Parameter("genericParameters", type: .generic("OrderedSet", arguments: ["GenericParameterDescriptor"]), defaultValue: .literal(.array))
+						Parameter("attributes", type: .generic("Array", arguments: ["AttributeDescriptor"]), defaultValue: .literal(.array([])))
+						Parameter("genericParameters", type: .generic("OrderedSet", arguments: ["GenericParameterDescriptor"]), defaultValue: .literal(.array([])))
 						Parameter(assignedType.name, type: assignedType.type)
 					}) {
 						StatementDescriptor.assignment("self.descriptor", .functionCall("TypealiasDescriptor", [

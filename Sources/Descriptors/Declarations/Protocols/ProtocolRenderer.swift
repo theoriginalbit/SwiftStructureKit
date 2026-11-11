@@ -41,7 +41,7 @@ enum ProtocolRenderer {
 				break
 
 			case let .conformsTo(conformingType):
-				line.punctuation(.colon)
+				line.punctuation(.Postfix.colon)
 				line.token(CodeRenderingSupport.renderedComposition(conformingType))
 
 			case let .defaultType(assignedType):
@@ -58,7 +58,7 @@ enum ProtocolRenderer {
 		writer.writeLine { line in
 			line.token("var")
 			line.token(SwiftIdentifier.sanitized(property.identifier))
-			line.punctuation(.colon)
+			line.punctuation(.Postfix.colon)
 			line.token(CodeRenderingSupport.renderedType(property.type))
 			line.punctuation(.leftBrace)
 			switch property.accessorSpecifier {

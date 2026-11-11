@@ -28,7 +28,7 @@ enum ParametersListRenderer {
 			line.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
 		}
 		line.token(SwiftIdentifier.sanitized(parameter.identifier))
-		line.punctuation(.colon)
+		line.punctuation(.Postfix.colon)
 		if parameter.isInout {
 			line.token("inout")
 		}

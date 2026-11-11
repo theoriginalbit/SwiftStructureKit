@@ -75,7 +75,7 @@ enum StatementRenderer {
 			case .error: line.token("error")
 			}
 			line.punctuation(.leftParen)
-			line.token(CodeRenderingSupport.renderedLiteral(.string(descriptor.message)))
+			CodeRenderingSupport.renderLiteral(.string(descriptor.message), into: &line)
 			line.punctuation(.rightParen)
 		}
 	}
@@ -241,7 +241,7 @@ enum StatementRenderer {
 	private static func renderLabel(_ label: String?, to line: inout LineWriter) {
 		if let label {
 			line.token(label)
-			line.punctuation(.colon)
+			line.punctuation(.Postfix.colon)
 		}
 	}
 

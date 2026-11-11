@@ -176,8 +176,8 @@ struct CodeWriter: ~Copyable {
 
 	/// Opens a block on the current line. The block's lines are indented one level deeper
 	/// and the line break that follows the `{` is deferred until the first of them begins.
-	fileprivate mutating func beginBlock() {
-		writePunctuation(.leftBrace)
+	fileprivate mutating func beginBlock(_ punctuation: Punctuation = .leftBrace) {
+		writePunctuation(punctuation)
 		hasPendingLineBreak = true
 		indentLevel += 1
 	}
@@ -185,7 +185,7 @@ struct CodeWriter: ~Copyable {
 	/// Closes the block opened by the matching ``beginBlock()``. The closing brace shares
 	/// the opening line when the block is empty and otherwise starts a line of its own at
 	/// the enclosing indentation. Either way the line continues after it.
-	fileprivate mutating func endBlock() {
+	fileprivate mutating func endBlock(_ punctuation: Punctuation = .rightBrace) {
 		indentLevel -= 1
 		if hasPendingLineBreak {
 			// Nothing was written inside the block, so it closes as `{}`.
@@ -194,7 +194,7 @@ struct CodeWriter: ~Copyable {
 		} else {
 			assert(isAtLineStart, "A block body must end at the start of a line")
 		}
-		writePunctuation(.rightBrace)
+		writePunctuation(punctuation)
 	}
 
 	// MARK: Helpers
@@ -282,6 +282,25 @@ struct LineWriter: ~Copyable {
 		writer.writePunctuation(punctuation)
 	}
 
+	enum BlockTerminators {
+		case brace
+		case bracket
+
+		var leadingPunctuation: Punctuation {
+			switch self {
+			case .brace: return .leftBrace
+			case .bracket: return .leftBracket
+			}
+		}
+
+		var trailingPunctuation: Punctuation {
+			switch self {
+			case .brace: return .rightBrace
+			case .bracket: return .rightBracket
+			}
+		}
+	}
+
 	/// Writes a brace-delimited block whose lines are produced by `body`.
 	///
 	/// The opening brace is written on the current line. The body's lines are indented one
@@ -289,15 +308,18 @@ struct LineWriter: ~Copyable {
 	/// indentation, or directly after the opening brace when the body writes nothing. The
 	/// current line resumes after the closing brace, so content that follows a block, such
 	/// as `else` or a chained member access, is written as if the block were a single token.
-	mutating func block(_ body: (_ writer: inout CodeWriter) -> Void) {
-		writer.beginBlock()
+	mutating func block(
+		_ terminators: BlockTerminators = .brace,
+		body: (_ writer: inout CodeWriter) -> Void,
+	) {
+		writer.beginBlock(terminators.leadingPunctuation)
 		body(&writer)
-		writer.endBlock()
+		writer.endBlock(terminators.trailingPunctuation)
 	}
 
 	/// Writes a ``CodeBlockDescriptor``'s statements as a brace-delimited block on the current line.
 	mutating func block(_ body: CodeBlockDescriptor) {
-		block { writer in
+		block(.brace) { writer in
 			StatementRenderer.render(body.statements, to: &writer)
 		}
 	}

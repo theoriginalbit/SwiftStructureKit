@@ -49,7 +49,7 @@ enum EnumRenderer {
 				for (index, associatedValue) in descriptor.associatedValues.enumerated() {
 					if let label = associatedValue.label {
 						line.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
-						line.punctuation(.colon)
+						line.punctuation(.Postfix.colon)
 					}
 					line.token(CodeRenderingSupport.renderedType(associatedValue.type))
 
@@ -67,7 +67,7 @@ enum EnumRenderer {
 
 			if let rawValue = descriptor.rawValue {
 				line.punctuation(.assign)
-				line.token(CodeRenderingSupport.renderedLiteral(rawValue))
+				CodeRenderingSupport.renderLiteral(rawValue, into: &line)
 			}
 		}
 	}

@@ -134,24 +134,38 @@ import Testing
 		(Double.leastNormalMagnitude, "Double.leastNormalMagnitude"),
 	])
 	func namedConstants(value: Double, expected: String) {
-		#expect(CodeRenderingSupport.renderedLiteral(.double(value)) == expected)
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(value), into: &line)
+		}
+		#expect(result == expected)
 	}
 
 	@Test func nan() {
-		#expect(CodeRenderingSupport.renderedLiteral(.double(.nan)) == "Double.nan")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(.nan), into: &line)
+		}
+		#expect(result == "Double.nan")
 	}
 
 	@Test func signalingNaN() {
-		#expect(CodeRenderingSupport.renderedLiteral(.double(.signalingNaN)) == "Double.signalingNaN")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(.signalingNaN), into: &line)
+		}
+		#expect(result == "Double.signalingNaN")
 	}
 
 	@Test func negativeNaNHasNoSign() {
-		#expect(CodeRenderingSupport.renderedLiteral(.double(-Double.nan)) == "Double.nan")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(-Double.nan), into: &line)
+		}
+		#expect(result == "Double.nan")
 	}
 
 	@Test(arguments: [1.0, -1.0, 1.5, -1.5, 0.1, 1e-5, 1e300, -1e300, 123456789.123456789])
 	func ordinaryValuesRoundTrip(value: Double) throws {
-		let output = CodeRenderingSupport.renderedLiteral(.double(value))
+		let output = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(value), into: &line)
+		}
 		#expect(!output.hasPrefix("--"))
 		let parsed = try #require(Double(output))
 		#expect(parsed == value)
@@ -159,28 +173,97 @@ import Testing
 
 	@Test(arguments: [0.5, 2.0, 1e-5])
 	func negativeHasExactlyOneMinus(value: Double) {
-		let pos = CodeRenderingSupport.renderedLiteral(.double(value))
-		#expect(CodeRenderingSupport.renderedLiteral(.double(-value)) == "-" + pos)
+		let pos = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(value), into: &line)
+		}
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(-value), into: &line)
+		}
+		#expect(result == "-" + pos)
 	}
 
 	@Test(arguments: [.nan, .infinity, -.infinity, 0, -0.0, 42])
 	func outputIsAlwaysNonEmpty(value: Double) {
-		#expect(!CodeRenderingSupport.renderedLiteral(.double(value)).isEmpty)
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.double(value), into: &line)
+		}
+		#expect(result.isEmpty == false)
 	}
 
 	@Test func decimalIntegerLiteral() {
-		#expect(CodeRenderingSupport.renderedLiteral(.integer(.decimal(1234))) == "1234")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.integer(.decimal(1234)), into: &line)
+		}
+		#expect(result == "1234")
 	}
 
 	@Test func hexadecimalIntegerLiteral() {
-		#expect(CodeRenderingSupport.renderedLiteral(.integer(.hexadecimal(0x4096Ee))) == "0x4096ee")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.integer(.hexadecimal(0x4096Ee)), into: &line)
+		}
+		#expect(result == "0x4096ee")
 	}
 
 	@Test func binaryIntegerLiteral() {
-		#expect(CodeRenderingSupport.renderedLiteral(.integer(.binary(0b100))) == "0b100")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.integer(.binary(0b100)), into: &line)
+		}
+		#expect(result == "0b100")
 	}
 
 	@Test func octalIntegerLiteral() {
-		#expect(CodeRenderingSupport.renderedLiteral(.integer(.octal(0o12345))) == "0o12345")
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.integer(.octal(0o12345)), into: &line)
+		}
+		#expect(result == "0o12345")
+	}
+
+	@Test func renderEmptyArrayLiteral() {
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.array([]), into: &line)
+		}
+		#expect(result == "[]")
+	}
+
+	@Test func renderArrayLiteral() {
+		func int(_ value: Int) -> ExpressionDescriptor {
+			.literal(.integer(.decimal(value)))
+		}
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.array([
+				int(1),
+				int(2),
+			]), into: &line)
+		}
+		let expected = """
+			[
+				1,
+				2,
+			]
+			"""
+		#expect(result == expected)
+	}
+
+	@Test func renderEmptyDictionaryLiteral() {
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.dictionary([]), into: &line)
+		}
+		#expect(result == "[:]")
+	}
+
+	@Test func renderDictionaryLiteral() {
+		let result = RenderTest.renderLine { line in
+			CodeRenderingSupport.renderLiteral(.dictionary([
+				.init(key: .literal(.string("foo")), value: .literal(.integer(1))),
+				.init(key: .literal(.string("bar")), value: .literal(.integer(2))),
+			]), into: &line)
+		}
+		let expected = """
+			[
+				"foo": 1,
+				"bar": 2,
+			]
+			"""
+		#expect(result == expected)
 	}
 }

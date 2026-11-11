@@ -13,7 +13,7 @@ enum PropertyRenderer {
 				renderDeclarationPrefix(property, to: &line)
 				line.token(kind == .var ? "var" : "let")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
-				line.punctuation(.colon)
+				line.punctuation(.Postfix.colon)
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				if let defaultValue {
 					line.punctuation(.assign)
@@ -31,7 +31,7 @@ enum PropertyRenderer {
 				renderDeclarationPrefix(property, to: &line)
 				line.token("var")
 				line.token(SwiftIdentifier.sanitized(property.identifier))
-				line.punctuation(.colon)
+				line.punctuation(.Postfix.colon)
 				line.token(CodeRenderingSupport.renderedType(property.type))
 				line.block { writer in
 					render(getter, hasSetter: setter != nil, to: &writer)

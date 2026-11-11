@@ -6,7 +6,7 @@ enum ExpressionRenderer {
 	static func render(_ expression: ExpressionDescriptor, to writer: inout LineWriter) {
 		switch expression {
 		case let .literal(literal):
-			writer.token(CodeRenderingSupport.renderedLiteral(literal))
+			CodeRenderingSupport.renderLiteral(literal, into: &writer)
 
 		case let .identifier(identifier):
 			writer.token(CodeRenderingSupport.renderedIdentifier(identifier))
@@ -73,7 +73,7 @@ enum ExpressionRenderer {
 	private static func renderArgument(_ argument: Argument, to writer: inout LineWriter) {
 		if let label = argument.label {
 			writer.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
-			writer.punctuation(.colon)
+			writer.punctuation(.Postfix.colon)
 		}
 		render(argument.value, to: &writer)
 	}

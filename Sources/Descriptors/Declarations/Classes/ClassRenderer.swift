@@ -24,7 +24,7 @@ enum ClassRenderer {
 			CodeRenderingSupport.renderGenericSignature(descriptor.genericParameters, to: &line)
 
 			if !descriptor.conformances.isEmpty {
-				line.punctuation(.colon)
+				line.punctuation(.Postfix.colon)
 				let conformances = descriptor.conformances.removingDuplicates()
 				line.token(CodeRenderingSupport.renderedTypesList(conformances))
 			}
