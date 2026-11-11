@@ -24,6 +24,10 @@ enum ExpressionRenderer {
 			writer.punctuation(.Prefix.ampersand)
 			render(expression, to: &writer)
 
+		case let .forcedValue(expression):
+			render(expression, to: &writer)
+			writer.punctuation(.Postfix.exclamationMark)
+
 		case let .optionalChaining(expression):
 			render(expression, to: &writer)
 			writer.punctuation(.Postfix.questionMark)

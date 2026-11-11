@@ -88,6 +88,20 @@ import Testing
 			""")
 	}
 
+	@Test func forcedValue() {
+		let input = ExpressionDescriptor.memberAccess(
+			.forcedValue(.identifier("provider")),
+			"value"
+		)
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+		   provider!.value
+
+		   """)
+	}
+
 	@Test func optionalChaining() {
 		let input = ExpressionDescriptor.memberAccess(
 			.optionalChaining(.identifier("provider")),

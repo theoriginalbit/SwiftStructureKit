@@ -26,6 +26,10 @@ public enum ArrayBuilder<T> {
 		Array(components.joined())
 	}
 
+	public static func buildExpression(_ expression: Result) -> Result {
+		expression
+	}
+
 	public static func buildExpression(_ statement: T) -> Result {
 		[statement]
 	}

@@ -35,6 +35,11 @@ public indirect enum ExpressionDescriptor: Sendable {
 	/// For example, `&foo` passes a reference to the `foo` variable.
 	case inOut(ExpressionDescriptor)
 
+	/// A forced value expression.
+	///
+	/// For example in `foo!`, the supplied expression is `foo`.
+	case forcedValue(ExpressionDescriptor)
+
 	/// An optional chaining expression.
 	///
 	/// For example, in `foo?`, the supplied expression `foo`.
