@@ -6,13 +6,6 @@
 ///
 /// > Grammar:
 /// > [](https://docs.swift.org/latest/documentation/the-swift-programming-language/statements/#Control-Transfer-Statements)
-@available(*, deprecated, renamed: "ControlTransferDescriptor")
-public typealias ControlFlowDescriptor = ControlTransferDescriptor
-
-/// Describes a Swift control transfer statement such as `return`, `throw`, `break`, `continue`, or `fallthrough`.
-///
-/// > Grammar:
-/// > [](https://docs.swift.org/latest/documentation/the-swift-programming-language/statements/#Control-Transfer-Statements)
 public enum ControlTransferDescriptor: Sendable {
 	/// A `return` statement with an optional return expression.
 	case `return`(ExpressionDescriptor?)

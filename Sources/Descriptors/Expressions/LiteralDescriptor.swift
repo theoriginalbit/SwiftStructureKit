@@ -26,6 +26,14 @@ public enum LiteralDescriptor: Sendable {
 	case dictionary([DictionaryLiteralItemDescriptor])
 }
 
+public extension LiteralDescriptor {
+	/// An empty array literal value.
+	static var array: Self { .array([]) }
+
+	/// An empty dictionary literal value.
+	static var dictionary: Self { .dictionary([]) }
+}
+
 extension LiteralDescriptor: ExpressibleByStringLiteral {
 	/// Creates a literal from a string literal, producing a ``LiteralDescriptor/string(_:)`` value.
 	public init(stringLiteral value: StringLiteralType) {

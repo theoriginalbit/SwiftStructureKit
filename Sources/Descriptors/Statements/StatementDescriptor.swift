@@ -25,12 +25,6 @@ public enum StatementDescriptor: Sendable {
 	/// A statement that controls the flow of code, e.g. `return` or `continue`.
 	case controlTransfer(ControlTransferDescriptor)
 
-	/// A statement that controls the flow of code, e.g. `return` or `continue`.
-	@available(*, deprecated, renamed: "ControlTransferDescriptor")
-	static func controlFlow(_ descriptor: ControlTransferDescriptor) -> Self {
-		.controlTransfer(descriptor)
-	}
-
 	/// An `if`, `if`/`else`, or `guard` statement.
 	case conditional(ConditionalStatementDescriptor)
 
