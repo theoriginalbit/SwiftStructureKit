@@ -4,38 +4,37 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
-@Suite(.tags(.renderer)) struct StructRendererTests {
-	@Test("Render basic empty struct")
-	func renderBasicEmptyStruct() {
-		let structDescriptor = StructDescriptor("SimpleStruct") {}
+@Suite(.tags(.renderer)) struct ClassRendererTests {
+	@Test("Render basic empty class") func renderEmptyClass() {
+		let descriptor = ClassDescriptor("Simple")
 		let output = RenderTest.render { writer in
-			StructRenderer.render(structDescriptor, to: &writer)
+			ClassRenderer.render(descriptor, to: &writer)
 		}
 		let expected = """
-			struct SimpleStruct {}
+			class Simple {}
 
 			"""
 		expectRendered(output, equals: expected)
 	}
 
-	@Test("Render struct with access modifier, generic types, and conformances")
-	func renderComplexStructHeader() {
-		let structDescriptor = StructDescriptor(
-			"GenericContainer",
-			accessModifier: .public,
-			attributes: [.mainActor, .frozen, .available("iOS 17, *")],
+	@Test("Render with attributes, modifiers, generics, and conformances")
+	func renderClassWithMore() {
+		let descriptor = ClassDescriptor(
+			"WithMore",
+			accessModifier: .open,
+			attributes: [.mainActor, .available("iOS 17, *")],
 			genericParameters: ["T", "U"],
 			conformances: [.sendable, .equatable],
-		) {}
+		)
 		let output = RenderTest.render { writer in
-			StructRenderer.render(structDescriptor, to: &writer)
+			ClassRenderer.render(descriptor, to: &writer)
 		}
 		let expected = """
 			@MainActor
-			@frozen
 			@available(iOS 17, *)
-			public struct GenericContainer<T, U>: Sendable, Equatable {}
+			open class WithMore<T, U>: Sendable, Equatable {}
 
 			"""
 		expectRendered(output, equals: expected)
@@ -43,37 +42,42 @@ import Testing
 
 	@Test("Render generic parameter constraints and where requirements")
 	func renderGenericConstraints() {
-		let structDescriptor = StructDescriptor(
+		let descriptor = ClassDescriptor(
 			"F",
 			genericParameters: ["T", "N"],
 			genericRequirements: [
 				TypeConstraintDescriptor("T", conformsTo: .equatable)
 			]
-		) {}
+		)
 		let output = RenderTest.render { writer in
-			StructRenderer.render(structDescriptor, to: &writer)
+			ClassRenderer.render(descriptor, to: &writer)
 		}
+		let expected = """
+			class F<T, N> where T: Equatable {}
 
-		expectRendered(output, equals: """
-			struct F<T, N> where T: Equatable {}
-
-			""")
+			"""
+		expectRendered(output, equals: expected)
 	}
 
-	@Test("Render struct with doc comment")
-	func renderStructWithDocComment() {
-		let structDescriptor = StructDescriptor(
+	@Test("Render class with doc comment")
+	func renderWithDocComment() {
+		let descriptor = ClassDescriptor(
 			"UserModel",
-			comment: "A user model.\n\nReplicates the server model.",
-		) {}
+			comment: """
+			A user model.
+
+			Replicates the server model.
+			""",
+			isFinal: true,
+		)
 		let output = RenderTest.render { writer in
-			StructRenderer.render(structDescriptor, to: &writer)
+			ClassRenderer.render(descriptor, to: &writer)
 		}
 		let expected = """
 			/// A user model.
 			///
 			/// Replicates the server model.
-			struct UserModel {}
+			final class UserModel {}
 
 			"""
 		expectRendered(output, equals: expected)
@@ -81,7 +85,7 @@ import Testing
 
 	@Test("Render struct with members")
 	func renderStructWithMembers() {
-		let structDescriptor = StructDescriptor("User") {
+		let descriptor = ClassDescriptor("User") {
 			DeclarationDescriptor.initializer(
 				accessModifier: .public,
 				failable: false,
@@ -97,12 +101,12 @@ import Testing
 			}
 		}
 		let output = RenderTest.render { writer in
-			StructRenderer.render(structDescriptor, to: &writer)
+			ClassRenderer.render(descriptor, to: &writer)
 		}
 		let expected = """
-			struct User {
+			class User {
 			    public init(id: String) {}
-			
+
 			    /// Gets the identifier.
 			    public func getIdentifier() -> String {
 			        return "123"

@@ -4,27 +4,52 @@
 
 import Foundation
 import Testing
-@testable import enum SwiftStructureKit.ArrayBuilder
 
-protocol ConvertibleToData {
+public protocol ConvertibleToData {
 	func convertToData() -> Data
 }
 
 extension Data: ConvertibleToData {
-	func convertToData() -> Data { self }
+	public func convertToData() -> Data { self }
 }
 
 extension String: ConvertibleToData {
-	func convertToData() -> Data { Data(utf8) }
+	public func convertToData() -> Data { Data(utf8) }
 }
 
-enum ReferenceTest {
+/// Compares two in-memory values.
+///
+/// Use this when both values are large and difficult to compare in the standard test output.
+/// A failure reports a line-based diff with whitespace made visible.
+public func expectRendered(
+	_ actual: some ConvertibleToData,
+	equals expected: some ConvertibleToData,
+	attachmentName: String? = nil,
+	sourceLocation: SourceLocation = #_sourceLocation,
+) {
+	ReferenceTest.assert(actual, equals: expected, attachmentName: attachmentName, sourceLocation: sourceLocation)
+}
+
+/// Compares a value against a reference fixture on disk.
+///
+/// Use this when both values are large and difficult to compare in the standard test output.
+/// A failure reports a line-based diff with whitespace made visible.
+public func expectRendered(
+	_ actual: some ConvertibleToData,
+	equals expectedURL: URL,
+	sourceLocation: SourceLocation = #_sourceLocation,
+) {
+	ReferenceTest.assert(actual, equals: expectedURL, sourceLocation: sourceLocation)
+}
+
+public enum ReferenceTest {}
+public extension ReferenceTest {
 	/// Compares two in-memory values.
 	///
 	/// Use this when both values are large and difficult to compare in the standard test output.
 	static func assert(
 		_ actual: some ConvertibleToData,
-		matches expected: some ConvertibleToData,
+		equals expected: some ConvertibleToData,
 		attachmentName: String? = nil,
 		sourceLocation: SourceLocation = #_sourceLocation,
 	) {
@@ -64,7 +89,7 @@ enum ReferenceTest {
 	/// The actual output is attached and named after the fixture so it can be found in test results.
 	static func assert(
 		_ actual: some ConvertibleToData,
-		matches expectedURL: URL,
+		equals expectedURL: URL,
 		sourceLocation: SourceLocation = #_sourceLocation,
 	) {
 		let actual = actual.convertToData()
@@ -204,18 +229,20 @@ enum ReferenceTest {
 		)
 	}
 
-	@ArrayBuilder<String>
 	private static func _gitArguments(ignoresWhitespace: Bool, expected: URL, actual: URL) -> [String] {
-		"diff"
-		"--no-index"
-		"--no-color" // in case color.ui = always is set globally
-		"--diff-algorithm=histogram"
+		var result = [
+			"diff",
+			"--no-index",
+			"--no-color", // in case color.ui = always is set globally
+			"--diff-algorithm=histogram",
+		]
 		if ignoresWhitespace {
-			"--ignore-all-space"
+			result.append("--ignore-all-space")
 		}
-		"--"
-		expected.path
-		actual.path
+		result.append("--")
+		result.append(expected.path)
+		result.append(actual.path)
+		return result
 	}
 
 	/// Splits git's output into one change per unbroken run of removed/added lines.

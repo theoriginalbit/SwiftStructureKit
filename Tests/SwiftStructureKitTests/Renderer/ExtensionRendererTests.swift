@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct ExtensionRendererTests {
 	@Test("Render an empty extension")

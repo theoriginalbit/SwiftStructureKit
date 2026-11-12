@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct FunctionRendererTests {
 	@Test("Render basic function without body")

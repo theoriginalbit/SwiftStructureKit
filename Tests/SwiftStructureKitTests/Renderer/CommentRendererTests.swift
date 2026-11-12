@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct CommentRendererTests {
 	@Test("Render inline comment")

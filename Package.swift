@@ -4,22 +4,26 @@ import PackageDescription
 let package = Package(
 	name: "SwiftStructureKit",
 	platforms: [
-		.macOS(.v12),
+		.macOS(.v13),
 	],
 	products: [
 		.library(
 			name: "SwiftStructureKit",
 			targets: ["SwiftStructureKit"]
 		),
+		.library(
+			name: "SwiftStructureKitTestSupport",
+			targets: ["SwiftStructureKitTestSupport"],
+		),
 	],
 	targets: [
-		.target(
-			name: "SwiftStructureKit"
-		),
+		.target(name: "SwiftStructureKit"),
+		.target(name: "SwiftStructureKitTestSupport"),
 		.testTarget(
 			name: "SwiftStructureKitTests",
 			dependencies: [
 				.target(name: "SwiftStructureKit"),
+				.target(name: "SwiftStructureKitTestSupport"),
 			],
 			resources: [
 				.copy("Resources"),

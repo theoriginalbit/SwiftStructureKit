@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct SwiftFileTests {
 	@Test("Render an empty file as empty data")
@@ -43,9 +44,9 @@ import Testing
 			}
 		}
 
-		try ReferenceTest.assert(
+		expectRendered(
 			descriptor.render(),
-			matches: Fixtures.url("SwiftFileTests_renderFile"),
+			equals: try Fixtures.url("SwiftFileTests_renderFile"),
 		)
 	}
 
@@ -645,9 +646,9 @@ import Testing
 				}
 		}
 
-		try ReferenceTest.assert(
+		expectRendered(
 			descriptor.render(indentUsing: .tabs),
-			matches: Fixtures.url("SwiftFileTests_complexFile"),
+			equals: try Fixtures.url("SwiftFileTests_complexFile"),
 		)
 	}
 }

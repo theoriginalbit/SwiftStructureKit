@@ -21,16 +21,3 @@ enum RenderTest {
 		return String(result.dropLast())
 	}
 }
-
-/// Asserts that rendered output matches `expected`.
-///
-/// Unlike a plain `#expect(actual == expected)`, a failure reports a line-based diff with
-/// whitespace made visible, which is what you need when two multi-line blobs differ by a
-/// single space or blank line.
-func expectRendered(
-	_ actual: String,
-	equals expected: String,
-	sourceLocation: SourceLocation = #_sourceLocation,
-) {
-	ReferenceTest.assert(actual, matches: expected, sourceLocation: sourceLocation)
-}

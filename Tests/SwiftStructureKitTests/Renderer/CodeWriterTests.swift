@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct CodeWriterTests {
 	@Test("Test all major functions of the writer")
@@ -55,9 +56,9 @@ import Testing
 		}
 
 		let actual = writer.rendered()
-		try ReferenceTest.assert(
+		expectRendered(
 			actual,
-			matches: Fixtures.url("CodeFileWriterTests_contract")
+			equals: try Fixtures.url("CodeFileWriterTests_contract")
 		)
 	}
 

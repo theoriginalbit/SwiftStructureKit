@@ -4,6 +4,7 @@
 
 import Testing
 @testable import SwiftStructureKit
+import SwiftStructureKitTestSupport
 
 @Suite(.tags(.renderer)) struct ProtocolRendererTests {
 	@Test("Render empty protocol")
@@ -138,7 +139,7 @@ import Testing
 			}
 
 			"""
-		ReferenceTest.assert(output, matches: expected)
+		expectRendered(output, equals: expected)
 	}
 
 	@Test("Render result builders on protocol properties and function parameters")

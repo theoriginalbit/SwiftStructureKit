@@ -4,16 +4,15 @@
 
 import Testing
 import Foundation
-import SwiftStructureKit
 
-struct DiagnosticSpec {
+public struct DiagnosticSpec {
 	var anyOf: [String]
 	var line: Int? = nil
 	var column: Int? = nil
 	var severity = "error"
 }
 
-func assertCompilation(
+public func assertCompilation(
 	_ source: String,
 	flags: [String] = [],
 	diagnostics expected: [DiagnosticSpec] = [],
@@ -27,7 +26,8 @@ func assertCompilation(
 	)
 }
 
-enum CompilerTest {
+public enum CompilerTest {}
+public extension CompilerTest {
 	static func assertCompilation(
 		_ source: String,
 		flags: [String] = [],
@@ -97,18 +97,15 @@ enum CompilerTest {
 		return (process.terminationStatus == 0, String(decoding: data, as: UTF8.self))
 	}
 
-	@ArrayBuilder<String>
 	private static func _swiftCArguments(flags: [String], buildDir: String, filePath: String) -> [String] {
-		"swiftc"
-		"-typecheck"
-		"-diagnostic-style"
-		"llvm"
-		flags
-		"-I"
-		buildDir
-		"-I"
-		buildDir + "/Modules"
-		filePath
+		var result = ["swiftc", "-typecheck", "-diagnostic-style", "llvm"]
+		result.append(contentsOf: flags)
+		result.append("-I")
+		result.append(buildDir)
+		result.append("-I")
+		result.append(buildDir + "/Modules")
+		result.append(filePath)
+		return result
 	}
 
 	private static func _parse(_ output: String) -> [Diagnostic] {
