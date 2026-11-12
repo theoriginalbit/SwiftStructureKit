@@ -8,7 +8,7 @@ let package = Package(
 	],
 	products: [
 		.library(
-			name: "StructureKit",
+			name: "SwiftStructureKit",
 			targets: ["SwiftStructureKit"]
 		),
 	],
