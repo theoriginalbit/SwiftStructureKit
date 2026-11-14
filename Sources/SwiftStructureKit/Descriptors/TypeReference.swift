@@ -235,4 +235,14 @@ public extension TypeReference {
 	static var date: Self {
 		.identifier("Date")
 	}
+
+	/// A type reference to `URL`.
+	static var url: Self {
+		.identifier("URL")
+	}
+
+	/// A type reference to `TimeInterval`.
+	static var timeInterval: Self {
+		.identifier("TimeInterval")
+	}
 }
