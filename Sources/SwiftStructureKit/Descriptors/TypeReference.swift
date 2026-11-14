@@ -178,6 +178,26 @@ public extension TypeReference {
 		.identifier("Double")
 	}
 
+	/// A type reference to `Float`.
+	static var float: Self {
+		.identifier("Float")
+	}
+
+	/// A type reference to `Float16`.
+	static var float16: Self {
+		.identifier("Float16")
+	}
+
+	/// A type reference to `Float32`.
+	static var float32: Self {
+		.identifier("Float32")
+	}
+
+	/// A type reference to `Float64`.
+	static var float64: Self {
+		.identifier("Float64")
+	}
+
 	/// A type reference to `Bool`.
 	static var bool: Self {
 		.identifier("Bool")

@@ -27,6 +27,14 @@ public indirect enum LiteralDescriptor: Sendable {
 }
 
 public extension LiteralDescriptor {
+	/// A floating-point literal value.
+	static func float(_ value: Float) -> Self {
+		// Float → Double is a lossless conversion
+		// typealias Float32 = Float32
+		// typealias Float64 = Double
+		.double(Double(value))
+	}
+
 	/// An empty array literal value.
 	static var array: Self { .array([]) }
 
