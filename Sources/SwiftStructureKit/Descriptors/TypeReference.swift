@@ -118,6 +118,61 @@ public extension TypeReference {
 		.identifier("Int")
 	}
 
+	/// A type reference to `Int8`.
+	static var int8: Self {
+		.identifier("Int8")
+	}
+
+	/// A type reference to `Int16`.
+	static var int16: Self {
+		.identifier("Int16")
+	}
+
+	/// A type reference to `Int32`.
+	static var int32: Self {
+		.identifier("Int32")
+	}
+
+	/// A type reference to `Int64`.
+	static var int64: Self {
+		.identifier("Int64")
+	}
+
+	/// A type reference to `Int128`.
+	static var int128: Self {
+		.identifier("Int128")
+	}
+
+	/// A type reference to `UInt`.
+	static var uint: Self {
+		.identifier("UInt")
+	}
+
+	/// A type reference to `UInt8`.
+	static var uint8: Self {
+		.identifier("UInt8")
+	}
+
+	/// A type reference to `UInt16`.
+	static var uint16: Self {
+		.identifier("UInt16")
+	}
+
+	/// A type reference to `UInt32`.
+	static var uint32: Self {
+		.identifier("UInt32")
+	}
+
+	/// A type reference to `UInt64`.
+	static var uint64: Self {
+		.identifier("UInt64")
+	}
+
+	/// A type reference to `UInt128`.
+	static var uint128: Self {
+		.identifier("UInt128")
+	}
+
 	/// A type reference to `Double`.
 	static var double: Self {
 		.identifier("Double")
