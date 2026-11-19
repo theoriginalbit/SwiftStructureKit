@@ -22,6 +22,48 @@ public enum TopLevelDeclarationDescriptor: Sendable {
 	case member(DeclarationDescriptor)
 }
 
+public extension TopLevelDeclarationDescriptor {
+	/// A member that is an enum, represented by its ``AnyEnumDescriptor``.
+	static func `enum`(_ descriptor: AnyEnumDescriptor) -> Self {
+		.member(.enum(descriptor))
+	}
+
+	/// A member that is a function, represented by its ``FunctionDescriptor``.
+	static func function(_ descriptor: FunctionDescriptor) -> Self {
+		.member(.function(descriptor))
+	}
+
+	/// A member that is a mark comment, represented by its ``MarkCommentDescriptor``
+	static func mark(_ descriptor: MarkCommentDescriptor) -> Self {
+		.member(.mark(descriptor))
+	}
+
+	/// A member that is a property, represented by its ``PropertyDescriptor``.
+	static func property(_ descriptor: PropertyDescriptor) -> Self {
+		.member(.property(descriptor))
+	}
+
+	/// A member that is a protocol, represented by its ``ProtocolDescriptor``.
+	static func `protocol`(_ descriptor: ProtocolDescriptor) -> Self {
+		.member(.protocol(descriptor))
+	}
+
+	/// A member that is a struct, represented by its ``StructDescriptor``.
+	static func `struct`(_ descriptor: StructDescriptor) -> Self {
+		.member(.struct(descriptor))
+	}
+
+	/// A member that is a class, represented by its ``ClassDescriptor``.
+	static func `class`(_ descriptor: ClassDescriptor) -> Self {
+		.member(.class(descriptor))
+	}
+
+	/// A member that is a typealias, represented by its ``TypealiasDescriptor``.
+	static func `typealias`(_ descriptor: TypealiasDescriptor) -> Self {
+		.member(.typealias(descriptor))
+	}
+}
+
 /// The top-level builder accepts everything the ``DeclarationBuilder`` does, so that
 /// a file body can read the same as a type body while additionally accepting extensions.
 public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
