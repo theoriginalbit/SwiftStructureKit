@@ -3,7 +3,7 @@
 //
 
 enum CommentRenderer {
-	static func renderMarkComment(_ descriptor: MarkCommentDescriptor, to writer: inout CodeWriter) {
+	static func render(_ descriptor: MarkCommentDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine { line in
 			line.token("// MARK:")
 			if descriptor.sectionBreak {
@@ -17,11 +17,11 @@ enum CommentRenderer {
 		}
 	}
 
-	static func renderInlineComment(_ descriptor: InlineCommentDescriptor, to writer: inout CodeWriter) {
+	static func render(_ descriptor: InlineCommentDescriptor, to writer: inout CodeWriter) {
 		writer.writeLine(descriptor.value, prefix: "// ")
 	}
 
-	static func renderDocComment(_ descriptor: DocCommentDescriptor?, to writer: inout CodeWriter) {
+	static func render(_ descriptor: DocCommentDescriptor?, to writer: inout CodeWriter) {
 		guard let descriptor else { return }
 		if descriptor.value.isEmpty {
 			writer.writeLine("///")

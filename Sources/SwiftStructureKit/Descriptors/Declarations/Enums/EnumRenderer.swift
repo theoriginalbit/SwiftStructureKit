@@ -38,7 +38,7 @@ enum EnumRenderer {
 	}
 
 	private static func render(_ descriptor: AnyEnumCaseDescriptor, to writer: inout CodeWriter) {
-		CommentRenderer.renderDocComment(descriptor.comment, to: &writer)
+		CommentRenderer.render(descriptor.comment, to: &writer)
 
 		writer.writeLine { line in
 			line.token("case")

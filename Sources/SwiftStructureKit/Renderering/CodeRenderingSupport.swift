@@ -85,7 +85,7 @@ enum CodeRenderingSupport {
 		to writer: inout CodeWriter,
 		body: (inout CodeWriter) -> Void,
 	) {
-		CommentRenderer.renderDocComment(comment, to: &writer)
+		CommentRenderer.render(comment, to: &writer)
 		AttributeRenderer.render(attributes, to: &writer)
 
 		writer.writeLine { line in

@@ -52,7 +52,7 @@ enum ProtocolRenderer {
 	}
 
 	private static func render(_ property: ProtocolPropertyDescriptor, to writer: inout CodeWriter) {
-		CommentRenderer.renderDocComment(property.comment, to: &writer)
+		CommentRenderer.render(property.comment, to: &writer)
 		AttributeRenderer.render(property.attributes, to: &writer)
 
 		writer.writeLine { line in

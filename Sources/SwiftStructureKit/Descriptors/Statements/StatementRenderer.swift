@@ -26,7 +26,7 @@ enum StatementRenderer {
 			PropertyRenderer.render(descriptor, to: &writer)
 
 		case let .comment(descriptor):
-			CommentRenderer.renderInlineComment(descriptor, to: &writer)
+			CommentRenderer.render(descriptor, to: &writer)
 
 		case let .compilerControl(.directive(descriptor)):
 			renderDirective(descriptor, to: &writer)

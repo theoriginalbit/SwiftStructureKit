@@ -40,10 +40,12 @@ enum SwiftFileRenderer {
 
 	private static func render(_ declaration: TopLevelDeclarationDescriptor, to writer: inout CodeWriter) {
 		switch declaration {
-		case let .member(descriptor):
-			DeclarationDescriptorRenderer.render(descriptor, to: &writer)
+		case let .comment(descriptor):
+			CommentRenderer.render(descriptor, to: &writer)
 		case let .extension(descriptor):
 			ExtensionRenderer.render(descriptor, to: &writer)
+		case let .member(descriptor):
+			DeclarationDescriptorRenderer.render(descriptor, to: &writer)
 		}
 	}
 }

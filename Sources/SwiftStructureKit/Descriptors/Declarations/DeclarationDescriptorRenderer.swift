@@ -14,7 +14,7 @@ enum DeclarationDescriptorRenderer {
 		case let .function(descriptor):
 			FunctionRenderer.render(descriptor, to: &writer)
 		case let .mark(descriptor):
-			CommentRenderer.renderMarkComment(descriptor, to: &writer)
+			CommentRenderer.render(descriptor, to: &writer)
 		case let .property(descriptor):
 			PropertyRenderer.render(descriptor, to: &writer)
 		case let .protocol(descriptor):

@@ -11,12 +11,15 @@ public typealias TopLevelDeclarationBuilder = ArrayBuilder<TopLevelDeclarationDe
 /// ``DeclarationDescriptor``. Extensions, however, can only appear at the file scope, so
 /// have no counterpart in `DeclarationDescriptor`.
 public enum TopLevelDeclarationDescriptor: Sendable {
-	/// A declaration that is also valid as a type member, such as a type, function, property
-	/// typealias, or MARK comment represented by its ``DeclarationDescriptor``.
-	case member(DeclarationDescriptor)
+	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
+	case comment(InlineCommentDescriptor)
 
 	/// An extension of an existing type, represented by its ``ExtensionDescriptor``.
 	case `extension`(ExtensionDescriptor)
+
+	/// A declaration that is also valid as a type member, such as a type, function, property
+	/// typealias, or MARK comment represented by its ``DeclarationDescriptor``.
+	case member(DeclarationDescriptor)
 }
 
 /// The top-level builder accepts everything the ``DeclarationBuilder`` does, so that

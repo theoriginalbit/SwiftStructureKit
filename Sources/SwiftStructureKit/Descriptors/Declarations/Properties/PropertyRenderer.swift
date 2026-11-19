@@ -4,7 +4,7 @@
 
 enum PropertyRenderer {
 	static func render(_ property: PropertyDescriptor, to writer: inout CodeWriter) {
-		CommentRenderer.renderDocComment(property.comment, to: &writer)
+		CommentRenderer.render(property.comment, to: &writer)
 		AttributeRenderer.render(property.attributes, to: &writer)
 
 		switch property.kind {

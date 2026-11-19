@@ -27,7 +27,7 @@ enum FunctionRenderer {
 
 	private static func renderDocComment(for signature: FunctionSignatureDescriptor, to writer: inout CodeWriter) {
 		guard let comment = signature.comment else { return }
-		CommentRenderer.renderDocComment(comment, to: &writer)
+		CommentRenderer.render(comment, to: &writer)
 
 		// As long as one parameter has a comment, the parameters comment list will be generated
 		guard signature.parameters.contains(where: { $0.comment != nil }) else { return }

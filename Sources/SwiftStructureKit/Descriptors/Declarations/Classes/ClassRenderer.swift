@@ -7,7 +7,7 @@ enum ClassRenderer {
 		// The grammar of classes is different from other types, it would
 		// make no sense to modify renderTypeDeclaration for classes. Nearly
 		// duplicate implementation makes most sense.
-		CommentRenderer.renderDocComment(descriptor.comment, to: &writer)
+		CommentRenderer.render(descriptor.comment, to: &writer)
 		AttributeRenderer.render(descriptor.attributes, to: &writer)
 
 		writer.writeLine { line in
