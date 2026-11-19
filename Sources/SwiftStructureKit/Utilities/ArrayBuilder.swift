@@ -22,6 +22,10 @@ public enum ArrayBuilder<T> {
 		component
 	}
 
+	public static func buildArray(_ components: Result) -> Result {
+		components
+	}
+
 	public static func buildArray(_ components: [Result]) -> Result {
 		Array(components.joined())
 	}

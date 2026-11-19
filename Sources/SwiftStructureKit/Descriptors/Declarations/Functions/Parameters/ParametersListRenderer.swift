@@ -11,10 +11,12 @@ enum ParametersListRenderer {
 
 	static func render(_ parametersList: ParametersList, into line: inout LineWriter) {
 		line.punctuation(.leftParen)
-		for (index, parameter) in parametersList.parameters.enumerated() {
-			render(parameter, into: &line)
-			if index < parametersList.parameters.endIndex - 1 {
+		var iterator = parametersList.elements.makeIterator()
+		if let first = iterator.next() {
+			render(first, into: &line)
+			while let next = iterator.next() {
 				line.punctuation(.comma)
+				render(next, into: &line)
 			}
 		}
 		line.punctuation(.rightParen)
