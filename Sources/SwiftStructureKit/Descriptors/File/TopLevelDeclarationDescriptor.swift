@@ -20,12 +20,34 @@ public enum TopLevelDeclarationDescriptor: Sendable {
 	/// An extension of an existing type, represented by its ``ExtensionDescriptor``.
 	case `extension`(ExtensionDescriptor)
 
+	/// A module import.
+	///
+	/// Use ``SwiftFile/imports`` for imports at the top of a file and this delcaration
+	/// inside `#if` blocks (``TopLevelCompilerConditionalIfDescriptor``).
+	case `import`(ImportDescriptor)
+
 	/// A declaration that is also valid as a type member, such as a type, function, property
 	/// typealias, or MARK comment represented by its ``DeclarationDescriptor``.
 	case member(DeclarationDescriptor)
 }
 
 public extension TopLevelDeclarationDescriptor {
+	static func `import`(
+		_ moduleName: String,
+		submodule: String? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		kind: ImportDescriptor.Kind? = nil,
+	) -> Self {
+		.import(ImportDescriptor(
+			moduleName,
+			submodule: submodule,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			kind: kind
+		))
+	}
+
 	/// A member that is an enum, represented by its ``AnyEnumDescriptor``.
 	static func `enum`(_ descriptor: AnyEnumDescriptor) -> Self {
 		.member(.enum(descriptor))
@@ -67,12 +89,12 @@ public extension TopLevelDeclarationDescriptor {
 	}
 }
 
-/// The top-level builder accepts everything the ``DeclarationBuilder`` does, so that
-/// a file body can read the same as a type body while additionally accepting extensions.
 public extension ArrayBuilder<TopLevelDeclarationDescriptor> {
-	/// Allows a ``DeclarationDescriptor`` to be used directly inside a top-level declaration
-	/// builder. Wrapping it in ``TopLevelDeclarationDescriptor/member(_:)``
 	static func buildExpression(_ expression: DeclarationDescriptor) -> [T] {
 		[.member(expression)]
+	}
+
+	static func buildExpression(_ expression: ImportDescriptor) -> [T] {
+		[.import(expression)]
 	}
 }

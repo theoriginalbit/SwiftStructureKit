@@ -4,6 +4,8 @@
 
 import Foundation
 
+import Crypto
+
 #if DEBUG
 struct Person {}
 #endif
@@ -14,6 +16,8 @@ struct Status {
         return "Hello"
     }
 }
+
+extension String {}
 #else
 struct Status {
     func greeting() -> String {
@@ -22,9 +26,15 @@ struct Status {
 }
 #endif
 
+// What even are we doing anymore?
+
 #if canImport(UIKit)
+import UIKit
+
 typealias View = UIView
 #elseif canImport(AppKit)
+import AppKit
+
 typealias View = NSView
 #else
 #warning("unsupported platform")

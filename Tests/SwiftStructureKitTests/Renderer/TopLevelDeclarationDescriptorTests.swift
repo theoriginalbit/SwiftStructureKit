@@ -16,6 +16,12 @@ private typealias Decl = TopLevelDeclarationDescriptor
 				.foundation,
 			],
 		) {
+			// an import at the very top will not get rendered with the other imports as a new
+			// section of the document has been started. Presumably no one would actually do
+			// this, they'd use the SwiftFile property for top-of-file imports and then this
+			// declaration for imports in #if blocks
+			.import("Crypto")
+
 			Decl.if("DEBUG") {
 				StructDescriptor("Person") {}
 			}
@@ -26,6 +32,8 @@ private typealias Decl = TopLevelDeclarationDescriptor
 						StatementDescriptor.return(.literal(.string("Hello")))
 					}
 				}
+
+				ExtensionDescriptor("String") {}
 			} else: {
 				StructDescriptor("Status") {
 					DeclarationDescriptor.function(name: "greeting", returns: .string) {
@@ -34,9 +42,13 @@ private typealias Decl = TopLevelDeclarationDescriptor
 				}
 			}
 
+			Decl.comment("What even are we doing anymore?")
+
 			Decl.if("canImport(UIKit)") {
+				.import(.uiKit)
 				TypealiasDescriptor("View", assignedType: .identifier("UIView"))
 			}.elseIf("canImport(AppKit)") {
+				ImportDescriptor("AppKit")
 				TypealiasDescriptor("View", assignedType: .identifier("NSView"))
 			}.else {
 				DiagnosticDirectiveDescriptor.warning("unsupported platform")

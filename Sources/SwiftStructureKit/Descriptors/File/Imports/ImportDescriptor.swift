@@ -86,4 +86,38 @@ public extension ImportDescriptor {
 			kind: kind
 		)
 	}
+
+	static var uiKit: Self { Self("UIKit") }
+
+	static func uiKit(
+		_ submodule: String? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		kind: Kind? = nil,
+	) -> Self {
+		Self(
+			"UIKit",
+			submodule: submodule,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			kind: kind
+		)
+	}
+
+	static var appKit: Self { Self("AppKit") }
+
+	static func appKit(
+		_ submodule: String? = nil,
+		accessModifier: AccessModifierDescriptor? = nil,
+		attributes: [AttributeDescriptor] = [],
+		kind: Kind? = nil,
+	) -> Self {
+		Self(
+			"AppKit",
+			submodule: submodule,
+			accessModifier: accessModifier,
+			attributes: attributes,
+			kind: kind
+		)
+	}
 }

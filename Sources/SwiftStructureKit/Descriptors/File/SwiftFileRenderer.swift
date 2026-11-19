@@ -50,6 +50,8 @@ enum SwiftFileRenderer {
 			TopLevelCompilerControlRenderer.render(descriptor, to: &writer)
 		case let .extension(descriptor):
 			ExtensionRenderer.render(descriptor, to: &writer)
+		case let .import(descriptor):
+			ImportRenderer.render(descriptor, to: &writer)
 		case let .member(descriptor):
 			DeclarationDescriptorRenderer.render(descriptor, to: &writer)
 		}
