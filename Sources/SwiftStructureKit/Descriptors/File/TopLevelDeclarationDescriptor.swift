@@ -14,6 +14,9 @@ public enum TopLevelDeclarationDescriptor: Sendable {
 	/// Not truely a statement, but allows for simple addition to a ``CodeBlockDescriptor``
 	case comment(InlineCommentDescriptor)
 
+	/// A compiler control directive, such as a diagnostic directive or conditional compilation block.
+	case compilerControl(TopLevelCompilerControlDescriptor)
+
 	/// An extension of an existing type, represented by its ``ExtensionDescriptor``.
 	case `extension`(ExtensionDescriptor)
 

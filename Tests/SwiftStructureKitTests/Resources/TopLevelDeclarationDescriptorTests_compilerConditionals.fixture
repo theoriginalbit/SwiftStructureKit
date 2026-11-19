@@ -1,0 +1,31 @@
+//
+// Generated source.
+//
+
+import Foundation
+
+#if DEBUG
+struct Person {}
+#endif
+
+#if TESTING
+struct Status {
+    func greeting() -> String {
+        return "Hello"
+    }
+}
+#else
+struct Status {
+    func greeting() -> String {
+        return "World"
+    }
+}
+#endif
+
+#if canImport(UIKit)
+typealias View = UIView
+#elseif canImport(AppKit)
+typealias View = NSView
+#else
+#warning("unsupported platform")
+#endif

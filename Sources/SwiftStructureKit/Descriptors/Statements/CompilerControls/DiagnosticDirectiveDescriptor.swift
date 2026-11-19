@@ -53,3 +53,9 @@ extension ArrayBuilder<StatementDescriptor> {
 		[.compilerControl(.directive(expression))]
 	}
 }
+
+extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	public static func buildExpression(_ expression: DiagnosticDirectiveDescriptor) -> Result {
+		[.compilerControl(.directive(expression))]
+	}
+}

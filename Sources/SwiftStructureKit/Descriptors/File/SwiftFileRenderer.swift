@@ -32,16 +32,22 @@ enum SwiftFileRenderer {
 
 		if !descriptor.declarations.isEmpty {
 			beginSection()
-			writer.writeSeparated(descriptor.declarations) { declaration, writer in
-				render(declaration, to: &writer)
-			}
+			render(descriptor.declarations, to: &writer)
 		}
 	}
 
-	private static func render(_ declaration: TopLevelDeclarationDescriptor, to writer: inout CodeWriter) {
+	static func render(_ declarations: [TopLevelDeclarationDescriptor], to writer: inout CodeWriter) {
+		writer.writeSeparated(declarations) { declaration, writer in
+			render(declaration, to: &writer)
+		}
+	}
+
+	static func render(_ declaration: TopLevelDeclarationDescriptor, to writer: inout CodeWriter) {
 		switch declaration {
 		case let .comment(descriptor):
 			CommentRenderer.render(descriptor, to: &writer)
+		case let .compilerControl(descriptor):
+			TopLevelCompilerControlRenderer.render(descriptor, to: &writer)
 		case let .extension(descriptor):
 			ExtensionRenderer.render(descriptor, to: &writer)
 		case let .member(descriptor):
