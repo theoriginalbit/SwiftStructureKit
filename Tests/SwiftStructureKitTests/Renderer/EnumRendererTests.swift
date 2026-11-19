@@ -49,7 +49,7 @@ import SwiftStructureKitTestSupport
 		let enumDescriptor = PlainEnumDescriptor(
 			"Result",
 			accessModifier: .public,
-			attributes: [.frozen, .objc(name: "SKResult")],
+			attributes: [.frozen, .objc("SKResult")],
 			genericParameters: ["Success", "Failure"],
 			conformances: [.sendable],
 		)

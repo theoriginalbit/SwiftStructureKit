@@ -84,6 +84,9 @@ struct Punctuation: Equatable {
 		/// Example output: `let x = (value ?? 0)`. ``Punctuation/leftParen`` would
 		/// output as `let x =(value ?? 0)`.
 		static let leftParen = Punctuation("(", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+		/// The `@` punctuation mark.
+		static let at = Punctuation("@", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 	}
 
 	/// Punctuation that is used as a token postfix. They may exist in ``Punctuation`` with different spacing rules.

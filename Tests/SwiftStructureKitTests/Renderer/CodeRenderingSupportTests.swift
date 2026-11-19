@@ -19,20 +19,23 @@ import SwiftStructureKitTestSupport
 	}
 
 	@Test("Render every attribute kind", arguments: [
-		(.rawValue("Observable"), "@Observable"),
-		(.rawValue("@Observable"), "@Observable"),
+		(AttributeDescriptor("Observable"), "@Observable"),
+		(AttributeDescriptor("@Observable"), "@Observable"),
 		(.resultBuilder("ViewBuilder"), "@ViewBuilder"),
 		(.available("iOS 17, *"), "@available(iOS 17, *)"),
 		(.objc(), "@objc"),
-		(.objc(name: "SKValue"), "@objc(SKValue)"),
+		(.objc("SKValue"), "@objc(SKValue)"),
 		(.mainActor, "@MainActor"),
 		(.frozen, "@frozen"),
 		(.inlinable, "@inlinable"),
 		(.discardableResult, "@discardableResult"),
 		(.disfavoredOverload, "@_disfavoredOverload"),
-	] as [(AttributeDescriptor, String)])
+	])
 	func renderAttributes(attribute: AttributeDescriptor, expected: String) {
-		#expect(AttributeRenderer.rendered(attribute) == expected)
+		let result = RenderTest.renderLine { writer in
+			AttributeRenderer.render(attribute, to: &writer)
+		}
+		#expect(result == expected)
 	}
 
 	@Test("Render structured type references", arguments: [

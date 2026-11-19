@@ -310,17 +310,11 @@ enum CodeRenderingSupport {
 
 		var writer = TokenWriter()
 
-		// We can only de-duplicate once the attribute has been rendered since
-		// AttributeDescriptor offers .rawValue which could dupe a convenience
-		// type. Performing de-dupe here also handles the scenario where a
-		// consumer could have supplied .rawValue("A") and .rawValue("@A")
-		// which would also have not been considered a duplicate.
-		var seenAttributes: Set<String> = []
+		var seenAttributes: Set<AttributeDescriptor> = []
 		for attribute in attributes {
-			let rendered = AttributeRenderer.rendered(attribute)
-			if seenAttributes.contains(rendered) { continue }
-			seenAttributes.insert(rendered)
-			writer.write(rendered)
+			if seenAttributes.contains(attribute) { continue }
+			seenAttributes.insert(attribute)
+			AttributeRenderer.render(attribute, to: &writer)
 		}
 
 		writer.write("(", acceptsSpaceAfter: false) // not standard ( punctuation, this accepts space before

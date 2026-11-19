@@ -3,48 +3,41 @@
 //
 
 enum AttributeRenderer {
-	static func render(_ attribute: AttributeDescriptor, to line: inout LineWriter) {
-		line.token(rendered(attribute))
+	static func render(_ attribute: AttributeDescriptor, to writer: inout LineWriter) {
+		writer.punctuation(.Prefix.at)
+		writer.token(attribute.name)
+		var iterator = attribute.arguments.makeIterator()
+		if let first = iterator.next() {
+			writer.punctuation(.leftParen)
+			writer.token(first)
+			while let next = iterator.next() {
+				writer.punctuation(.comma)
+				writer.token(next)
+			}
+			writer.punctuation(.rightParen)
+		}
 	}
 
 	static func render(_ attributes: [AttributeDescriptor], to writer: inout CodeWriter) {
 		for attribute in attributes {
-			writer.writeLine(rendered(attribute))
+			writer.writeLine { line in
+				render(attribute, to: &line)
+			}
 		}
 	}
 
-	static func rendered(_ attribute: AttributeDescriptor) -> String {
-		switch attribute {
-		case let .rawValue(name):
-			"@\(name.hasPrefix("@") ? String(name.dropFirst()) : name)"
-		case let .resultBuilder(name):
-			"@\(name.hasPrefix("@") ? String(name.dropFirst()) : name)"
-		case let .available(availability):
-			"@available(\(availability))"
-		case let .objectiveC(name):
-			if let name {
-				"@objc(\(name))"
-			} else {
-				"@objc"
+	static func render(_ attribute: AttributeDescriptor, to writer: inout TokenWriter) {
+		writer.write(.Prefix.at)
+		writer.write(attribute.name)
+		var iterator = attribute.arguments.makeIterator()
+		if let first = iterator.next() {
+			writer.write(.leftParen)
+			writer.write(first)
+			while let next = iterator.next() {
+				writer.write(.comma)
+				writer.write(next)
 			}
-		case .mainActor:
-			"@MainActor"
-		case .sendable:
-			"@Sendable"
-		case .escaping:
-			"@escaping"
-		case .frozen:
-			"@frozen"
-		case .inlinable:
-			"@inlinable"
-		case .discardableResult:
-			"@discardableResult"
-		case .disfavoredOverload:
-			"@_disfavoredOverload"
-		case .testable:
-			"@testable"
-		case .exported:
-			"@_exported"
+			writer.write(.rightParen)
 		}
 	}
 }

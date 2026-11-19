@@ -285,7 +285,7 @@ import SwiftStructureKitTestSupport
 			returns: .identifier("Void"),
 			attributes: [
 				.mainActor,
-				.rawValue("Sendable"), // should be removed
+				AttributeDescriptor("Sendable"), // should be removed
 				.mainActor, // should be removed
 				.sendable, // should be removed
 			]
@@ -301,9 +301,9 @@ import SwiftStructureKitTestSupport
 			returns: .identifier("Void"),
 			isEscaping: true,
 			attributes: [
-				.rawValue("escaping"), // should be removed
+				AttributeDescriptor("escaping"), // should be removed
 				.escaping, // should be removed
-				.rawValue("Sendable"),
+				AttributeDescriptor("Sendable"),
 			]
 		)
 		let output = CodeRenderingSupport.renderedType(closure)
