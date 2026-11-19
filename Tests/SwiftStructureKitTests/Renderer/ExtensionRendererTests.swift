@@ -26,7 +26,7 @@ import SwiftStructureKitTestSupport
 			"Array",
 			comment: "Describes every element.",
 			attributes: [
-				.available("iOS 17, *"),
+				.available(.platformVersion(platformName: .iOS, version: 17), .wildcard),
 			],
 			conformances: [
 				"CustomStringConvertible",

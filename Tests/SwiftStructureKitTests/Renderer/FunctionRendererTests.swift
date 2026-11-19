@@ -108,7 +108,7 @@ import SwiftStructureKitTestSupport
 	func renderResultBuildersOnFunctionAndParameters() {
 		let signature = FunctionSignatureDescriptor(
 			accessModifier: .public,
-			attributes: [.resultBuilder("ViewBuilder"), .inlinable, .discardableResult, .disfavoredOverload, .available("iOS 17, *")],
+			attributes: [.resultBuilder("ViewBuilder"), .inlinable, .discardableResult, .disfavoredOverload, .available(.init(iOS: 17))],
 			kind: .function("render"),
 			parameters: [
 				.init(

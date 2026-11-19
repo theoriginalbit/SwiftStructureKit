@@ -23,6 +23,12 @@ import SwiftStructureKitTestSupport
 		(AttributeDescriptor("@Observable"), "@Observable"),
 		(.resultBuilder("ViewBuilder"), "@ViewBuilder"),
 		(.available("iOS 17, *"), "@available(iOS 17, *)"),
+		(.available(.init(iOS: 17)), "@available(iOS 17, *)"),
+		(.available(.init(iOS: 17.0)), "@available(iOS 17.0, *)"),
+		// using platformVersion directly does not include the wildcard
+		(.available(.platformVersion(platformName: .iOS, version: 17)), "@available(iOS 17)"),
+		(.available(.wildcard, .unavailable), "@available(*, unavailable)"),
+		(.available(.wildcard, .unavailable, .message("Not available")), "@available(*, unavailable, message: \"Not available\")"),
 		(.objc(), "@objc"),
 		(.objc("SKValue"), "@objc(SKValue)"),
 		(.mainActor, "@MainActor"),

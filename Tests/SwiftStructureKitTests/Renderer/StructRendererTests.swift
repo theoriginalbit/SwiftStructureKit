@@ -25,7 +25,7 @@ import SwiftStructureKitTestSupport
 		let structDescriptor = StructDescriptor(
 			"GenericContainer",
 			accessModifier: .public,
-			attributes: [.mainActor, .frozen, .available("iOS 17, *")],
+			attributes: [.mainActor, .frozen, .available(.init(iOS: 17))],
 			genericParameters: ["T", "U"],
 			conformances: [.sendable, .equatable],
 		) {}

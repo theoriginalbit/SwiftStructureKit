@@ -36,11 +36,39 @@ public extension AttributeDescriptor {
 		Self(name)
 	}
 
-	/// An availability attribute with platform and version arguments.
+	/// An availability attribute from a raw string, e.g. `"iOS 17, *"`.
 	static func available(_ platforms: String) -> Self {
 		Self("available", arguments: [platforms])
 	}
 
+	/// An availability attribute built from structured availability arguments.
+	///
+	/// Use the shorthand form for platform version lists:
+	/// ```swift
+	/// .available(AvailabilityArgumentsList(iOS: PlatformVersion(16)))
+	/// ```
+	///
+	/// Or use the result builder for the spec form:
+	/// ```swift
+	/// .available {
+	///     .wildcard
+	///     .deprecated(PlatformVersion(2, 0))
+	///     .message("Use something else")
+	/// }
+	/// ```
+	static func available(_ list: AvailabilityArgumentsList) -> Self {
+		let rendered = list.elements.map { argument in
+			TokenWriter.render { writer in
+				AvailabilityArgumentsListRenderer.render(argument, to: &writer)
+			}
+		}
+		return Self("available", arguments: rendered)
+	}
+
+	/// An availability attribute.
+	static func available(_ element: AvailabilityArgumentDescriptor, _ elements: AvailabilityArgumentDescriptor...) -> Self {
+		.available(AvailabilityArgumentsList(_unchecked: CollectionOfOne(element) + elements))
+	}
 	/// An Objective-C attribute, optionally naming the Objective-C declaration.
 	///
 	/// - Parameter objcName: The optional Objective-C name of the declaration.

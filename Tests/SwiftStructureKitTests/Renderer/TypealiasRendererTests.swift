@@ -28,7 +28,7 @@ import SwiftStructureKitTestSupport
 		let descriptor = TypealiasDescriptor(
 			"Value",
 			accessModifier: .public,
-			attributes: [.available("macOS 15, *")],
+			attributes: [.available(.init(macOS: 15))],
 			assignedTypes: [.sendable, .equatable],
 		)
 		let output = RenderTest.render { writer in

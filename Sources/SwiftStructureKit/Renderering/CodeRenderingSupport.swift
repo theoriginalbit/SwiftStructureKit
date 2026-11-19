@@ -200,7 +200,7 @@ enum CodeRenderingSupport {
 		}
 	}
 
-	private static func renderedStringLiteral(_ value: String) -> String {
+	static func renderedStringLiteral(_ value: String) -> String {
 		if value.contains(where: \.isNewline) {
 			#"""
 			"""

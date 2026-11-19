@@ -63,6 +63,9 @@ struct Punctuation: Equatable {
 	/// The `-` punctuation mark.
 	static let minus = Self("-", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
+	/// The `*` punctuation mark.
+	static let asterisk = Self("*", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
 	/// Punctuation that is used as a token prefix. They may exist in ``Punctuation`` with different spacing rules.
 	enum Prefix {
 		/// The `&` punctuation mark.
