@@ -81,6 +81,7 @@ public extension FunctionDescriptor {
 		accessModifier: AccessModifierDescriptor? = nil,
 		attributes: [AttributeDescriptor] = [],
 		failable: Bool = false,
+		convenience: Bool = false,
 		parameters: ParametersList = [],
 		genericParameters: [GenericParameterDescriptor] = [],
 		genericRequirements: [TypeConstraintDescriptor] = [],
@@ -92,7 +93,10 @@ public extension FunctionDescriptor {
 				comment: comment,
 				accessModifier: accessModifier,
 				attributes: attributes,
-				kind: .initializer(failable: failable),
+				kind: .initializer(
+					failable: failable,
+					convenience: convenience
+				),
 				parameters: parameters,
 				genericParameters: genericParameters,
 				genericRequirements: genericRequirements,

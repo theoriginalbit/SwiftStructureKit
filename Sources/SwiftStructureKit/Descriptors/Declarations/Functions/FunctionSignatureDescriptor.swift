@@ -7,7 +7,7 @@ public struct FunctionSignatureDescriptor: Sendable {
 	/// A function kind: `init`, `func`, or `subscript`.
 	public enum Kind: Sendable {
 		/// An initializer.
-		case initializer(failable: Bool)
+		case initializer(failable: Bool, convenience: Bool)
 
 		/// A function. Can be global or inhabiting a type as an instance function or static function.
 		case function(_ name: String, returns: TypeReference? = nil, isStatic: Bool = false)

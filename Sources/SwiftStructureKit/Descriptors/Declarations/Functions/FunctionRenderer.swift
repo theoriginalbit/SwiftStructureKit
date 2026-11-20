@@ -60,7 +60,10 @@ enum FunctionRenderer {
 		}
 
 		switch signature.kind {
-		case let .initializer(failable):
+		case let .initializer(failable, convenience):
+			if convenience {
+				line.token("convenience")
+			}
 			line.token("init")
 			if failable {
 				line.punctuation(.Postfix.questionMark)

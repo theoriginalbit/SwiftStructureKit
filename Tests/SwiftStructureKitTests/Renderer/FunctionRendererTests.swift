@@ -196,11 +196,11 @@ import SwiftStructureKitTestSupport
 		expectRendered(output, equals: "func validate() async throws(ValidationError)\n")
 	}
 
-	@Test("Render initializers: standard and failable")
+	@Test("Render initializers: standard, failable, convenience, and failable convenience")
 	func renderInitializers() {
 		let initSignature = FunctionSignatureDescriptor(
 			accessModifier: .public,
-			kind: .initializer(failable: false),
+			kind: .initializer(failable: false, convenience: false),
 			parameters: [.init("name", type: .string)]
 		)
 		let initOutput = RenderTest.render { writer in
@@ -210,13 +210,33 @@ import SwiftStructureKitTestSupport
 
 		let failableInitSignature = FunctionSignatureDescriptor(
 			accessModifier: .fileprivate,
-			kind: .initializer(failable: true),
+			kind: .initializer(failable: true, convenience: false),
 			parameters: [.init("raw", label: "_", type: .int)]
 		)
 		let failableInitOutput = RenderTest.render { writer in
 			FunctionRenderer.renderSignature(failableInitSignature, to: &writer)
 		}
 		expectRendered(failableInitOutput, equals: "fileprivate init?(_ raw: Int)\n")
+
+		let convenienceInitSignature = FunctionSignatureDescriptor(
+			accessModifier: .public,
+			kind: .initializer(failable: false, convenience: true),
+			parameters: [.init("name", type: .string)]
+		)
+		let convenienceInitOutput = RenderTest.render { writer in
+			FunctionRenderer.renderSignature(convenienceInitSignature, to: &writer)
+		}
+		expectRendered(convenienceInitOutput, equals: "public convenience init(name: String)\n")
+
+		let failableConvenienceInitSignature = FunctionSignatureDescriptor(
+			accessModifier: .fileprivate,
+			kind: .initializer(failable: true, convenience: true),
+			parameters: [.init("raw", label: "_", type: .int)]
+		)
+		let failableConvenienceInitOutput = RenderTest.render { writer in
+			FunctionRenderer.renderSignature(failableConvenienceInitSignature, to: &writer)
+		}
+		expectRendered(failableConvenienceInitOutput, equals: "fileprivate convenience init?(_ raw: Int)\n")
 	}
 
 	@Test("Render instance and static subscripts")
