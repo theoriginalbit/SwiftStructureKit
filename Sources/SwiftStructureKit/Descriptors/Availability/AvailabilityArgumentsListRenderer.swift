@@ -17,6 +17,8 @@ enum AvailabilityArgumentsListRenderer {
 
 	private static func render(_ descriptor: AvailabilityArgumentDescriptor, to writer: inout LineWriter) {
 		switch descriptor {
+		case let .platform(platformName):
+			writer.token(platformName.rawValue)
 		case let .platformVersion(platformName, version):
 			writer.token(platformName.rawValue)
 			writer.token(version.value)
@@ -37,6 +39,8 @@ enum AvailabilityArgumentsListRenderer {
 
 	static func render(_ descriptor: AvailabilityArgumentDescriptor, to writer: inout TokenWriter) {
 		switch descriptor {
+		case let .platform(platformName):
+			writer.write(platformName.rawValue)
 		case let .platformVersion(platformName, version):
 			writer.write(platformName.rawValue)
 			writer.write(version.value)

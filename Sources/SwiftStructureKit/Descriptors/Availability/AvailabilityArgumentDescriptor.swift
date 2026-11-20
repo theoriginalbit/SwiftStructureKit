@@ -12,6 +12,9 @@
 /// - **Labelled version**: `introduced: 1.0`, `deprecated: 2.0`, `obsoleted: 3.0`
 /// - **Labelled string**: `message: "Use something else"`, `renamed: "newName"`
 public enum AvailabilityArgumentDescriptor: Hashable, Sendable {
+	/// A platform, e.g. `watchOS`.
+	case platform(PlatformName)
+
 	/// A platform and its version, e.g. `iOS 16` or `macOS 13.0`.
 	case platformVersion(platformName: PlatformName, version: PlatformVersion)
 
