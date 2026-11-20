@@ -36,10 +36,19 @@ public extension AvailabilityArgumentDescriptor {
 	enum Keyword: String, Hashable, Sendable {
 		case unavailable
 		case noasync
+
+		/// Deprecated with no version.
+		///
+		/// - SeeAlso: ``VersionLabel/deprecated``
+		case deprecated
 	}
 
 	enum VersionLabel: String, Hashable, Sendable {
 		case introduced
+
+		/// Deprecated with a version.
+		///
+		/// - SeeAlso: ``Keyword/deprecated``
 		case deprecated
 		case obsoleted
 	}
@@ -118,6 +127,11 @@ public extension AvailabilityArgumentDescriptor {
 	/// The `noasync` keyword argument.
 	static var noasync: Self {
 		.keyword(.noasync)
+	}
+
+	/// The `deprecated` keyword argument.
+	static var deprecated: Self {
+		.keyword(.deprecated)
 	}
 }
 
