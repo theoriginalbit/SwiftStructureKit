@@ -21,6 +21,20 @@ import Testing
 	}
 
 	@Test func buildsOptionalComponents() {
+		let optionalValue1: Int? = 68
+		let optionalValue2: Int? = nil
+		let values = makeArray {
+			for value in 1...3 {
+				value
+			}
+			optionalValue1
+			optionalValue2
+		}
+
+		#expect(values == [1, 2, 3, 68])
+	}
+
+	@Test func buildsIfComponents() {
 		let included = true
 		let excluded = false
 
@@ -62,6 +76,21 @@ import Testing
 		}
 
 		#expect(values == [1, 10, 2, 20, 3, 30])
+	}
+
+	@Test func buildsAllowsVoidFunctionCalls() {
+		var printCalled = false
+		func print() {
+			printCalled = true
+		}
+		let values = makeArray {
+			1
+			print()
+			2
+		}
+
+		#expect(values == [1, 2])
+		#expect(printCalled)
 	}
 
 	private func makeArray(

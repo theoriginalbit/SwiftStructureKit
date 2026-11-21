@@ -30,12 +30,24 @@ public enum ArrayBuilder<T> {
 		Array(components.joined())
 	}
 
+	/// Allows function calls to logging or diagnostics in builders
+	public static func buildExpression(_: ()) -> Result {
+		[]
+	}
+
 	public static func buildExpression(_ expression: Result) -> Result {
 		expression
 	}
 
-	public static func buildExpression(_ statement: T) -> Result {
-		[statement]
+	public static func buildExpression(_ expression: T) -> Result {
+		[expression]
+	}
+
+	public static func buildExpression(_ expression: T?) -> Result {
+		if let expression {
+			return [expression]
+		}
+		return []
 	}
 
 	public static func buildLimitedAvailability(_ component: Result) -> Result {
