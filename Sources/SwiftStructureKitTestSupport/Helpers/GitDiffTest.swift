@@ -3,154 +3,21 @@
 //
 
 import Foundation
+import enum SwiftStructureKit.ArrayBuilder
 import Testing
 
-public protocol ConvertibleToData {
-	func convertToData() -> Data
-}
-
-extension Data: ConvertibleToData {
-	public func convertToData() -> Data { self }
-}
-
-extension String: ConvertibleToData {
-	public func convertToData() -> Data { Data(utf8) }
-}
-
-/// Compares two in-memory values.
-///
-/// Use this when both values are large and difficult to compare in the standard test output.
-/// A failure reports a line-based diff with whitespace made visible.
-public func expectRendered(
-	_ actual: some ConvertibleToData,
-	equals expected: some ConvertibleToData,
-	attachmentName: String? = nil,
-	sourceLocation: SourceLocation = #_sourceLocation,
-) {
-	ReferenceTest.assert(actual, equals: expected, attachmentName: attachmentName, sourceLocation: sourceLocation)
-}
-
-/// Compares a value against a reference fixture on disk.
-///
-/// Use this when both values are large and difficult to compare in the standard test output.
-/// A failure reports a line-based diff with whitespace made visible.
-public func expectRendered(
-	_ actual: some ConvertibleToData,
-	equals expectedURL: URL,
-	sourceLocation: SourceLocation = #_sourceLocation,
-) {
-	ReferenceTest.assert(actual, equals: expectedURL, sourceLocation: sourceLocation)
-}
-
-public enum ReferenceTest {}
-public extension ReferenceTest {
-	/// Compares two in-memory values.
-	///
-	/// Use this when both values are large and difficult to compare in the standard test output.
-	static func assert(
-		_ actual: some ConvertibleToData,
-		equals expected: some ConvertibleToData,
-		attachmentName: String? = nil,
-		sourceLocation: SourceLocation = #_sourceLocation,
-	) {
-		let actual = actual.convertToData()
-		let expected = expected.convertToData()
-
-		guard actual != expected else {
-			return
-		}
-
-		let attachmentName = attachmentName ?? UUID().uuidString
-		_recordAttachment(actual, attachmentName: "\(attachmentName)_actual.swift", sourceLocation: sourceLocation)
-		_recordAttachment(expected, attachmentName: "\(attachmentName)_expected.swift", sourceLocation: sourceLocation)
-
-		do {
-			// Outputs were different, let's find out why. We're going
-			// to use Git, so will need to write the results to a file.
-			let actualURL = try _writeToFile(actual)
-			defer { try? FileManager.default.removeItem(at: actualURL) }
-
-			let expectedURL = try _writeToFile(expected)
-			defer { try? FileManager.default.removeItem(at: expectedURL) }
-
-			try _assert(
-				actualURL,
-				matches: expectedURL,
-				attachmentName: attachmentName,
-				sourceLocation: sourceLocation,
-			)
-		} catch {
-			Issue.record(error, sourceLocation: sourceLocation)
-		}
-	}
-
-	/// Compares a value against a reference fixture on disk.
-	///
-	/// The actual output is attached and named after the fixture so it can be found in test results.
-	static func assert(
-		_ actual: some ConvertibleToData,
-		equals expectedURL: URL,
-		sourceLocation: SourceLocation = #_sourceLocation,
-	) {
-		let actual = actual.convertToData()
-
-		let fixtureName = expectedURL.deletingPathExtension().lastPathComponent
-		_recordAttachment(actual, attachmentName: "\(fixtureName)_actual.swift", sourceLocation: sourceLocation)
-
-		do {
-			let expected = try Data(contentsOf: expectedURL)
-			guard actual != expected else {
-				return
-			}
-
-			// Outputs were different, let's find out why. We're going
-			// to use Git, so will need to write the actual results to
-			// a file.
-			let actualURL = try _writeToFile(actual)
-			defer { try? FileManager.default.removeItem(at: actualURL) }
-
-			try _assert(
-				actualURL,
-				matches: expectedURL,
-				attachmentName: fixtureName,
-				sourceLocation: sourceLocation,
-			)
-		} catch {
-			Issue.record(error, sourceLocation: sourceLocation)
-		}
-	}
-
-	private static func _defaultAttachmentName(for sourceLocation: SourceLocation) -> String {
-		let file = URL(filePath: sourceLocation.fileName).deletingPathExtension().lastPathComponent
-		return "\(file)_\(sourceLocation.line)"
-	}
-
-	private static func _recordAttachment(
-		_ data: Data,
-		attachmentName: String = UUID().uuidString,
-		sourceLocation: SourceLocation,
-	) {
-		// Make the generated output available in the test results.
-		// Note to self: successful tests will delete
-		//               attachments (configurable by test plans)
-		Attachment.record(
-			String(decoding: data, as: UTF8.self),
-			named: attachmentName,
-			sourceLocation: sourceLocation,
-		)
-	}
-
-	private static func _writeToFile(_ data: Data) throws -> URL {
+enum GitDiffTest {
+	static func writeToFile(_ data: Data) throws -> URL {
 		let path = FileManager.default.temporaryDirectory
 			.appending(component: UUID().uuidString)
 		try data.write(to: path)
 		return path
 	}
 
-	private static func _assert(
+	static func assert(
 		_ actualURL: URL,
 		matches expectedURL: URL,
-		attachmentName: String,
+		attachmentName: String?,
 		sourceLocation: SourceLocation,
 	) throws {
 		let diff = try _gitDiff(
@@ -167,7 +34,8 @@ public extension ReferenceTest {
 		let isWhitespaceOnly = !whitespaceDiff.hasDifferences
 
 		// Keep the complete git output for diffs with surrounding context
-		_recordAttachment(diff.rawOutput.convertToData(), attachmentName: "\(attachmentName).diff", sourceLocation: sourceLocation)
+		let attachmentName = attachmentName ?? actualURL.lastPathComponent
+		AttachmentRecorder.record(diff.rawOutput.convertToData(), attachmentName: "\(attachmentName).diff", sourceLocation: sourceLocation)
 
 		guard !diff.changes.isEmpty else {
 			Issue.record("Generated output does not match reference.", sourceLocation: sourceLocation)
@@ -229,20 +97,18 @@ public extension ReferenceTest {
 		)
 	}
 
+	@ArrayBuilder<String>
 	private static func _gitArguments(ignoresWhitespace: Bool, expected: URL, actual: URL) -> [String] {
-		var result = [
-			"diff",
-			"--no-index",
-			"--no-color", // in case color.ui = always is set globally
-			"--diff-algorithm=histogram",
-		]
+		"diff"
+		"--no-index"
+		"--no-color" // in case color.ui = always is set globally
+		"--diff-algorithm=histogram"
 		if ignoresWhitespace {
-			result.append("--ignore-all-space")
+			"--ignore-all-space"
 		}
-		result.append("--")
-		result.append(expected.path)
-		result.append(actual.path)
-		return result
+		"--"
+		expected.path
+		actual.path
 	}
 
 	/// Splits git's output into one change per unbroken run of removed/added lines.

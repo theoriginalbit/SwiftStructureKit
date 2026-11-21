@@ -3,6 +3,7 @@
 //
 
 import Testing
+import Foundation
 @testable import SwiftStructureKit
 import SwiftStructureKitTestSupport
 

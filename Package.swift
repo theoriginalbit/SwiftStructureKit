@@ -18,7 +18,12 @@ let package = Package(
 	],
 	targets: [
 		.target(name: "SwiftStructureKit"),
-		.target(name: "SwiftStructureKitTestSupport"),
+		.target(
+			name: "SwiftStructureKitTestSupport",
+			dependencies: [
+				.target(name: "SwiftStructureKit"),
+			]
+		),
 		.testTarget(
 			name: "SwiftStructureKitTests",
 			dependencies: [

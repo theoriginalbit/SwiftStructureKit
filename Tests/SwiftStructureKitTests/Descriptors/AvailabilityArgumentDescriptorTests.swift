@@ -7,14 +7,24 @@ import Testing
 import SwiftStructureKitTestSupport
 
 @Suite struct AvailabilityArgumentDescriptorTests {
+	@Test("Compile multiple source files")
+	func compileMultipleSourceFiles() async {
+		await assertCompilation(
+			[
+				"public struct CompiledFromAnotherFile {}",
+				"let value = CompiledFromAnotherFile()",
+			],
+		)
+	}
+
 	@Test("Render and compile platform availability")
-	func renderPlatform() throws {
+	func renderPlatform() async {
 		let ios = AttributeDescriptor.available(AvailabilityArgumentsList(iOS: 13.1))
 		let renderedIos = TokenWriter.render { writer in
 			AttributeRenderer.render(ios, to: &writer)
 		}
 		expectRendered(renderedIos, equals: "@available(iOS 13.1, *)")
-		try assertCompilation("""
+		await assertCompilation("""
 			\(renderedIos)
 			func unavailableOnIos() {}
 			""")
@@ -24,21 +34,21 @@ import SwiftStructureKitTestSupport
 			AttributeRenderer.render(iosAndMacOS, to: &writer)
 		}
 		expectRendered(renderedIosAndMacOS, equals: "@available(iOS 16.0, macOS 26.0, *)")
-		try assertCompilation("""
+		await assertCompilation("""
 			\(renderedIosAndMacOS)
 			func unavailableOnIosAndMacOS() {}
 			""")
 	}
 
 	@Test("Render and compile noasync availability")
-	func renderAndCompileNoasyncAvailability() throws {
+	func renderAndCompileNoasyncAvailability() async {
 		let noasyncAttribute = AttributeDescriptor.available(.wildcard, .noasync)
 		let renderedNoasync = TokenWriter.render { writer in
 			AttributeRenderer.render(noasyncAttribute, to: &writer)
 		}
 
 		expectRendered(renderedNoasync, equals: "@available(*, noasync)")
-		try assertCompilation("""
+		await assertCompilation("""
 			\(renderedNoasync)
 			func unavailableFromAsyncContext() {}
 			""")
