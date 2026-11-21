@@ -28,3 +28,9 @@ extension ArrayBuilder where T == StatementDescriptor {
 		[.comment(expression)]
 	}
 }
+
+extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	public static func buildExpression(_ expression: InlineCommentDescriptor) -> Result {
+		[.comment(expression)]
+	}
+}

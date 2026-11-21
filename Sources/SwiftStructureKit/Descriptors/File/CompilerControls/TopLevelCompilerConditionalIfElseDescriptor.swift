@@ -84,6 +84,12 @@ extension ArrayBuilder<TopLevelCompilerControlDescriptor> {
 	}
 }
 
+extension ArrayBuilder<TopLevelCompilerConditionalDescriptor> {
+	public static func buildExpression(_ expression: TopLevelCompilerConditionalIfElseDescriptor) -> Result {
+		[.ifElse(expression)]
+	}
+}
+
 extension ArrayBuilder<TopLevelDeclarationDescriptor> {
 	public static func buildExpression(_ expression: TopLevelCompilerConditionalIfElseDescriptor) -> Result {
 		[.compilerControl(.conditional(.ifElse(expression)))]

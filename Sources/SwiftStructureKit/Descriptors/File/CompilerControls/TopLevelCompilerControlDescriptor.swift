@@ -13,3 +13,9 @@ public enum TopLevelCompilerControlDescriptor: Sendable {
 	/// - Parameter descriptor: The conditional statement and its branches.
 	case conditional(TopLevelCompilerConditionalDescriptor)
 }
+
+extension ArrayBuilder<TopLevelDeclarationDescriptor> {
+	public static func buildExpression(_ expression: TopLevelCompilerControlDescriptor) -> Result {
+		[.compilerControl(expression)]
+	}
+}

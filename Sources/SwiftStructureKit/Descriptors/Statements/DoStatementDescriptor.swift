@@ -113,3 +113,9 @@ public extension LabeledStatementDescriptor.Statement {
 		))
 	}
 }
+
+extension ArrayBuilder<StatementDescriptor> {
+	public static func buildExpression(_ expression: DoStatementDescriptor) -> Result {
+		[.do(expression)]
+	}
+}
