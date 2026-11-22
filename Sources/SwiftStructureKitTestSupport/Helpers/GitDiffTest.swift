@@ -24,6 +24,11 @@ enum GitDiffTest {
 			expected: expectedURL,
 			actual: actualURL,
 		)
+		guard diff.hasDifferences else {
+			// no diffs, success!
+			return
+		}
+		// Now let's work out what the diffs are
 		let whitespaceDiff = try _gitDiff(
 			expected: expectedURL,
 			actual: actualURL,
