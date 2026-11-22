@@ -183,7 +183,7 @@ enum CodeRenderingSupport {
 
 	private static func renderDictionaryLiteral(_ values: [DictionaryLiteralItemDescriptor], into lineWriter: inout LineWriter) {
 		guard !values.isEmpty else {
-			lineWriter.punctuation(.leftBracket)
+			lineWriter.punctuation(.Prefix.leftBracket)
 			lineWriter.punctuation(.Postfix.colon)
 			lineWriter.punctuation(.rightBracket)
 			return

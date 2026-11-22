@@ -128,6 +128,16 @@ import SwiftStructureKitTestSupport
 		expectRendered(output, equals: expected)
 	}
 
+	@Test func tuple() {
+		let input = ExpressionDescriptor.tuple([.literal(.string("a")), .literal(.string("b"))])
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: """
+			("a", "b")
+			""")
+	}
+
 	@Test func selfMemberAccess() {
 		let input = ExpressionDescriptor.memberAccess(.selfMember("foo"))
 		let output = RenderTest.renderLine { writer in
@@ -200,5 +210,16 @@ import SwiftStructureKitTestSupport
 			ExpressionRenderer.render(input, to: &writer)
 		}
 		expectRendered(output, equals: "(await fizzBuzz()).self")
+	}
+
+	@Test func `subscript`() {
+		let input = ExpressionDescriptor.subscript(.init(calledIdentifier: "dict", arguments: ArgumentsList {
+			Argument(value: .literal(0))
+			Argument(label: "default", value: .literal(10))
+		}))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "dict[0, default: 10]")
 	}
 }

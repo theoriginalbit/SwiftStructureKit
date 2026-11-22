@@ -40,7 +40,7 @@ struct Punctuation: Equatable {
 	static let rightBrace = Self("}", acceptsSpaceBefore: true, acceptsSpaceAfter: true)
 
 	/// The `[` punctuation mark.
-	static let leftBracket = Self("[", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+	static let leftBracket = Self("[", acceptsSpaceBefore: false, acceptsSpaceAfter: false)
 
 	/// The `]` punctuation mark.
 	static let rightBracket = Self("]", acceptsSpaceBefore: false, acceptsSpaceAfter: true)
@@ -87,6 +87,12 @@ struct Punctuation: Equatable {
 		/// Example output: `let x = (value ?? 0)`. ``Punctuation/leftParen`` would
 		/// output as `let x =(value ?? 0)`.
 		static let leftParen = Punctuation("(", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
+
+		/// The `[` punctuation mark. Prefixed so as to allow a leading space.
+		///
+		/// Example output: `let x = [1, 2, 3]`. ``Punctuation/leftBracket`` would
+		/// output as `let x =[1, 2, 3]`.
+		static let leftBracket = Punctuation("[", acceptsSpaceBefore: true, acceptsSpaceAfter: false)
 
 		/// The `@` punctuation mark.
 		static let at = Punctuation("@", acceptsSpaceBefore: true, acceptsSpaceAfter: false)

@@ -108,6 +108,9 @@ public indirect enum ExpressionDescriptor: Sendable {
 
 	/// A postfix-self expression. e.g. `expression.self` or `Expression.self`
 	case postfixSelf(ExpressionDescriptor)
+
+	/// A subscript access expression. e.g. `foo[0]` or `bar[fizz: "buzz"]`.
+	case `subscript`(FunctionCallDescriptor)
 }
 
 public extension ExpressionDescriptor {

@@ -15,7 +15,7 @@ public struct FunctionCallDescriptor: Sendable {
 	/// - Parameters:
 	///   - calledExpression: An expression that returns the function to be called.
 	///   - arguments: Arguments to be passed to the function.
-	init(
+	public init(
 		calledExpression: ExpressionDescriptor,
 		arguments: ArgumentsList = [],
 	) {
@@ -28,7 +28,7 @@ public struct FunctionCallDescriptor: Sendable {
 	/// - Parameters:
 	///   - calledExpression: An expression that returns the function to be called.
 	///   - arguments: Arguments to be passed to the function.
-	init(
+	public init(
 		calledExpression: ExpressionDescriptor,
 		arguments: [ExpressionDescriptor],
 	) {
@@ -47,7 +47,7 @@ public struct FunctionCallDescriptor: Sendable {
 	/// - Parameters:
 	///   - calledIdentifier: The identifier of the function being called.
 	///   - arguments: Arguments to be passed to the function.
-	init(
+	public init(
 		calledIdentifier: TypeIdentifier,
 		arguments: ArgumentsList = [],
 	) {
@@ -60,7 +60,7 @@ public struct FunctionCallDescriptor: Sendable {
 	/// - Parameters:
 	///   - calledIdentifier: The identifier of the function being called.
 	///   - arguments: Arguments to be passed to the function.
-	init(
+	public init(
 		calledIdentifier: TypeIdentifier,
 		arguments: [ExpressionDescriptor],
 	) {

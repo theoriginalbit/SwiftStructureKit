@@ -15,7 +15,7 @@ enum ExpressionRenderer {
 			writer.token(value)
 
 		case let .functionCall(descriptor):
-			renderFunctionCall(descriptor, to: &writer)
+			renderFunctionCall(descriptor, argumentDelimiter: .paren, to: &writer)
 
 		case let .memberAccess(descriptor):
 			renderMemberAccess(descriptor, to: &writer)
@@ -58,12 +58,19 @@ enum ExpressionRenderer {
 
 		case let .postfixSelf(descriptor):
 			renderPostfixSelf(descriptor, to: &writer)
+
+		case let .subscript(descriptor):
+			renderFunctionCall(descriptor, argumentDelimiter: .bracket, to: &writer)
 		}
 	}
 
-	private static func renderFunctionCall(_ descriptor: FunctionCallDescriptor, to writer: inout LineWriter) {
+	private static func renderFunctionCall(
+		_ descriptor: FunctionCallDescriptor,
+		argumentDelimiter: ArgumentDelimiter,
+		to writer: inout LineWriter
+	) {
 		render(descriptor.calledExpression, to: &writer)
-		writer.punctuation(.leftParen)
+		writer.punctuation(argumentDelimiter.left)
 
 		var iterator = descriptor.arguments.makeIterator()
 		if let first = iterator.next() {
@@ -73,7 +80,7 @@ enum ExpressionRenderer {
 				renderArgument(next, to: &writer)
 			}
 		}
-		writer.punctuation(.rightParen)
+		writer.punctuation(argumentDelimiter.right)
 	}
 
 	private static func renderArgument(_ argument: Argument, to writer: inout LineWriter) {
@@ -197,4 +204,18 @@ enum ExpressionRenderer {
 		writer.punctuation(.period)
 		writer.token("self")
 	}
+}
+
+private struct ArgumentDelimiter {
+	let left: Punctuation
+	let right: Punctuation
+
+	private init(left: Punctuation, right: Punctuation) {
+		self.left = left
+		self.right = right
+	}
+	/// `(` and `)`
+	static let paren = Self(left: .leftParen, right: .rightParen)
+	/// `[` and `]`
+	static let bracket = Self(left: .leftBracket, right: .rightBracket)
 }

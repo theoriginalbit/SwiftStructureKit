@@ -282,23 +282,17 @@ struct LineWriter: ~Copyable {
 		writer.writePunctuation(punctuation)
 	}
 
-	enum BlockTerminators {
-		case brace
-		case bracket
-
-		var leadingPunctuation: Punctuation {
-			switch self {
-			case .brace: return .leftBrace
-			case .bracket: return .leftBracket
-			}
+	struct BlockTerminators {
+		let leadingPunctuation: Punctuation
+		let trailingPunctuation: Punctuation
+		private init(leadingPunctuation: Punctuation, trailingPunctuation: Punctuation) {
+			self.leadingPunctuation = leadingPunctuation
+			self.trailingPunctuation = trailingPunctuation
 		}
-
-		var trailingPunctuation: Punctuation {
-			switch self {
-			case .brace: return .rightBrace
-			case .bracket: return .rightBracket
-			}
-		}
+		/// `{` and `}`
+		static let brace = Self(leadingPunctuation: .leftBrace, trailingPunctuation: .rightBrace)
+		/// `[` and `]`
+		static let bracket = Self(leadingPunctuation: .Prefix.leftBracket, trailingPunctuation: .rightBracket)
 	}
 
 	/// Writes a brace-delimited block whose lines are produced by `body`.
