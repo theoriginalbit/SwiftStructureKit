@@ -55,6 +55,9 @@ enum ExpressionRenderer {
 
 		case let .typeCast(descriptor):
 			renderTypeCast(descriptor, to: &writer)
+
+		case let .postfixSelf(descriptor):
+			renderPostfixSelf(descriptor, to: &writer)
 		}
 	}
 
@@ -187,5 +190,11 @@ enum ExpressionRenderer {
 			}
 		}
 		writer.token(CodeRenderingSupport.renderedType(descriptor.type))
+	}
+
+	private static func renderPostfixSelf(_ descriptor: ExpressionDescriptor, to writer: inout LineWriter) {
+		render(descriptor, to: &writer)
+		writer.punctuation(.period)
+		writer.token("self")
 	}
 }

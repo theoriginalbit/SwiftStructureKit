@@ -175,4 +175,30 @@ import SwiftStructureKitTestSupport
 		}
 		expectRendered(output, equals: "pet as! HeadOfHousehold")
 	}
+
+	@Test func postfixSelfWithTypeIdentifier() {
+		let input = ExpressionDescriptor.postfixSelf(.identifier("Foo"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "Foo.self")
+	}
+
+	@Test func postfixSelfWithVariableIdentifier() {
+		let input = ExpressionDescriptor.postfixSelf(.identifier("bar"))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "bar.self")
+	}
+
+	@Test func postfixSelfWithArbitraryExpression() {
+		let input = ExpressionDescriptor.postfixSelf(.parenthesized(
+			.await(.functionCall(.identifier("fizzBuzz")))
+		))
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "(await fizzBuzz()).self")
+	}
 }

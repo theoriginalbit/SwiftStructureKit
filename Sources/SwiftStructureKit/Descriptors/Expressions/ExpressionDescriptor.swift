@@ -105,9 +105,17 @@ public indirect enum ExpressionDescriptor: Sendable {
 
 	/// A type-casting expression. `is type` or `as type` (including `as?` and `as!`).
 	case typeCast(TypeCastingOperatorDescriptor)
+
+	/// A postfix-self expression. e.g. `expression.self` or `Expression.self`
+	case postfixSelf(ExpressionDescriptor)
 }
 
 public extension ExpressionDescriptor {
+	/// A postfix-self for the current expression. e.g. `expression.self` or `Expression.self`
+	var postfixSelf: Self {
+		.postfixSelf(self)
+	}
+
 	/// A tuple expression.
 	static func tuple(@ArrayBuilder<ExpressionDescriptor> _ values: () -> [ExpressionDescriptor]) -> Self {
 		.tuple(values())
