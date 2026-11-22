@@ -32,8 +32,8 @@ enum ExpressionRenderer {
 			render(expression, to: &writer)
 			writer.punctuation(.Postfix.questionMark)
 
-		case let .tuple(descriptors):
-			renderTuple(descriptors, to: &writer)
+		case let .tuple(descriptor):
+			renderTuple(descriptor, to: &writer)
 
 		case let .nilCoalescing(descriptor):
 			renderNilCoalescing(descriptor, to: &writer)
@@ -101,17 +101,25 @@ enum ExpressionRenderer {
 		writer.token(SwiftIdentifier.sanitized(descriptor.right, position: .memberAccess))
 	}
 
-	private static func renderTuple(_ descriptors: [ExpressionDescriptor], to writer: inout LineWriter) {
+	private static func renderTuple(_ descriptor: TupleExpressionDescriptor, to writer: inout LineWriter) {
 		writer.punctuation(.Prefix.leftParen)
-		var iterator = descriptors.makeIterator()
+		var iterator = descriptor.elements.makeIterator()
 		if let first = iterator.next() {
-			render(first, to: &writer)
+			renderTupleElement(first, to: &writer)
 			while let next = iterator.next() {
 				writer.punctuation(.comma)
-				render(next, to: &writer)
+				renderTupleElement(next, to: &writer)
 			}
 		}
 		writer.punctuation(.rightParen)
+	}
+
+	private static func renderTupleElement(_ descriptor: TupleExpressionDescriptor.TupleElement, to writer: inout LineWriter) {
+		if let label = descriptor.label {
+			writer.token(SwiftIdentifier.sanitized(label, position: .argumentLabel))
+			writer.punctuation(.Postfix.colon)
+		}
+		render(descriptor.value, to: &writer)
 	}
 
 	private static func renderNilCoalescing(_ descriptor: NilCoalescingDescriptor, to writer: inout LineWriter) {

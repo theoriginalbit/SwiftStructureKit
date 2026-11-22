@@ -129,12 +129,18 @@ import SwiftStructureKitTestSupport
 	}
 
 	@Test func tuple() {
-		let input = ExpressionDescriptor.tuple([.literal(.string("a")), .literal(.string("b"))])
+		let input = ExpressionDescriptor.tuple(TupleExpressionDescriptor(
+			ExpressionDescriptor.literal("1"),
+			ExpressionDescriptor.literal(2),
+			ExpressionDescriptor.literal(3),
+			TupleExpressionDescriptor.TupleElement(label: "foo", .literal("bar")),
+			TupleExpressionDescriptor.TupleElement(.literal(true)),
+		))
 		let output = RenderTest.renderLine { writer in
 			ExpressionRenderer.render(input, to: &writer)
 		}
 		expectRendered(output, equals: """
-			("a", "b")
+			("1", 2, 3, foo: "bar", true)
 			""")
 	}
 

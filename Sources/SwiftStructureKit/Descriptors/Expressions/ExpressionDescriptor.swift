@@ -46,7 +46,7 @@ public indirect enum ExpressionDescriptor: Sendable {
 	case optionalChaining(ExpressionDescriptor)
 
 	/// A tuple expression.
-	case tuple([ExpressionDescriptor])
+	case tuple(TupleExpressionDescriptor)
 
 	/// A nil-coalescing expression: `lhs ?? rhs`.
 	///
@@ -117,11 +117,6 @@ public extension ExpressionDescriptor {
 	/// A postfix-self for the current expression. e.g. `expression.self` or `Expression.self`
 	var postfixSelf: Self {
 		.postfixSelf(self)
-	}
-
-	/// A tuple expression.
-	static func tuple(@ArrayBuilder<ExpressionDescriptor> _ values: () -> [ExpressionDescriptor]) -> Self {
-		.tuple(values())
 	}
 }
 
