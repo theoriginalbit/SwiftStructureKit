@@ -43,6 +43,8 @@ public indirect enum TypeReference: Hashable, Sendable {
 		attributes: [AttributeDescriptor] = [],
 		effects: EffectSpecifiers<ThrowingSpecifier> = .none
 	)
+
+	case metatype(MetatypeReference)
 }
 
 extension TypeReference: ExpressibleByStringLiteral {

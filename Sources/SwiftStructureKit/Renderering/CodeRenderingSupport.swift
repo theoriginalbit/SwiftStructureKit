@@ -248,9 +248,15 @@ enum CodeRenderingSupport {
 		case let .optional(value):
 			renderedGenericTypeIdentifier("Optional", [value])
 		case let .any(value):
-			"any \(renderedType(value))"
+			TokenWriter.render { writer in
+				writer.write("any")
+				writer.write(renderedType(value))
+			}
 		case let .some(value):
-			"some \(renderedType(value))"
+			TokenWriter.render { writer in
+				writer.write("some")
+				writer.write(renderedType(value))
+			}
 		case let .tuple(elements):
 			renderedTupleSignature(elements)
 		case let .closure(parameters, returns, isEscaping, attributes, effects):
@@ -261,7 +267,24 @@ enum CodeRenderingSupport {
 				attributes: attributes,
 				effects: effects
 			)
+		case let .metatype(value):
+			renderedMetatype(value)
 		}
+	}
+
+	private static func renderedMetatype(_ metatype: MetatypeReference) -> String {
+		var writer = TokenWriter()
+		switch metatype {
+		case let .type(value):
+			writer.write(renderedType(value))
+			writer.write(.period)
+			writer.write("Type")
+		case let .protocol(value):
+			writer.write(renderedType(value))
+			writer.write(.period)
+			writer.write("Protocol")
+		}
+		return writer.finish()
 	}
 
 	private static func renderedGenericTypeIdentifier(_ type: String, _ types: [TypeReference]) -> String {

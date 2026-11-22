@@ -57,6 +57,9 @@ import SwiftStructureKitTestSupport
 		(.closure(parameters: [.int, .string], returns: .bool), "(Int, String) -> Bool"),
 		(.identifier("Foo.Bar"), "Foo.Bar"),
 		(.generic("F", arguments: [.int, .identifier("Int.Stride")]), "F<Int, Int.Stride>"),
+		(.string.typeMetatype, "String.Type"),
+		(.identifier("Foo").protocolMetatype, "Foo.Protocol"),
+		(.metatype(.type(.array(.int))), "Array<Int>.Type")
 	] as [(TypeReference, String)])
 	func renderTypeReferences(input: TypeReference, expected: String) {
 		let output = CodeRenderingSupport.renderedType(input)
