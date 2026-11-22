@@ -143,4 +143,36 @@ import SwiftStructureKitTestSupport
 		}
 		expectRendered(output, equals: "super.foo")
 	}
+
+	@Test func typeCastingIs() {
+		let input = ExpressionDescriptor.identifier("name").is("String")
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "name is String")
+	}
+
+	@Test func typeCastingAs() {
+		let input = ExpressionDescriptor.identifier("name").as("NameProtocol")
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "name as NameProtocol")
+	}
+
+	@Test func typeCastingAsOptionally() {
+		let input = ExpressionDescriptor.identifier("object").as("ToyProtocol", .optionally)
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "object as? ToyProtocol")
+	}
+
+	@Test func typeCastingAsForced() {
+		let input = ExpressionDescriptor.identifier("pet").as("HeadOfHousehold", .forced)
+		let output = RenderTest.renderLine { writer in
+			ExpressionRenderer.render(input, to: &writer)
+		}
+		expectRendered(output, equals: "pet as! HeadOfHousehold")
+	}
 }

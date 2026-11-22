@@ -52,6 +52,9 @@ enum ExpressionRenderer {
 
 		case let .await(expression):
 			renderAwait(expression, to: &writer)
+
+		case let .typeCast(descriptor):
+			renderTypeCast(descriptor, to: &writer)
 		}
 	}
 
@@ -159,12 +162,30 @@ enum ExpressionRenderer {
 		render(expression, to: &writer)
 	}
 
-	private static func renderParenthesized(_ e: ExpressionDescriptor, when needsGrouping: Bool, to writer: inout LineWriter) {
+	private static func renderParenthesized(_ expression: ExpressionDescriptor, when needsGrouping: Bool, to writer: inout LineWriter) {
 		guard needsGrouping else {
-			return render(e, to: &writer)
+			return render(expression, to: &writer)
 		}
 		writer.punctuation(.Prefix.leftParen)
-		render(e, to: &writer)
+		render(expression, to: &writer)
 		writer.punctuation(.rightParen)
+	}
+
+	private static func renderTypeCast(_ descriptor: TypeCastingOperatorDescriptor, to writer: inout LineWriter) {
+		render(descriptor.expression, to: &writer)
+		switch descriptor.kind {
+		case .is:
+			writer.token("is")
+		case let .as(variant):
+			writer.token("as")
+			switch variant {
+			case .none: break
+			case .optionally:
+				writer.punctuation(.Postfix.questionMark)
+			case .forced:
+				writer.punctuation(.Postfix.exclamationMark)
+			}
+		}
+		writer.token(CodeRenderingSupport.renderedType(descriptor.type))
 	}
 }

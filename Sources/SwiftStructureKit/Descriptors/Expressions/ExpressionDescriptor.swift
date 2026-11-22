@@ -102,6 +102,9 @@ public indirect enum ExpressionDescriptor: Sendable {
 	///
 	/// - Parameter expression: The asynchronous expression to evaluate.
 	case `await`(ExpressionDescriptor)
+
+	/// A type-casting expression. `is type` or `as type` (including `as?` and `as!`).
+	case typeCast(TypeCastingOperatorDescriptor)
 }
 
 public extension ExpressionDescriptor {

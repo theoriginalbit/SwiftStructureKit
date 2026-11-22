@@ -221,6 +221,16 @@ public extension TypeReference {
 		// public typealias Void = ()
 		.tuple([])
 	}
+
+	/// A type reference to the `Any` type.
+	static var anyType: Self {
+		.identifier("Any")
+	}
+
+	/// A type reference to the `Self` type.
+	static var selfType: Self {
+		.identifier("Self")
+	}
 }
 
 // MARK: Foundation types
